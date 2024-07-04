@@ -1,8 +1,8 @@
-# %Stub%
+# Konfeature
 
-[![License](https://img.shields.io/github/license/RedMadRobot/%Stub%?style=flat-square)][license]
+[![License](https://img.shields.io/github/license/RedMadRobot/Konfeature?style=flat-square)][license]
 
-%Stub% and no more spoilers.
+Konfeature and no more spoilers.
 
 ---
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.redmadrobot.%stub%:%stub%:<version>")
+    implementation("com.redmadrobot.konfeature:konfeature:<version>")
 }
 ```
 

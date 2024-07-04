@@ -10,7 +10,7 @@ properties="gradle.properties"
 changelog="CHANGELOG.md"
 readme="README.md"
 files_to_update_version=("$properties" "$readme")
-github_repository_url="https://github.com/RedMadRobot/%Stub%"
+github_repository_url="https://github.com/RedMadRobot/Konfeature"
 
 #region Utils
 function property {

@@ -20,8 +20,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "%stub%-root"
+rootProject.name = "konfeature-root"
 
 include(
-    "%stub%",
+    "konfeature",
 )
