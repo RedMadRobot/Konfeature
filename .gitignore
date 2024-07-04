@@ -1,0 +1,25 @@
+.DS_Store
+
+## JetBrains IDEs
+/.idea/**
+*.iml
+
+# Keep required plugins
+!.idea/externalDependencies.xml
+
+# Keep detekt plugin config
+!.idea/detekt.xml
+
+# Keep VCS config
+!.idea/vcs.xml
+
+## Gradle
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+**/build/
+!**/src/**/build/
+
+# Ignore local properties
+local.properties

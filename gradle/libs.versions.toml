@@ -1,0 +1,24 @@
+# For an example of how to maintain dependencies in version catalogs,
+# see https://github.com/RedMadRobot/gradle-version-catalogs.
+[versions]
+activity = "1.9.0"
+android-gradle-plugin = "8.4.0"
+detekt = "1.23.6"
+gradle-android-cacheFix = "3.0.1"
+gradle-infrastructure = "0.18.1"
+kotlin = "1.9.23"
+versionsPlugin = "0.51.0"
+publish-plugin = "0.28.0"
+
+[libraries]
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
+detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+gradle-android-cacheFixGradlePlugin = { module = "gradle.plugin.org.gradle.android:android-cache-fix-gradle-plugin", version.ref = "gradle-android-cacheFix" }
+infrastructure-android = { module = "com.redmadrobot.build:infrastructure-android", version.ref = "gradle-infrastructure" }
+infrastructure-publish = { module = "com.redmadrobot.build:infrastructure-publish", version.ref = "gradle-infrastructure" }
+publish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "publish-plugin" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+[plugins]
+infrastructure-detekt = { id = "com.redmadrobot.detekt", version.ref = "gradle-infrastructure" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
