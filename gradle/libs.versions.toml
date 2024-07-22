@@ -6,9 +6,11 @@ android-gradle-plugin = "8.4.0"
 detekt = "1.23.6"
 gradle-android-cacheFix = "3.0.1"
 gradle-infrastructure = "0.18.1"
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 versionsPlugin = "0.51.0"
 publish-plugin = "0.28.0"
+poko = "0.16.0"
+kotest = "5.9.1"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
@@ -18,7 +20,9 @@ infrastructure-android = { module = "com.redmadrobot.build:infrastructure-androi
 infrastructure-publish = { module = "com.redmadrobot.build:infrastructure-publish", version.ref = "gradle-infrastructure" }
 publish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "publish-plugin" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 [plugins]
 infrastructure-detekt = { id = "com.redmadrobot.detekt", version.ref = "gradle-infrastructure" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
+poko = { id = "dev.drewhamilton.poko", version.ref = "poko" }

@@ -13,6 +13,10 @@
 # Keep VCS config
 !.idea/vcs.xml
 
+# Keep project dictionary
+!.idea/dictionaries
+!.idea/dictionaries/project.xml
+
 ## Gradle
 # Ignore Gradle project-specific cache directory
 .gradle

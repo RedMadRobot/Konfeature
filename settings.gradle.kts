@@ -23,5 +23,6 @@ dependencyResolutionManagement {
 rootProject.name = "konfeature-root"
 
 include(
-    "konfeature",
+    ":sample",
+    ":konfeature",
 )

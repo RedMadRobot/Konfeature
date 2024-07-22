@@ -1,11 +1,21 @@
 plugins {
-    id("com.redmadrobot.kotlin-library")
+    kotlin("multiplatform")
+    alias(libs.plugins.poko)
     convention.publishing
     convention.detekt
 }
 
-description = "konfeature"
+kotlin {
+    explicitApi()
+    jvm()
 
-dependencies {
-    api(kotlin("stdlib"))
+    sourceSets {
+        commonMain.dependencies {
+            api(kotlin("stdlib"))
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotest.assertions.core)
+        }
+    }
 }
