@@ -1,14 +1,10 @@
 package com.redmadrobot.konfeature.builder
 
-import com.redmadrobot.konfeature.Konfeature
-import com.redmadrobot.konfeature.Logger
-import com.redmadrobot.konfeature.FeatureConfig
-import com.redmadrobot.konfeature.FeatureConfigSpec
+import com.redmadrobot.konfeature.*
 import com.redmadrobot.konfeature.exception.ConfigNameAlreadyExistException
 import com.redmadrobot.konfeature.exception.KeyDuplicationException
 import com.redmadrobot.konfeature.exception.NoFeatureConfigException
 import com.redmadrobot.konfeature.exception.SourceNameAlreadyExistException
-import com.redmadrobot.konfeature.logWarn
 import com.redmadrobot.konfeature.source.FeatureSource
 import com.redmadrobot.konfeature.source.Interceptor
 

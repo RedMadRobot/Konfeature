@@ -6,7 +6,7 @@ Working with remote configuration has become a standard part of the development 
 - convenient syntax for declaring configuration elements
 - the ability to separate configuration into different files for different features
 - the ability to make the configuration local-only during active feature development
-- support for multiple data sources for RemoteConfig
+- support for multiple data sources for remote config
 - the ability to view a list of all configurations and modify their values for debugging purposes
 - logging the value and its source when accessing the configuration, as well as logging non-critical errors
 
@@ -18,7 +18,7 @@ We have made every effort to meet all these requirements in the development of K
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [FeatureGroup](#featuregroup)
+  - [FeatureConfig](#featureconfig)
   - [FeatureSource](#featuresource)
   - [SourceSelectionStrategy](#sourceselectionstrategy)
   - [Interceptor](#interceptor)
@@ -45,7 +45,7 @@ dependencies {
 
 ## Usage
 
-### FeatureGroup
+### FeatureConfig
 
 Defines a set of configuration elements, where each element is defined using a delegate.
 There are two types of delegates:
@@ -53,7 +53,7 @@ There are two types of delegates:
 - `by value(...)` - used for elements of any other type
 
 ```kotlin
-class ProfileFeatureGroup : FeatureGroup(
+class ProfileFeatureConfig : FeatureConfig(
     name = "profile_feature_config",
     description = "Config of features for profile usage"
 ) {
@@ -92,10 +92,10 @@ Each configuration element requires specifying:
 After that, you need to register the configuration in `Konfeature`:
 
 ```kotlin
-val profileFeatureGroup: FeatureGroup = ProfileFeatureGroup()
+val profileFeatureConfig: FeatureConfig = ProfileFeatureConfig()
 
 val konfeatureInstance = konfeature {
-    register(profileFeatureGroup) 
+    register(profileFeatureConfig) 
 }
 ```
 
@@ -151,12 +151,12 @@ class FirebaseFeatureSource(
 After that, you need to add the `Source` in `Konfeature`:
 
 ```kotlin
-val profileFeatureGroup: FeatureGroup = ProfileFeatureGroup()
+val profileFeatureConfig: FeatureConfig = ProfileFeatureConfig()
 val source: FeatureSource = FirebaseFeatureSource(remoteConfig)
 
 val konfeatureInstance = konfeature {
     addSource(source)
-    register(profileFeatureGroup) 
+    register(profileFeatureConfig) 
 }
 ```
 
@@ -198,7 +198,8 @@ For most scenarios, predefined implementations will be sufficient:
 - `SourceSelectionStrategy.Any` - allows taking values from any source
 - `SourceSelectionStrategy.anyOf("Source 1", ... ,"Source N")` - allows taking values from the specified list of sources
 
->**!!!By default, `SourceSelectionStrategy.None` is used!!!**
+> [!IMPORTANT]
+> By default, `SourceSelectionStrategy.None` is used!
 
 ### Interceptor
 
@@ -242,13 +243,13 @@ class DebugPanelInterceptor : Interceptor {
 After that, you need to add the `Interceptor` in `Konfeature`:
 
 ```kotlin
-val profileFeatureGroup: FeatureGroup = ProfileFeatureGroup()
+val profileFeatureConfig: FeatureConfig = ProfileFeatureConfig()
 val source: FeatureSource = FirebaseFeatureSource(remoteConfig)
 val debugPanelInterceptor: Interceptor = DebugPanelInterceptor()
 
 val konfeatureInstance = konfeature {
     addSource(source)
-    register(profileFeatureGroup)
+    register(profileFeatureConfig)
     addInterceptor(debugPanelInterceptor)
 }
 ```
@@ -297,14 +298,14 @@ class TimberLogger: Logger {
 After that, you need to add the `Logger` in `Konfeature`:
 
 ```kotlin
-val profileFeatureGroup: FeatureGroup = ProfileFeatureGroup()
+val profileFeatureConfig: FeatureConfig = ProfileFeatureConfig()
 val source: FeatureSource = FirebaseFeatureSource(remoteConfig)
 val debugPanelInterceptor: Interceptor = DebugPanelInterceptor()
 val logger: Logger = TimberLogger()
 
 val konfeatureInstance = konfeature {
     addSource(source)
-    register(profileFeatureGroup)
+    register(profileFeatureConfig)
     addInterceptor(debugPanelInterceptor)
     setLogger(logger)
 }
@@ -312,12 +313,12 @@ val konfeatureInstance = konfeature {
 
 ### Spec
 
-Konfeature contains information about all registered `FeatureGroups` in the form of `spec`:
+Konfeature contains information about all registered `FeatureConfig` in the form of `spec`:
 
 ```kotlin
 public interface Konfeature {
 
-    public val spec: List<FeatureGroupSpec>
+    public val spec: List<FeatureConfigSpec>
 
     public fun <T : Any> getValue(spec: FeatureValueSpec<T>): FeatureValue<T>
 }
@@ -328,8 +329,8 @@ This allows you to obtain information about added configurations as well as the 
 ```kotlin
 val konfeatureInstance = konfeature {...}
 
-val featureGroupSpec = konfeatureInstance.spec[0]
-val featureSpec = groupSpec.values[0]
+val featureConfigSpec = konfeatureInstance.spec[0]
+val featureSpec = featureConfigSpec.values[0]
 val featureValue = konfeatureInstance.getValue(featureSpec)
 ```
 >  This can be useful for use in the DebugPanel
