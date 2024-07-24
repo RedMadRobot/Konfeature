@@ -1,6 +1,6 @@
-package com.redmadrobot.konfeature.delegate
+package com.redmadrobot.konfeature
 
-public interface FeatureGroupSpec {
+public interface FeatureConfigSpec {
     public val name: String
     public val description: String
     public val values: List<FeatureValueSpec<out Any>>

@@ -1,7 +1,7 @@
 package com.redmadrobot.konfeature
 
 import com.redmadrobot.konfeature.builder.konfeature
-import com.redmadrobot.konfeature.helper.TestFeatureGroup
+import com.redmadrobot.konfeature.helper.TestFeatureConfig
 import com.redmadrobot.konfeature.helper.createTestSource
 import com.redmadrobot.konfeature.source.FeatureValueSource
 import com.redmadrobot.konfeature.source.Interceptor
@@ -13,39 +13,39 @@ import kotlin.test.Test
 class KonfeatureTest {
 
     @Test
-    fun `when correct group added - then code should pass`() {
-        val featureGroup = TestFeatureGroup()
+    fun `when correct config added - then code should pass`() {
+        val featureConfig = TestFeatureConfig()
 
         konfeature {
-            register(featureGroup)
+            register(featureConfig)
         }
     }
 
     @Test
-    fun `when correct group added - should be correct spec`() {
+    fun `when correct config added - should be correct spec`() {
         // GIVEN
         val sourceNames = listOf("Test Source 1", "Test Source 2", "Test Source 3")
         val selectedSource = sourceNames[2]
 
-        val featureGroup = TestFeatureGroup(
+        val featureConfig = TestFeatureConfig(
             cSourceSelectionStrategy = SourceSelectionStrategy.anyOf(selectedSource),
         )
 
         // WHEN
         val toggleEase = konfeature {
-            register(featureGroup)
+            register(featureConfig)
         }
 
         // THEN
         toggleEase.spec.size shouldBe 1
 
-        val group = toggleEase.spec.first()
+        val config = toggleEase.spec.first()
 
-        group.name shouldBe featureGroup.name
-        group.description shouldBe featureGroup.description
-        group.values.size shouldBe 3
+        config.name shouldBe featureConfig.name
+        config.description shouldBe featureConfig.description
+        config.values.size shouldBe 3
 
-        assertSoftly(group) {
+        assertSoftly(config) {
             values[0].apply {
                 key shouldBe "a"
                 description shouldBe "feature a desc"
@@ -70,70 +70,70 @@ class KonfeatureTest {
     }
 
     @Test
-    fun `when source have value - group should return it`() {
+    fun `when source have value - config should return it`() {
         // GIVEN
         val source = createTestSource(
             name = "Test source",
             values = mapOf("a" to false),
         )
-        val featureGroup = TestFeatureGroup()
+        val featureConfig = TestFeatureConfig()
 
         konfeature {
             addSource(source)
-            register(featureGroup)
+            register(featureConfig)
         }
 
         // WHEN
-        val a = featureGroup.a
+        val a = featureConfig.a
 
         // THEN
         a shouldBe false
     }
 
     @Test
-    fun `when source don't have value - group should return default value`() {
+    fun `when source don't have value - config should return default value`() {
         // GIVEN
         val source = createTestSource(
             name = "Test source",
             values = mapOf("b" to false),
         )
-        val featureGroup = TestFeatureGroup()
+        val featureConfig = TestFeatureConfig()
 
         konfeature {
             addSource(source)
-            register(featureGroup)
+            register(featureConfig)
         }
 
         // WHEN
-        val a = featureGroup.a
+        val a = featureConfig.a
 
         // THEN
         a shouldBe true
     }
 
     @Test
-    fun `when source have value with unexpected type - group should return default value`() {
+    fun `when source have value with unexpected type - config should return default value`() {
         // GIVEN
         val source = createTestSource(
             name = "Test source",
             values = mapOf("a" to 5),
         )
-        val featureGroup = TestFeatureGroup()
+        val featureConfig = TestFeatureConfig()
 
         konfeature {
             addSource(source)
-            register(featureGroup)
+            register(featureConfig)
         }
 
         // WHEN
-        val a = featureGroup.a
+        val a = featureConfig.a
 
         // THEN
         a shouldBe true
     }
 
     @Test
-    fun `when both sources contain same key - group should return value of first added source`() {
+    fun `when both sources contain same key - config should return value of first added source`() {
         // GIVEN
         val source1 = createTestSource(
             name = "Test source 1",
@@ -144,23 +144,23 @@ class KonfeatureTest {
             values = mapOf("a" to true),
         )
 
-        val featureGroup = TestFeatureGroup()
+        val featureConfig = TestFeatureConfig()
 
         // WHEN
         konfeature {
             addSource(source1)
             addSource(source2)
-            register(featureGroup)
+            register(featureConfig)
         }
 
-        val a = featureGroup.a
+        val a = featureConfig.a
 
         // THEN
         a shouldBe false
     }
 
     @Test
-    fun `when source specified by SourceSelectionStrategy - group should return value from it`() {
+    fun `when source specified by SourceSelectionStrategy - config should return value from it`() {
         // GIVEN
         val source1 = createTestSource(
             name = "Test source 1",
@@ -171,7 +171,7 @@ class KonfeatureTest {
             values = mapOf("c" to "test_source_2_c"),
         )
 
-        val featureGroup = TestFeatureGroup(
+        val featureConfig = TestFeatureConfig(
             cSourceSelectionStrategy = SourceSelectionStrategy.anyOf(source2.name),
         )
 
@@ -179,17 +179,17 @@ class KonfeatureTest {
         konfeature {
             addSource(source1)
             addSource(source2)
-            register(featureGroup)
+            register(featureConfig)
         }
 
-        val c = featureGroup.c
+        val c = featureConfig.c
 
         // THEN
         c shouldBe "test_source_2_c"
     }
 
     @Test
-    fun `when value changed by interceptor - group should return it`() {
+    fun `when value changed by interceptor - config should return it`() {
         // GIVEN
         val source = createTestSource(
             name = "Test source",
@@ -210,17 +210,17 @@ class KonfeatureTest {
             }
         }
 
-        val featureGroup = TestFeatureGroup()
+        val featureConfig = TestFeatureConfig()
 
         // WHEN
         konfeature {
             addSource(source)
             addInterceptor(interceptor)
-            register(featureGroup)
+            register(featureConfig)
         }
 
         // THEN
-        assertSoftly(featureGroup) {
+        assertSoftly(featureConfig) {
             a shouldBe false
             b shouldBe true
             c shouldBe interceptedValue
@@ -228,7 +228,7 @@ class KonfeatureTest {
     }
 
     @Test
-    fun `when value changed by interceptor but has unexpected type - group should return default`() {
+    fun `when value changed by interceptor but has unexpected type - config should return default`() {
         // GIVEN
         val interceptor = object : Interceptor {
             override val name: String = "test interceptor"
@@ -238,15 +238,15 @@ class KonfeatureTest {
             }
         }
 
-        val featureGroup = TestFeatureGroup()
+        val featureConfig = TestFeatureConfig()
 
         // WHEN
         konfeature {
             addInterceptor(interceptor)
-            register(featureGroup)
+            register(featureConfig)
         }
 
         // THEN
-        featureGroup.c shouldBe "feature c"
+        featureConfig.c shouldBe "feature c"
     }
 }

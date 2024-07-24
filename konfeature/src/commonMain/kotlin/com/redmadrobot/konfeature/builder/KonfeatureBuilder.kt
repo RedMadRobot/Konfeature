@@ -2,11 +2,11 @@ package com.redmadrobot.konfeature.builder
 
 import com.redmadrobot.konfeature.Konfeature
 import com.redmadrobot.konfeature.Logger
-import com.redmadrobot.konfeature.delegate.FeatureGroup
-import com.redmadrobot.konfeature.delegate.FeatureGroupSpec
-import com.redmadrobot.konfeature.exception.GroupNameAlreadyExistException
+import com.redmadrobot.konfeature.FeatureConfig
+import com.redmadrobot.konfeature.FeatureConfigSpec
+import com.redmadrobot.konfeature.exception.ConfigNameAlreadyExistException
 import com.redmadrobot.konfeature.exception.KeyDuplicationException
-import com.redmadrobot.konfeature.exception.NoFeatureGroupException
+import com.redmadrobot.konfeature.exception.NoFeatureConfigException
 import com.redmadrobot.konfeature.exception.SourceNameAlreadyExistException
 import com.redmadrobot.konfeature.logWarn
 import com.redmadrobot.konfeature.source.FeatureSource
@@ -15,7 +15,7 @@ import com.redmadrobot.konfeature.source.Interceptor
 public class KonfeatureBuilder {
     private val sources = mutableListOf<FeatureSource>()
     private var interceptors = mutableListOf<Interceptor>()
-    private var featureGroups = mutableListOf<FeatureGroup>()
+    private var spec = mutableListOf<FeatureConfig>()
     private var logger: Logger? = null
 
     public fun addInterceptor(interceptor: Interceptor): KonfeatureBuilder {
@@ -32,11 +32,11 @@ public class KonfeatureBuilder {
         return this
     }
 
-    public fun register(featureGroup: FeatureGroup): KonfeatureBuilder {
-        if (featureGroups.any { it.name == featureGroup.name }) {
-            throw GroupNameAlreadyExistException(featureGroup.name)
+    public fun register(featureConfig: FeatureConfig): KonfeatureBuilder {
+        if (spec.any { it.name == featureConfig.name }) {
+            throw ConfigNameAlreadyExistException(featureConfig.name)
         }
-        featureGroups.add(featureGroup)
+        spec.add(featureConfig)
         return this
     }
 
@@ -46,28 +46,26 @@ public class KonfeatureBuilder {
     }
 
     public fun build(): Konfeature {
-        if (featureGroups.isEmpty()) {
-            throw NoFeatureGroupException()
-        }
+        if (spec.isEmpty()) throw NoFeatureConfigException()
 
-        featureGroups.forEach(::validateGroupSpec)
+        spec.forEach(::validateConfigSpec)
 
         return KonfeatureImpl(
             sources = sources,
             interceptors = interceptors,
             logger = logger,
-            spec = featureGroups
+            spec = spec
         ).also { toggleEase ->
-            featureGroups.forEach { values ->
+            spec.forEach { values ->
                 values.bind(toggleEase)
             }
         }
     }
 
-    private fun validateGroupSpec(group: FeatureGroupSpec) {
+    private fun validateConfigSpec(config: FeatureConfigSpec) {
         val counter = mutableMapOf<String, Int>().withDefault { 0 }
         var hasDuplicates = false
-        group.values.forEach { valueSpec ->
+        config.values.forEach { valueSpec ->
             val value = counter.getValue(valueSpec.key)
             if (value > 0) {
                 hasDuplicates = true
@@ -80,9 +78,9 @@ public class KonfeatureBuilder {
                 .filter { it.value > 1 }
                 .map { it.key }
                 .toList()
-            throw KeyDuplicationException(values, group.name)
+            throw KeyDuplicationException(values, config.name)
         } else if (counter.isEmpty()) {
-            logger?.logWarn("Group '${group.name}' is empty")
+            logger?.logWarn("Config '${config.name}' is empty")
         }
     }
 }

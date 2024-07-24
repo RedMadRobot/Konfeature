@@ -4,7 +4,7 @@ import com.redmadrobot.konfeature.Logger
 import com.redmadrobot.konfeature.builder.konfeature
 
 fun main() {
-    val featureGroup = SampleFeatureGroup()
+    val featureConfig = SampleFeatureConfig()
 
     val debugPanelInterceptor = FeatureToggleDebugPanelInterceptor()
 
@@ -17,7 +17,7 @@ fun main() {
     val konfeature = konfeature {
         addSource(RemoteFeatureSource())
         addSource(FirebaseFeatureSource())
-        register(featureGroup)
+        register(featureConfig)
         addInterceptor(debugPanelInterceptor)
         setLogger(logger)
     }
@@ -29,19 +29,19 @@ fun main() {
 
     println()
     val spec = konfeature.spec.first().values.first()
-    println("getFeatureToggleValue('${spec.key}') -> ${konfeature.getValue(spec)}")
+    println("getFeatureValue('${spec.key}') -> ${konfeature.getValue(spec)}")
 
     println()
-    println("feature1: " + featureGroup.isFeature1Enabled)
-    println("feature2: " + featureGroup.isFeature2Enabled)
-    println("feature3: " + featureGroup.isFeature3Enabled)
-    println("velocity: " + featureGroup.velocity)
-    println("puhFeature: " + featureGroup.puhFeature)
+    println("feature1: " + featureConfig.isFeature1Enabled)
+    println("feature2: " + featureConfig.isFeature2Enabled)
+    println("feature3: " + featureConfig.isFeature3Enabled)
+    println("velocity: " + featureConfig.velocity)
+    println("puhFeature: " + featureConfig.puhFeature)
 
     debugPanelInterceptor.setFeatureValue("feature2", false)
     println()
     println("debugPanelInterceptor.setFeatureValue(\"feature2\", false)")
-    println("feature1: " + featureGroup.isFeature1Enabled)
-    println("feature2: " + featureGroup.isFeature2Enabled)
-    println("feature3: " + featureGroup.isFeature3Enabled)
+    println("feature1: " + featureConfig.isFeature1Enabled)
+    println("feature2: " + featureConfig.isFeature2Enabled)
+    println("feature3: " + featureConfig.isFeature3Enabled)
 }

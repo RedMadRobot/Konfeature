@@ -1,11 +1,11 @@
 package com.redmadrobot.konfeature.builder
 
-import com.redmadrobot.konfeature.exception.GroupNameAlreadyExistException
+import com.redmadrobot.konfeature.exception.ConfigNameAlreadyExistException
 import com.redmadrobot.konfeature.exception.KeyDuplicationException
-import com.redmadrobot.konfeature.exception.NoFeatureGroupException
+import com.redmadrobot.konfeature.exception.NoFeatureConfigException
 import com.redmadrobot.konfeature.exception.SourceNameAlreadyExistException
-import com.redmadrobot.konfeature.helper.TestFeatureGroup
-import com.redmadrobot.konfeature.helper.createEmptyFeatureGroup
+import com.redmadrobot.konfeature.helper.TestFeatureConfig
+import com.redmadrobot.konfeature.helper.createEmptyFeatureConfig
 import com.redmadrobot.konfeature.helper.createTestSource
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
@@ -14,26 +14,26 @@ import kotlin.test.Test
 class KonfeatureBuilderTest {
 
     @Test
-    fun `when no any feature group registered - should throw exception`() {
-        shouldThrow<NoFeatureGroupException> {
+    fun `when no any feature config registered - should throw exception`() {
+        shouldThrow<NoFeatureConfigException> {
             KonfeatureBuilder().build()
         }
     }
 
     @Test
-    fun `when group with duplicated keys added - should throw exception`() {
-        val featureGroup = TestFeatureGroup(withDuplicates = true)
+    fun `when config with duplicated keys added - should throw exception`() {
+        val featureConfig = TestFeatureConfig(withDuplicates = true)
 
         val exception = shouldThrow<KeyDuplicationException> {
-            KonfeatureBuilder().register(featureGroup).build()
+            KonfeatureBuilder().register(featureConfig).build()
         }
 
-        exception.message shouldBe "values with keys <'a'> are duplicated in group '${featureGroup.name}'"
+        exception.message shouldBe "values with keys <'a'> are duplicated in config '${featureConfig.name}'"
     }
 
     @Test
     fun `when source with same name added twice - should throw exception`() {
-        val featureGroupName = "Test Feature Group"
+        val featureConfigName = "Test Feature Config"
 
         val sourceName = "Test Source"
 
@@ -41,7 +41,7 @@ class KonfeatureBuilderTest {
             konfeature {
                 addSource(createTestSource(sourceName))
                 addSource(createTestSource(sourceName))
-                register(createEmptyFeatureGroup(featureGroupName))
+                register(createEmptyFeatureConfig(featureConfigName))
             }
         }
 
@@ -49,16 +49,16 @@ class KonfeatureBuilderTest {
     }
 
     @Test
-    fun `when feature group with same name registered twice - should throw exception`() {
-        val featureGroupName = "Test Feature Group"
+    fun `when feature config with same name registered twice - should throw exception`() {
+        val featureConfigName = "Test Feature Config"
 
-        val exception = shouldThrow<GroupNameAlreadyExistException> {
+        val exception = shouldThrow<ConfigNameAlreadyExistException> {
             konfeature {
-                register(createEmptyFeatureGroup(featureGroupName))
-                register(createEmptyFeatureGroup(featureGroupName))
+                register(createEmptyFeatureConfig(featureConfigName))
+                register(createEmptyFeatureConfig(featureConfigName))
             }
         }
 
-        exception.message shouldBe "feature group with name '$featureGroupName' already registered"
+        exception.message shouldBe "feature config with name '$featureConfigName' already registered"
     }
 }

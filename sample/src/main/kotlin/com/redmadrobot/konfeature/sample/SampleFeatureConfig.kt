@@ -1,9 +1,9 @@
 package com.redmadrobot.konfeature.sample
 
-import com.redmadrobot.konfeature.delegate.FeatureGroup
+import com.redmadrobot.konfeature.FeatureConfig
 import com.redmadrobot.konfeature.source.SourceSelectionStrategy
 
-class SampleFeatureGroup : FeatureGroup(
+class SampleFeatureConfig : FeatureConfig(
     name = "Sample",
     description = "simple sample set"
 ) {

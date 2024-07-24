@@ -3,8 +3,8 @@
 package com.redmadrobot.konfeature.builder
 
 import com.redmadrobot.konfeature.*
-import com.redmadrobot.konfeature.delegate.FeatureGroupSpec
-import com.redmadrobot.konfeature.delegate.FeatureValueSpec
+import com.redmadrobot.konfeature.FeatureConfigSpec
+import com.redmadrobot.konfeature.FeatureValueSpec
 import com.redmadrobot.konfeature.source.FeatureSource
 import com.redmadrobot.konfeature.source.FeatureValueSource
 import com.redmadrobot.konfeature.source.Interceptor
@@ -14,7 +14,7 @@ internal class KonfeatureImpl(
     private val sources: List<FeatureSource>,
     private val interceptors: List<Interceptor>,
     private val logger: Logger?,
-    override val spec: List<FeatureGroupSpec>,
+    override val spec: List<FeatureConfigSpec>,
 ) : Konfeature {
 
     private val sourcesNames = sources.map { it.name }.toSet()

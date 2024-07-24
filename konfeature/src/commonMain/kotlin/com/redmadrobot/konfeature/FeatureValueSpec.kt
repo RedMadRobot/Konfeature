@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.delegate
+package com.redmadrobot.konfeature
 
 import com.redmadrobot.konfeature.source.SourceSelectionStrategy
 import dev.drewhamilton.poko.Poko

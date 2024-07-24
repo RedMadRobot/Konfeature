@@ -1,14 +1,14 @@
 package com.redmadrobot.konfeature.helper
 
-import com.redmadrobot.konfeature.delegate.FeatureGroup
+import com.redmadrobot.konfeature.FeatureConfig
 import com.redmadrobot.konfeature.source.SourceSelectionStrategy
 
-class TestFeatureGroup(
+class TestFeatureConfig(
     withDuplicates: Boolean = false,
     cSourceSelectionStrategy: SourceSelectionStrategy = SourceSelectionStrategy.Any,
-) : FeatureGroup(
-    name = "TestFeatureGroup",
-    description = "TestFeatureGroup description",
+) : FeatureConfig(
+    name = "TestFeatureConfig",
+    description = "TestFeatureConfig description",
 ) {
     val a by toggle(
         key = "a",

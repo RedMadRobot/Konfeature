@@ -1,14 +1,13 @@
-package com.redmadrobot.konfeature.delegate
+package com.redmadrobot.konfeature
 
-import com.redmadrobot.konfeature.Konfeature
 import com.redmadrobot.konfeature.source.SourceSelectionStrategy
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-public abstract class FeatureGroup(
+public abstract class FeatureConfig(
     override val name: String,
     override val description: String
-) : FeatureGroupSpec {
+) : FeatureConfigSpec {
     private var konfeature: Konfeature? = null
     private val _values = mutableListOf<FeatureValueSpec<out Any>>()
 
@@ -31,7 +30,7 @@ public abstract class FeatureGroup(
         description: String,
         defaultValue: T,
         sourceSelectionStrategy: SourceSelectionStrategy = SourceSelectionStrategy.None
-    ): ReadOnlyProperty<FeatureGroup?, T> {
+    ): ReadOnlyProperty<FeatureConfig?, T> {
         error("Use toggle instead of boolean value")
     }
 
@@ -40,7 +39,7 @@ public abstract class FeatureGroup(
         description: String,
         defaultValue: T,
         sourceSelectionStrategy: SourceSelectionStrategy = SourceSelectionStrategy.None
-    ): ReadOnlyProperty<FeatureGroup?, T> {
+    ): ReadOnlyProperty<FeatureConfig?, T> {
         return createValue(
             key = key,
             description = description,
@@ -54,7 +53,7 @@ public abstract class FeatureGroup(
         description: String,
         defaultValue: Boolean,
         sourceSelectionStrategy: SourceSelectionStrategy = SourceSelectionStrategy.None,
-    ): ReadOnlyProperty<FeatureGroup?, Boolean> {
+    ): ReadOnlyProperty<FeatureConfig?, Boolean> {
         return createValue(
             key = key,
             description = description,
@@ -68,7 +67,7 @@ public abstract class FeatureGroup(
         description: String,
         defaultValue: T,
         sourceSelectionStrategy: SourceSelectionStrategy = SourceSelectionStrategy.None
-    ): ReadOnlyProperty<FeatureGroup?, T> {
+    ): ReadOnlyProperty<FeatureConfig?, T> {
         val spec = FeatureValueSpec(
             key = key,
             description = description,
@@ -81,13 +80,13 @@ public abstract class FeatureGroup(
 
     private class Value<T : Any>(
         private val spec: FeatureValueSpec<T>,
-    ) : ReadOnlyProperty<FeatureGroup?, T> {
-        override fun getValue(thisRef: FeatureGroup?, property: KProperty<*>): T {
+    ) : ReadOnlyProperty<FeatureConfig?, T> {
+        override fun getValue(thisRef: FeatureConfig?, property: KProperty<*>): T {
             return checkBinding(thisRef?.konfeature).getValue(spec).value
         }
 
         private fun checkBinding(konFeature: Konfeature?): Konfeature {
-            return checkNotNull(konFeature) { "FeatureGroup is not bound to Konfeature" }
+            return checkNotNull(konFeature) { "FeatureConfig is not bound to Konfeature" }
         }
     }
 }
