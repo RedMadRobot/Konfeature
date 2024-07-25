@@ -1,6 +1,9 @@
 # Konfeature
 
+[![Version](https://img.shields.io/maven-central/v/com.redmadrobot.konfeature/konfeature?style=flat-square)][mavenCentral]
+[![Build Status](https://img.shields.io/github/actions/workflow/status/RedMadRobot/konfeature/main.yml?branch=main&style=flat-square)][ci]
 [![License](https://img.shields.io/github/license/RedMadRobot/Konfeature?style=flat-square)][license]
+
 
 Working with remote configuration has become a standard part of the development process for almost any application. Depending on the complexity of the application, several requirements for such functionality may arise, including:
 - convenient syntax for declaring configuration elements
@@ -350,4 +353,6 @@ The value of the configuration element is determined in the following order:
 Merge requests are welcome.  
 For major changes, please open an issue first to discuss what you would like to change.
 
-[license]: ../LICENSE
+[mavenCentral]: https://central.sonatype.com/artifact/com.redmadrobot.konfeature/konfeature
+[ci]: https://github.com/RedMadRobot/Konfeature/actions?query=branch%3Amain
+[license]: ./LICENSE
