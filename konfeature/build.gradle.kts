@@ -5,6 +5,8 @@ plugins {
     convention.detekt
 }
 
+description = "Kotlin library for working with feature remote configuration"
+
 kotlin {
     explicitApi()
     jvm()

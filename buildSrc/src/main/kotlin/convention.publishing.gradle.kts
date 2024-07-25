@@ -18,7 +18,7 @@ mavenPublishing {
         }
 
         developers {
-//            developer(id = "coolest id", name = "the best name", email = "awesome email")
+            developer(id = "AleksandrTabolin", name = "Aleksandr Tabolin", email = "a.tabolin@redmadrobot.com")
         }
 
         setGitHubProject("RedMadRobot/Konfeature")
