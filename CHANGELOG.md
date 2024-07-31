@@ -4,7 +4,7 @@
 
 - no changes
 
-## v0.1.0 - 2024.07.25
+## v0.1.0 (2024-07-25)
 
 Initial public release
 
