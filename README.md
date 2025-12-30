@@ -1,9 +1,10 @@
 # Konfeature
 
+<img width="1560" height="877" alt="75fc26ed9b4a25dc2010f846dae2d792" src="https://github.com/user-attachments/assets/218c27e6-0d06-4c25-bbaa-796343d4e7d5" />
+
 [![Version](https://img.shields.io/maven-central/v/com.redmadrobot.konfeature/konfeature?style=flat-square)][mavenCentral]
 [![Build Status](https://img.shields.io/github/actions/workflow/status/RedMadRobot/konfeature/main.yml?branch=main&style=flat-square)][ci]
 [![License](https://img.shields.io/github/license/RedMadRobot/Konfeature?style=flat-square)][license]
-
 
 Working with remote configuration has become a standard part of the development process for almost any application. Depending on the complexity of the application, several requirements for such functionality may arise, including:
 - convenient syntax for declaring configuration elements
