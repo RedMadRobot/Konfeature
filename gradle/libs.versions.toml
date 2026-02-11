@@ -1,16 +1,15 @@
 # For an example of how to maintain dependencies in version catalogs,
 # see https://github.com/RedMadRobot/gradle-version-catalogs.
 [versions]
-activity = "1.9.0"
-android-gradle-plugin = "8.4.0"
-detekt = "1.23.6"
-gradle-android-cacheFix = "3.0.1"
-gradle-infrastructure = "0.18.1"
-kotlin = "2.0.0"
-versionsPlugin = "0.51.0"
-publish-plugin = "0.28.0"
-poko = "0.16.0"
-kotest = "5.9.1"
+android-gradle-plugin = "9.0.0"
+detekt = "1.23.8"
+gradle-android-cacheFix = "3.0.3"
+gradle-infrastructure = "0.19.1"
+kotlin = "2.3.10"
+versionsPlugin = "0.53.0"
+publish-plugin = "0.36.0"
+poko = "0.21.1"
+kotest = "6.1.3"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
