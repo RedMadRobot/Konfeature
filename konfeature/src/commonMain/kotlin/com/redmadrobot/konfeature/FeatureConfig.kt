@@ -1,6 +1,7 @@
 package com.redmadrobot.konfeature
 
 import com.redmadrobot.konfeature.source.SourceSelectionStrategy
+import kotlin.jvm.JvmName
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
