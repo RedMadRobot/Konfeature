@@ -5,6 +5,11 @@
 [![Version](https://img.shields.io/maven-central/v/com.redmadrobot.konfeature/konfeature?style=flat-square)][mavenCentral]
 [![Build Status](https://img.shields.io/github/actions/workflow/status/RedMadRobot/konfeature/main.yml?branch=main&style=flat-square)][ci]
 [![License](https://img.shields.io/github/license/RedMadRobot/Konfeature?style=flat-square)][license]
+[![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)](#)
+[![iOS](https://img.shields.io/badge/iOS-000000?style=flat-square&logo=apple&logoColor=white)](#)
+[![JVM](https://img.shields.io/badge/JVM-007396?style=flat-square&logo=java&logoColor=white)](#)
+
+**Konfeature** is a powerful **Kotlin Multiplatform** library for managing remote configuration in your applications. It provides a clean, declarative API for working with feature flags and configuration elements across Android, iOS, and JVM platforms.
 
 Working with remote configuration has become a standard part of the development process for almost any application. Depending on the complexity of the application, several requirements for such functionality may arise, including:
 - convenient syntax for declaring configuration elements
@@ -20,6 +25,7 @@ We have made every effort to meet all these requirements in the development of K
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Supported Platforms](#supported-platforms)
 - [Installation](#installation)
 - [Usage](#usage)
   - [FeatureConfig](#featureconfig)
@@ -33,15 +39,43 @@ We have made every effort to meet all these requirements in the development of K
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## Supported Platforms
+
+Konfeature is a **Kotlin Multiplatform** library with support for:
+
+| Platform | Status | Targets |
+|----------|--------|---------|
+| **Android** | ✅ Fully Supported | JVM (via Kotlin/JVM) |
+| **iOS** | ✅ Fully Supported | arm64, x86_64, simulator arm64 |
+| **JVM** | ✅ Fully Supported | Java/Kotlin applications |
+
 ## Installation
 
-Add the dependency:
+### Add Maven Central Repository
 
 ```groovy
 repositories {
     mavenCentral()
 }
+```
 
+### Add Dependency
+
+**For Gradle (Kotlin Multiplatform Project):**
+
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("com.redmadrobot.konfeature:konfeature:<version>")
+        }
+    }
+}
+```
+
+**For Gradle (Single Platform):**
+
+```groovy
 dependencies {
     implementation("com.redmadrobot.konfeature:konfeature:<version>")
 }
