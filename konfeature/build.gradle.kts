@@ -20,4 +20,9 @@ kotlin {
             implementation(libs.kotest.assertions.core)
         }
     }
+
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled.set(true)
+    }
 }
