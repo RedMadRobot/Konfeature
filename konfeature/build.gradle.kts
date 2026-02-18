@@ -30,3 +30,7 @@ kotlin {
         enabled.set(true)
     }
 }
+
+tasks.check.configure {
+    dependsOn("checkLegacyAbi")
+}
