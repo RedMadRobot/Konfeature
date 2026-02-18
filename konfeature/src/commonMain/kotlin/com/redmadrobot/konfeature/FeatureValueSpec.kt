@@ -21,5 +21,6 @@ public class FeatureValueSpec<T : Any>(
     public val key: String,
     public val description: String,
     public val defaultValue: T,
-    public val sourceSelectionStrategy: SourceSelectionStrategy
+    public val sourceSelectionStrategy: SourceSelectionStrategy,
+    public val test: String = "",
 )
