@@ -1,0 +1,168 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.redmadrobot.konfeature:konfeature>
+abstract fun interface com.redmadrobot.konfeature.source/SourceSelectionStrategy { // com.redmadrobot.konfeature.source/SourceSelectionStrategy|null[0]
+    abstract fun select(kotlin.collections/Set<kotlin/String>): kotlin.collections/Set<kotlin/String> // com.redmadrobot.konfeature.source/SourceSelectionStrategy.select|select(kotlin.collections.Set<kotlin.String>){}[0]
+
+    final object Companion { // com.redmadrobot.konfeature.source/SourceSelectionStrategy.Companion|null[0]
+        final val Any // com.redmadrobot.konfeature.source/SourceSelectionStrategy.Companion.Any|{}Any[0]
+            final fun <get-Any>(): com.redmadrobot.konfeature.source/SourceSelectionStrategy // com.redmadrobot.konfeature.source/SourceSelectionStrategy.Companion.Any.<get-Any>|<get-Any>(){}[0]
+        final val None // com.redmadrobot.konfeature.source/SourceSelectionStrategy.Companion.None|{}None[0]
+            final fun <get-None>(): com.redmadrobot.konfeature.source/SourceSelectionStrategy // com.redmadrobot.konfeature.source/SourceSelectionStrategy.Companion.None.<get-None>|<get-None>(){}[0]
+
+        final fun anyOf(kotlin/Array<out kotlin/String>...): com.redmadrobot.konfeature.source/SourceSelectionStrategy // com.redmadrobot.konfeature.source/SourceSelectionStrategy.Companion.anyOf|anyOf(kotlin.Array<out|kotlin.String>...){}[0]
+    }
+}
+
+abstract interface com.redmadrobot.konfeature.source/FeatureSource { // com.redmadrobot.konfeature.source/FeatureSource|null[0]
+    abstract val name // com.redmadrobot.konfeature.source/FeatureSource.name|{}name[0]
+        abstract fun <get-name>(): kotlin/String // com.redmadrobot.konfeature.source/FeatureSource.name.<get-name>|<get-name>(){}[0]
+
+    abstract fun get(kotlin/String): kotlin/Any? // com.redmadrobot.konfeature.source/FeatureSource.get|get(kotlin.String){}[0]
+}
+
+abstract interface com.redmadrobot.konfeature.source/Interceptor { // com.redmadrobot.konfeature.source/Interceptor|null[0]
+    abstract val name // com.redmadrobot.konfeature.source/Interceptor.name|{}name[0]
+        abstract fun <get-name>(): kotlin/String // com.redmadrobot.konfeature.source/Interceptor.name.<get-name>|<get-name>(){}[0]
+
+    abstract fun intercept(com.redmadrobot.konfeature.source/FeatureValueSource, kotlin/String, kotlin/Any): kotlin/Any? // com.redmadrobot.konfeature.source/Interceptor.intercept|intercept(com.redmadrobot.konfeature.source.FeatureValueSource;kotlin.String;kotlin.Any){}[0]
+}
+
+abstract interface com.redmadrobot.konfeature/FeatureConfigSpec { // com.redmadrobot.konfeature/FeatureConfigSpec|null[0]
+    abstract val description // com.redmadrobot.konfeature/FeatureConfigSpec.description|{}description[0]
+        abstract fun <get-description>(): kotlin/String // com.redmadrobot.konfeature/FeatureConfigSpec.description.<get-description>|<get-description>(){}[0]
+    abstract val name // com.redmadrobot.konfeature/FeatureConfigSpec.name|{}name[0]
+        abstract fun <get-name>(): kotlin/String // com.redmadrobot.konfeature/FeatureConfigSpec.name.<get-name>|<get-name>(){}[0]
+    abstract val values // com.redmadrobot.konfeature/FeatureConfigSpec.values|{}values[0]
+        abstract fun <get-values>(): kotlin.collections/List<com.redmadrobot.konfeature/FeatureValueSpec<out kotlin/Any>> // com.redmadrobot.konfeature/FeatureConfigSpec.values.<get-values>|<get-values>(){}[0]
+}
+
+abstract interface com.redmadrobot.konfeature/Konfeature { // com.redmadrobot.konfeature/Konfeature|null[0]
+    abstract val spec // com.redmadrobot.konfeature/Konfeature.spec|{}spec[0]
+        abstract fun <get-spec>(): kotlin.collections/List<com.redmadrobot.konfeature/FeatureConfigSpec> // com.redmadrobot.konfeature/Konfeature.spec.<get-spec>|<get-spec>(){}[0]
+
+    abstract fun <#A1: kotlin/Any> getValue(com.redmadrobot.konfeature/FeatureValueSpec<#A1>): com.redmadrobot.konfeature/FeatureValue<#A1> // com.redmadrobot.konfeature/Konfeature.getValue|getValue(com.redmadrobot.konfeature.FeatureValueSpec<0:0>){0§<kotlin.Any>}[0]
+}
+
+abstract interface com.redmadrobot.konfeature/Logger { // com.redmadrobot.konfeature/Logger|null[0]
+    abstract fun log(com.redmadrobot.konfeature/Logger.Severity, kotlin/String) // com.redmadrobot.konfeature/Logger.log|log(com.redmadrobot.konfeature.Logger.Severity;kotlin.String){}[0]
+
+    final enum class Severity : kotlin/Enum<com.redmadrobot.konfeature/Logger.Severity> { // com.redmadrobot.konfeature/Logger.Severity|null[0]
+        enum entry INFO // com.redmadrobot.konfeature/Logger.Severity.INFO|null[0]
+        enum entry WARNING // com.redmadrobot.konfeature/Logger.Severity.WARNING|null[0]
+
+        final val entries // com.redmadrobot.konfeature/Logger.Severity.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.redmadrobot.konfeature/Logger.Severity> // com.redmadrobot.konfeature/Logger.Severity.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): com.redmadrobot.konfeature/Logger.Severity // com.redmadrobot.konfeature/Logger.Severity.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.redmadrobot.konfeature/Logger.Severity> // com.redmadrobot.konfeature/Logger.Severity.values|values#static(){}[0]
+    }
+}
+
+abstract class com.redmadrobot.konfeature/FeatureConfig : com.redmadrobot.konfeature/FeatureConfigSpec { // com.redmadrobot.konfeature/FeatureConfig|null[0]
+    constructor <init>(kotlin/String, kotlin/String) // com.redmadrobot.konfeature/FeatureConfig.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+    open val description // com.redmadrobot.konfeature/FeatureConfig.description|{}description[0]
+        open fun <get-description>(): kotlin/String // com.redmadrobot.konfeature/FeatureConfig.description.<get-description>|<get-description>(){}[0]
+    open val name // com.redmadrobot.konfeature/FeatureConfig.name|{}name[0]
+        open fun <get-name>(): kotlin/String // com.redmadrobot.konfeature/FeatureConfig.name.<get-name>|<get-name>(){}[0]
+    open val values // com.redmadrobot.konfeature/FeatureConfig.values|{}values[0]
+        open fun <get-values>(): kotlin.collections/List<com.redmadrobot.konfeature/FeatureValueSpec<out kotlin/Any>> // com.redmadrobot.konfeature/FeatureConfig.values.<get-values>|<get-values>(){}[0]
+
+    final fun <#A1: kotlin/Any> value(kotlin/String, kotlin/String, #A1, com.redmadrobot.konfeature.source/SourceSelectionStrategy = ...): kotlin.properties/ReadOnlyProperty<com.redmadrobot.konfeature/FeatureConfig?, #A1> // com.redmadrobot.konfeature/FeatureConfig.value|value(kotlin.String;kotlin.String;0:0;com.redmadrobot.konfeature.source.SourceSelectionStrategy){0§<kotlin.Any>}[0]
+    final fun <#A1: kotlin/Boolean> value(kotlin/String, kotlin/String, #A1, com.redmadrobot.konfeature.source/SourceSelectionStrategy = ...): kotlin.properties/ReadOnlyProperty<com.redmadrobot.konfeature/FeatureConfig?, #A1> // com.redmadrobot.konfeature/FeatureConfig.value|value(kotlin.String;kotlin.String;0:0;com.redmadrobot.konfeature.source.SourceSelectionStrategy){0§<kotlin.Boolean>}[0]
+    final fun toggle(kotlin/String, kotlin/String, kotlin/Boolean, com.redmadrobot.konfeature.source/SourceSelectionStrategy = ...): kotlin.properties/ReadOnlyProperty<com.redmadrobot.konfeature/FeatureConfig?, kotlin/Boolean> // com.redmadrobot.konfeature/FeatureConfig.toggle|toggle(kotlin.String;kotlin.String;kotlin.Boolean;com.redmadrobot.konfeature.source.SourceSelectionStrategy){}[0]
+}
+
+final class <#A: kotlin/Any> com.redmadrobot.konfeature/FeatureValueSpec { // com.redmadrobot.konfeature/FeatureValueSpec|null[0]
+    constructor <init>(kotlin/String, kotlin/String, #A, com.redmadrobot.konfeature.source/SourceSelectionStrategy) // com.redmadrobot.konfeature/FeatureValueSpec.<init>|<init>(kotlin.String;kotlin.String;1:0;com.redmadrobot.konfeature.source.SourceSelectionStrategy){}[0]
+
+    final val defaultValue // com.redmadrobot.konfeature/FeatureValueSpec.defaultValue|{}defaultValue[0]
+        final fun <get-defaultValue>(): #A // com.redmadrobot.konfeature/FeatureValueSpec.defaultValue.<get-defaultValue>|<get-defaultValue>(){}[0]
+    final val description // com.redmadrobot.konfeature/FeatureValueSpec.description|{}description[0]
+        final fun <get-description>(): kotlin/String // com.redmadrobot.konfeature/FeatureValueSpec.description.<get-description>|<get-description>(){}[0]
+    final val key // com.redmadrobot.konfeature/FeatureValueSpec.key|{}key[0]
+        final fun <get-key>(): kotlin/String // com.redmadrobot.konfeature/FeatureValueSpec.key.<get-key>|<get-key>(){}[0]
+    final val sourceSelectionStrategy // com.redmadrobot.konfeature/FeatureValueSpec.sourceSelectionStrategy|{}sourceSelectionStrategy[0]
+        final fun <get-sourceSelectionStrategy>(): com.redmadrobot.konfeature.source/SourceSelectionStrategy // com.redmadrobot.konfeature/FeatureValueSpec.sourceSelectionStrategy.<get-sourceSelectionStrategy>|<get-sourceSelectionStrategy>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.redmadrobot.konfeature/FeatureValueSpec.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.redmadrobot.konfeature/FeatureValueSpec.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.redmadrobot.konfeature/FeatureValueSpec.toString|toString(){}[0]
+}
+
+final class <#A: kotlin/Any?> com.redmadrobot.konfeature/FeatureValue { // com.redmadrobot.konfeature/FeatureValue|null[0]
+    constructor <init>(com.redmadrobot.konfeature.source/FeatureValueSource, #A) // com.redmadrobot.konfeature/FeatureValue.<init>|<init>(com.redmadrobot.konfeature.source.FeatureValueSource;1:0){}[0]
+
+    final val source // com.redmadrobot.konfeature/FeatureValue.source|{}source[0]
+        final fun <get-source>(): com.redmadrobot.konfeature.source/FeatureValueSource // com.redmadrobot.konfeature/FeatureValue.source.<get-source>|<get-source>(){}[0]
+    final val value // com.redmadrobot.konfeature/FeatureValue.value|{}value[0]
+        final fun <get-value>(): #A // com.redmadrobot.konfeature/FeatureValue.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.redmadrobot.konfeature/FeatureValue.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.redmadrobot.konfeature/FeatureValue.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.redmadrobot.konfeature/FeatureValue.toString|toString(){}[0]
+}
+
+final class com.redmadrobot.konfeature.builder/KonfeatureBuilder { // com.redmadrobot.konfeature.builder/KonfeatureBuilder|null[0]
+    constructor <init>() // com.redmadrobot.konfeature.builder/KonfeatureBuilder.<init>|<init>(){}[0]
+
+    final fun addInterceptor(com.redmadrobot.konfeature.source/Interceptor): com.redmadrobot.konfeature.builder/KonfeatureBuilder // com.redmadrobot.konfeature.builder/KonfeatureBuilder.addInterceptor|addInterceptor(com.redmadrobot.konfeature.source.Interceptor){}[0]
+    final fun addSource(com.redmadrobot.konfeature.source/FeatureSource): com.redmadrobot.konfeature.builder/KonfeatureBuilder // com.redmadrobot.konfeature.builder/KonfeatureBuilder.addSource|addSource(com.redmadrobot.konfeature.source.FeatureSource){}[0]
+    final fun build(): com.redmadrobot.konfeature/Konfeature // com.redmadrobot.konfeature.builder/KonfeatureBuilder.build|build(){}[0]
+    final fun register(com.redmadrobot.konfeature/FeatureConfig): com.redmadrobot.konfeature.builder/KonfeatureBuilder // com.redmadrobot.konfeature.builder/KonfeatureBuilder.register|register(com.redmadrobot.konfeature.FeatureConfig){}[0]
+    final fun setLogger(com.redmadrobot.konfeature/Logger): com.redmadrobot.konfeature.builder/KonfeatureBuilder // com.redmadrobot.konfeature.builder/KonfeatureBuilder.setLogger|setLogger(com.redmadrobot.konfeature.Logger){}[0]
+}
+
+final class com.redmadrobot.konfeature.exception/ConfigNameAlreadyExistException : com.redmadrobot.konfeature.exception/KonfeatureException { // com.redmadrobot.konfeature.exception/ConfigNameAlreadyExistException|null[0]
+    constructor <init>(kotlin/String) // com.redmadrobot.konfeature.exception/ConfigNameAlreadyExistException.<init>|<init>(kotlin.String){}[0]
+}
+
+final class com.redmadrobot.konfeature.exception/KeyDuplicationException : com.redmadrobot.konfeature.exception/KonfeatureException { // com.redmadrobot.konfeature.exception/KeyDuplicationException|null[0]
+    constructor <init>(kotlin.collections/List<kotlin/String>, kotlin/String) // com.redmadrobot.konfeature.exception/KeyDuplicationException.<init>|<init>(kotlin.collections.List<kotlin.String>;kotlin.String){}[0]
+}
+
+final class com.redmadrobot.konfeature.exception/NoFeatureConfigException : com.redmadrobot.konfeature.exception/KonfeatureException { // com.redmadrobot.konfeature.exception/NoFeatureConfigException|null[0]
+    constructor <init>() // com.redmadrobot.konfeature.exception/NoFeatureConfigException.<init>|<init>(){}[0]
+}
+
+final class com.redmadrobot.konfeature.exception/SourceNameAlreadyExistException : com.redmadrobot.konfeature.exception/KonfeatureException { // com.redmadrobot.konfeature.exception/SourceNameAlreadyExistException|null[0]
+    constructor <init>(kotlin/String) // com.redmadrobot.konfeature.exception/SourceNameAlreadyExistException.<init>|<init>(kotlin.String){}[0]
+}
+
+sealed class com.redmadrobot.konfeature.exception/KonfeatureException : kotlin/Exception // com.redmadrobot.konfeature.exception/KonfeatureException|null[0]
+
+sealed class com.redmadrobot.konfeature.source/FeatureValueSource { // com.redmadrobot.konfeature.source/FeatureValueSource|null[0]
+    final class Interceptor : com.redmadrobot.konfeature.source/FeatureValueSource { // com.redmadrobot.konfeature.source/FeatureValueSource.Interceptor|null[0]
+        constructor <init>(kotlin/String) // com.redmadrobot.konfeature.source/FeatureValueSource.Interceptor.<init>|<init>(kotlin.String){}[0]
+
+        final val name // com.redmadrobot.konfeature.source/FeatureValueSource.Interceptor.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.redmadrobot.konfeature.source/FeatureValueSource.Interceptor.name.<get-name>|<get-name>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.redmadrobot.konfeature.source/FeatureValueSource.Interceptor.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.redmadrobot.konfeature.source/FeatureValueSource.Interceptor.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.redmadrobot.konfeature.source/FeatureValueSource.Interceptor.toString|toString(){}[0]
+    }
+
+    final class Source : com.redmadrobot.konfeature.source/FeatureValueSource { // com.redmadrobot.konfeature.source/FeatureValueSource.Source|null[0]
+        constructor <init>(kotlin/String) // com.redmadrobot.konfeature.source/FeatureValueSource.Source.<init>|<init>(kotlin.String){}[0]
+
+        final val name // com.redmadrobot.konfeature.source/FeatureValueSource.Source.name|{}name[0]
+            final fun <get-name>(): kotlin/String // com.redmadrobot.konfeature.source/FeatureValueSource.Source.name.<get-name>|<get-name>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.redmadrobot.konfeature.source/FeatureValueSource.Source.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.redmadrobot.konfeature.source/FeatureValueSource.Source.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.redmadrobot.konfeature.source/FeatureValueSource.Source.toString|toString(){}[0]
+    }
+
+    final object Default : com.redmadrobot.konfeature.source/FeatureValueSource { // com.redmadrobot.konfeature.source/FeatureValueSource.Default|null[0]
+        final fun toString(): kotlin/String // com.redmadrobot.konfeature.source/FeatureValueSource.Default.toString|toString(){}[0]
+    }
+}
+
+final fun com.redmadrobot.konfeature.builder/konfeature(kotlin/Function1<com.redmadrobot.konfeature.builder/KonfeatureBuilder, kotlin/Unit>): com.redmadrobot.konfeature/Konfeature // com.redmadrobot.konfeature.builder/konfeature|konfeature(kotlin.Function1<com.redmadrobot.konfeature.builder.KonfeatureBuilder,kotlin.Unit>){}[0]
