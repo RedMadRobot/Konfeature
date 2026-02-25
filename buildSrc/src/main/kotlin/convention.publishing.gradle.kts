@@ -9,8 +9,8 @@ mavenPublishing {
     signAllPublications()
 
     pom {
-        name.convention(project.name)
-        description.convention(project.description)
+        name.convention(project.provider { project.name })
+        description.convention(project.provider { project.description })
 
         licenses {
             mit()
