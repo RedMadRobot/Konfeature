@@ -16,6 +16,13 @@ pluginManagement {
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositories {
+        google {
+            content {
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+                includeGroupAndSubgroups("androidx")
+            }
+        }
         mavenCentral()
     }
 }
@@ -25,4 +32,5 @@ rootProject.name = "konfeature-root"
 include(
     ":sample",
     ":konfeature",
+    ":konfeature-ui",
 )

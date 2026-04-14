@@ -2,6 +2,10 @@
 # see https://github.com/RedMadRobot/gradle-version-catalogs.
 [versions]
 android-gradle-plugin = "9.0.0"
+android-compileSdk = "36"
+android-minSdk = "21"
+compose = "1.10.3"
+compose-material3 = "1.9.0"
 detekt = "1.23.8"
 gradle-android-cacheFix = "3.0.3"
 gradle-infrastructure = "0.20.1"
@@ -20,8 +24,13 @@ infrastructure-publish = { module = "com.redmadrobot.build:infrastructure-publis
 publish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "publish-plugin" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
 
 [plugins]
 infrastructure-detekt = { id = "com.redmadrobot.detekt", version.ref = "gradle-infrastructure" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
 poko = { id = "dev.drewhamilton.poko", version.ref = "poko" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
