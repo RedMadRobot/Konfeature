@@ -31,6 +31,12 @@ kotlin {
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.datastore.preferences.core)
             implementation(libs.serialization.json)
+            implementation(libs.compose.resources)
         }
     }
+}
+
+compose.resources {
+    publicResClass = false
+    packageOfResClass = "com.redmadrobot.konfeature.ui.resources"
 }

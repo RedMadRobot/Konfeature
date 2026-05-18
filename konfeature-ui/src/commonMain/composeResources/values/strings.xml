@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="konfeature_plugin_edit_dialog_title">Edit: %s</string>
+
+    <string name="konfeature_plugin_edit_dialog_hint_boolean">Boolean value:</string>
+    <string name="konfeature_plugin_edit_dialog_hint_long">Long value:</string>
+    <string name="konfeature_plugin_edit_dialog_hint_double">Double value:</string>
+    <string name="konfeature_plugin_edit_dialog_hint_string">String value:</string>
+
+    <string name="konfeature_plugin_item_key">key: %s</string>
+    <string name="konfeature_plugin_item_source">source: %s</string>
+    <string name="konfeature_plugin_item_value">value: %s</string>
+
+    <string name="konfeature_plugin_reset">Reset</string>
+    <string name="konfeature_plugin_save">Save</string>
+    <string name="konfeature_plugin_close">Close</string>
+
+    <string name="konfeature_plugin_refresh">Refresh</string>
+    <string name="konfeature_plugin_collapse_all">Collapse All</string>
+    <string name="konfeature_plugin_reset_all">Reset All</string>
+
+    <string name="konfeature_plugin_search_hint">Search by key…</string>
+    <string name="konfeature_plugin_search_clear">Clear search</string>
+    <string name="konfeature_plugin_search_empty">No toggles found</string>
+</resources>
