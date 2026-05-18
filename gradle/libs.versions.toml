@@ -5,7 +5,9 @@ android-gradle-plugin = "9.0.0"
 android-compileSdk = "36"
 android-minSdk = "21"
 compose = "1.10.3"
+datastore = "1.2.1"
 compose-material3 = "1.9.0"
+lifecycle = "2.9.6"
 detekt = "1.23.8"
 gradle-android-cacheFix = "3.0.3"
 gradle-infrastructure = "0.20.1"
@@ -14,6 +16,7 @@ versionsPlugin = "0.53.0"
 publish-plugin = "0.36.0"
 poko = "0.21.1"
 kotest = "6.1.3"
+serialization-json = "1.11.0"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
@@ -27,6 +30,9 @@ kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
+serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
 [plugins]
 infrastructure-detekt = { id = "com.redmadrobot.detekt", version.ref = "gradle-infrastructure" }

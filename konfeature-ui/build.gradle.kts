@@ -28,6 +28,9 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
+            implementation(libs.lifecycle.viewmodel.compose)
+            implementation(libs.datastore.preferences.core)
+            implementation(libs.serialization.json)
         }
     }
 }
