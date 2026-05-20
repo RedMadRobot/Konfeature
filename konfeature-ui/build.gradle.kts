@@ -1,8 +1,9 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.kotlin.multiplatform.library")
-    alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.composeMultiplatform)
+    convention.publishing
     convention.detekt
 }
 
@@ -16,6 +17,9 @@ kotlin {
         namespace = "com.redmadrobot.konfeature.ui"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources {
+            enable = true
+        }
     }
 
     iosX64()
@@ -37,6 +41,7 @@ kotlin {
 }
 
 compose.resources {
-    publicResClass = false
+    publicResClass = true
     packageOfResClass = "com.redmadrobot.konfeature.ui.resources"
+    generateResClass = auto
 }
