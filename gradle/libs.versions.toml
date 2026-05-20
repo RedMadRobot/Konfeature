@@ -39,5 +39,5 @@ serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-jso
 infrastructure-detekt = { id = "com.redmadrobot.detekt", version.ref = "gradle-infrastructure" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
 poko = { id = "dev.drewhamilton.poko", version.ref = "poko" }
-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
