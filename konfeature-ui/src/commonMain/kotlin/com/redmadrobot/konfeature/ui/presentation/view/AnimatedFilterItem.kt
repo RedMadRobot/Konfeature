@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation
+package com.redmadrobot.konfeature.ui.presentation.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

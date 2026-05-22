@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation
+package com.redmadrobot.konfeature.ui.presentation.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -17,7 +17,7 @@ import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
 import com.redmadrobot.konfeature.ui.presentation.theme.SurfaceColors
 
 @Composable
-public fun PanelDialog(
+internal fun KonfeatureDialog(
     title: String,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,

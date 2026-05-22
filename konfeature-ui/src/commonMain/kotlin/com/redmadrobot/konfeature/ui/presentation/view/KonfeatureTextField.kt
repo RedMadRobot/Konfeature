@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation
+package com.redmadrobot.konfeature.ui.presentation.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,7 +32,7 @@ private val defaultColors: TextFieldColors
     )
 
 @Composable
-public fun PanelStyledTextField(
+internal fun KonfeatureTextField(
     value: String,
     label: String,
     onValueChange: (String) -> Unit,
