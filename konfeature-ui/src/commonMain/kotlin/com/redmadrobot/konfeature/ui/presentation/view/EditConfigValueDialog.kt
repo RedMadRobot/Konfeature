@@ -1,61 +1,84 @@
-package com.redmadrobot.konfeature.ui.presentation
+package com.redmadrobot.konfeature.ui.presentation.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.redmadrobot.konfeature.ui.presentation.data.EditDialogState
+import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureValue
 import com.redmadrobot.konfeature.ui.presentation.theme.ContentColors
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
-import com.redmadrobot.konfeature.ui.resources.*
+import com.redmadrobot.konfeature.ui.resources.Res
+import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_close
+import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_edit_dialog_hint_boolean
+import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_edit_dialog_hint_double
+import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_edit_dialog_hint_long
+import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_edit_dialog_hint_string
+import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_reset
+import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_save
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun EditConfigValueDialog(
     state: EditDialogState,
-    onValueChange: (key: String, value: Any) -> Unit,
+    onValueChange: (key: String, value: KonfeatureValue) -> Unit,
     onValueReset: (key: String) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val initialValue = state.value
-    var value by remember { mutableStateOf(state.value) }
+    var value by remember { mutableStateOf(initialValue) }
     var isInputEmpty by remember { mutableStateOf(false) }
     val saveEnabled by remember {
         derivedStateOf { !isInputEmpty && initialValue != value }
     }
 
-    PanelDialog(title = state.key, onDismiss = onDismissRequest, modifier = modifier) {
+    KonfeatureDialog(
+        title = state.key,
+        onDismiss = onDismissRequest,
+        modifier = modifier
+    ) {
         when (initialValue) {
-            is Boolean -> BooleanEditInput(
-                value = initialValue,
-                onValueChange = { value = it },
+            is KonfeatureValue.Bool -> BooleanEditInput(
+                value = initialValue.value,
+                onValueChange = { value = KonfeatureValue.Bool(it) },
             )
 
-            is Long -> LongEditInput(
-                value = initialValue,
-                onValueChange = { value = it },
+            is KonfeatureValue.Int64 -> LongEditInput(
+                value = initialValue.value,
+                onValueChange = { value = KonfeatureValue.Int64(it) },
                 onEmptyInput = { isInputEmpty = it },
             )
 
-            is Double -> DoubleEditInput(
-                value = initialValue,
-                onValueChange = { value = it },
+            is KonfeatureValue.Float64 -> DoubleEditInput(
+                value = initialValue.value,
+                onValueChange = { value = KonfeatureValue.Float64(it) },
                 onEmptyInput = { isInputEmpty = it },
             )
 
-            is String -> StringEditInput(
-                value = initialValue,
-                onValueChange = { value = it },
+            is KonfeatureValue.Text -> StringEditInput(
+                value = initialValue.value,
+                onValueChange = { value = KonfeatureValue.Text(it) },
             )
+
+            is KonfeatureValue.Unsupported -> Unit
         }
         Spacer(modifier = Modifier.height(20.dp))
         EditConfigValueButtons(
@@ -74,8 +97,8 @@ internal fun EditConfigValueDialog(
 private fun EditConfigValueButtons(
     state: EditDialogState,
     saveEnabled: Boolean,
-    value: Any,
-    onValueChange: (key: String, value: Any) -> Unit,
+    value: KonfeatureValue,
+    onValueChange: (key: String, value: KonfeatureValue) -> Unit,
     onValueReset: (key: String) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
@@ -90,16 +113,16 @@ private fun EditConfigValueButtons(
         if (state.isDebugSource) {
             DebugSourceButton(
                 onClick = {
-                    onValueReset.invoke(state.key)
-                    onDismissRequest.invoke()
+                    onValueReset(state.key)
+                    onDismissRequest()
                 }
             )
         }
         SaveButton(
             saveEnabled = saveEnabled,
             onClick = {
-                onValueChange.invoke(state.key, value)
-                onDismissRequest.invoke()
+                onValueChange(state.key, value)
+                onDismissRequest()
             }
         )
     }
@@ -161,7 +184,7 @@ private fun CloseButton(onDismissRequest: () -> Unit, modifier: Modifier = Modif
 @Composable
 private fun BooleanEditInput(
     value: Boolean,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var checked by remember { mutableStateOf(value) }
@@ -176,7 +199,7 @@ private fun BooleanEditInput(
             color = ContentColors.primary,
             modifier = Modifier.weight(weight = 1f),
         )
-        PanelToggle(
+        KonfeatureToggle(
             checked = checked,
             onCheckedChange = { newChecked ->
                 checked = newChecked
@@ -189,13 +212,13 @@ private fun BooleanEditInput(
 @Composable
 private fun LongEditInput(
     value: Long,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (Long) -> Unit,
     onEmptyInput: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var text by remember { mutableStateOf(value.toString()) }
 
-    PanelStyledTextField(
+    KonfeatureTextField(
         value = text,
         onValueChange = { newText ->
             val newValue = newText.toLongOrNull()
@@ -214,13 +237,13 @@ private fun LongEditInput(
 @Composable
 private fun DoubleEditInput(
     value: Double,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (Double) -> Unit,
     onEmptyInput: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var text: String by remember { mutableStateOf(value.toString()) }
 
-    PanelStyledTextField(
+    KonfeatureTextField(
         value = text,
         onValueChange = { newText ->
             val newValue = newText.toDoubleOrNull()
@@ -239,12 +262,12 @@ private fun DoubleEditInput(
 @Composable
 private fun StringEditInput(
     value: String,
-    onValueChange: (Any) -> Unit,
+    onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var text by remember { mutableStateOf(value) }
 
-    PanelStyledTextField(
+    KonfeatureTextField(
         value = text,
         onValueChange = { newText ->
             text = newText

@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation
+package com.redmadrobot.konfeature.ui.presentation.view
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Suppress("LongMethod")
 @Composable
-public fun PanelSearchBar(
+internal fun KonfeatureSearchBar(
     query: String,
     placeholder: String,
     onQueryChange: (String) -> Unit,
@@ -37,7 +37,7 @@ public fun PanelSearchBar(
 ) {
     val minHeight by animateDpAsState(
         targetValue = if (query.isNotEmpty()) 48.dp else 40.dp,
-        label = "",
+        label = "searchBarHeight",
     )
 
     Row(
@@ -95,4 +95,3 @@ public fun PanelSearchBar(
         }
     }
 }
-

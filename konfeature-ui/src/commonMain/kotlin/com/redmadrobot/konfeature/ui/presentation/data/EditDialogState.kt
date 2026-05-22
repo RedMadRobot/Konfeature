@@ -1,7 +1,7 @@
 package com.redmadrobot.konfeature.ui.presentation.data
 
-internal class EditDialogState(
+internal data class EditDialogState(
     val key: String,
-    val value: Any,
-    val isDebugSource: Boolean
+    val value: KonfeatureValue,
+    val isDebugSource: Boolean,
 )

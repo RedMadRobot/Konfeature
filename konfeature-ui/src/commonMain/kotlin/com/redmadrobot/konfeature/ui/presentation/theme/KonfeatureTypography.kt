@@ -11,7 +11,7 @@ public val MonoFontFamily: FontFamily = FontFamily.Monospace
 
 @Stable
 internal data object KonfeatureTypography {
-    /** TopAppBar title. */
+    /** Dialog titles. */
     val titleLarge: TextStyle = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,

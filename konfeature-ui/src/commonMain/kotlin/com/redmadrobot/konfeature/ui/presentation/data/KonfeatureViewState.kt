@@ -1,6 +1,6 @@
 package com.redmadrobot.konfeature.ui.presentation.data
 
-private const val ITEM_VALUE_PREFIX_KEY = "value_"
+import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureItem.Companion.ITEM_KEY_PREFIX_VALUE
 
 internal data class KonfeatureViewState(
     val searchQuery: String = "",
@@ -14,5 +14,5 @@ internal data class KonfeatureViewState(
     val isSearchActive: Boolean
         get() = searchQuery.isNotBlank()
     val shouldShowEmptySearchItemsHint
-        get() = isSearchActive && matchingKeys.none { it.startsWith(ITEM_VALUE_PREFIX_KEY) }
+        get() = isSearchActive && matchingKeys.none { it.startsWith(ITEM_KEY_PREFIX_VALUE) }
 }
