@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,10 +26,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.redmadrobot.konfeature.ui.KonfeatureScreenData
-import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureItem
-import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureValue
-import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureViewState
+import com.redmadrobot.konfeature.Konfeature
+import com.redmadrobot.konfeature.ui.KonfeatureDebugInterceptor
+import com.redmadrobot.konfeature.ui.KonfeatureDebugStore
+import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
+import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
+import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
+import com.redmadrobot.konfeature.ui.presentation.state.KonfeatureDebugViewState
 import com.redmadrobot.konfeature.ui.presentation.theme.BackgroundColors
 import com.redmadrobot.konfeature.ui.presentation.theme.ContentColors
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
@@ -39,11 +41,9 @@ import com.redmadrobot.konfeature.ui.presentation.theme.SourceColors
 import com.redmadrobot.konfeature.ui.presentation.theme.StrokeColors
 import com.redmadrobot.konfeature.ui.presentation.theme.SurfaceColors
 import com.redmadrobot.konfeature.ui.presentation.view.AnimatedFilterItem
-import com.redmadrobot.konfeature.ui.presentation.view.EditConfigValueDialog
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureSearchBar
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureToggle
 import com.redmadrobot.konfeature.ui.resources.Res
-import com.redmadrobot.konfeature.ui.resources.icon_edit
 import com.redmadrobot.konfeature.ui.resources.icon_keyboard_arrow_down
 import com.redmadrobot.konfeature.ui.resources.icon_keyboard_arrow_up
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_collapse_all
@@ -55,52 +55,48 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Compose Multiplatform screen that displays all registered feature configs
- * and allows overriding their values at runtime via [com.redmadrobot.konfeature.ui.KonfeatureInterceptor].
+ * Compose Multiplatform screen that displays all registered feature configs and allows overriding
+ * their values at runtime via [KonfeatureDebugInterceptor].
  *
- * @param panel dependency holder constructed via [com.redmadrobot.konfeature.ui.KonfeatureScreenData]
+ * Boolean values are toggled directly in the list. For non-boolean values the screen does not edit
+ * anything in place — instead it invokes [onValueClick] with the value's key, leaving the integrator
+ * to decide what to do (open a custom editor, copy to clipboard, etc.). The value and its source can
+ * be read back via [Konfeature.getValue] by key.
+ *
+ * @param konfeature the built [Konfeature] whose configs are displayed.
+ * @param store the [KonfeatureDebugStore] backing the overrides.
+ * @param onValueClick invoked when a non-boolean value row is tapped. Not called for booleans.
+ * @param interceptorName name of the debug interceptor, used to mark debug-sourced values.
  */
 @Composable
-public fun KonfeatureScreen(
-    panel: KonfeatureScreenData,
+public fun KonfeatureDebugScreen(
+    konfeature: Konfeature,
+    store: KonfeatureDebugStore,
+    onValueClick: (key: String) -> Unit = {},
+    interceptorName: String = KonfeatureDebugInterceptor.NAME,
     modifier: Modifier = Modifier,
 ) {
-    val viewModel = viewModel { KonfeatureViewModel(panel) }
+    val viewModel = viewModel {
+        KonfeatureDebugViewModel(
+            konfeature = konfeature,
+            store = store,
+            interceptorName = interceptorName,
+            onValueClick = onValueClick,
+        )
+    }
     val state by viewModel.state.collectAsState()
 
     KonfeatureLayout(
         modifier = modifier,
         state = state,
-        onRefreshClick = viewModel::onRefreshClick,
-        onResetAllClick = viewModel::onResetAllClick,
-        onCollapseAllClick = viewModel::onCollapseAllClick,
-        onHeaderClick = viewModel::onConfigHeaderClick,
-        onEditClick = viewModel::onEditClick,
-        onSearchQueryChange = viewModel::onSearchQueryChanged,
-        onBooleanToggle = { key, checked -> viewModel.onValueChanged(key, KonfeatureValue.Bool(checked)) },
+        onAction = viewModel::onAction,
     )
-
-    state.editDialogState?.let { dialogState ->
-        EditConfigValueDialog(
-            state = dialogState,
-            onValueChange = viewModel::onValueChanged,
-            onValueReset = viewModel::onValueReset,
-            onDismissRequest = viewModel::onEditDialogCloseClicked,
-        )
-    }
 }
 
 @Composable
-@Suppress("LongParameterList")
 private fun KonfeatureLayout(
-    state: KonfeatureViewState,
-    onEditClick: (key: String, value: KonfeatureValue, isDebugSource: Boolean) -> Unit,
-    onRefreshClick: () -> Unit,
-    onCollapseAllClick: () -> Unit,
-    onResetAllClick: () -> Unit,
-    onHeaderClick: (String) -> Unit,
-    onSearchQueryChange: (String) -> Unit,
-    onBooleanToggle: (String, Boolean) -> Unit,
+    state: KonfeatureDebugViewState,
+    onAction: (KonfeatureAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -108,14 +104,10 @@ private fun KonfeatureLayout(
             .fillMaxSize()
             .background(color = BackgroundColors.primary)
     ) {
-        ToolbarChips(
-            onRefreshClick = onRefreshClick,
-            onCollapseAllClick = onCollapseAllClick,
-            onResetAllClick = onResetAllClick,
-        )
+        ToolbarChips(onAction = onAction)
         KonfeatureSearchBar(
             query = state.searchQuery,
-            onQueryChange = onSearchQueryChange,
+            onQueryChange = { onAction(KonfeatureAction.SearchQueryChange(it)) },
             placeholder = stringResource(Res.string.konfeature_plugin_search_hint),
             modifier = Modifier.padding(horizontal = 12.dp),
         )
@@ -130,19 +122,15 @@ private fun KonfeatureLayout(
         LazyColumn(modifier = Modifier.weight(weight = 1f)) {
             konfeatureItems(
                 state = state,
-                onHeaderClick = onHeaderClick,
-                onEditClick = onEditClick,
-                onBooleanToggle = onBooleanToggle
+                onAction = onAction,
             )
         }
     }
 }
 
 private fun LazyListScope.konfeatureItems(
-    state: KonfeatureViewState,
-    onHeaderClick: (String) -> Unit,
-    onEditClick: (key: String, value: KonfeatureValue, isDebugSource: Boolean) -> Unit,
-    onBooleanToggle: (String, Boolean) -> Unit,
+    state: KonfeatureDebugViewState,
+    onAction: (KonfeatureAction) -> Unit,
 ) {
     items(
         items = state.items,
@@ -164,7 +152,7 @@ private fun LazyListScope.konfeatureItems(
                         name = item.description.takeIf { it.isNotEmpty() } ?: item.name,
                         overrideCount = item.overrideCount,
                         isCollapsed = isCollapsed,
-                        onClick = { onHeaderClick(item.name) },
+                        onClick = { onAction(KonfeatureAction.ConfigHeaderClick(item.name)) },
                     )
                 }
             }
@@ -174,8 +162,7 @@ private fun LazyListScope.konfeatureItems(
                 AnimatedFilterItem(visible = isVisible) {
                     ConfigValueItem(
                         item = item,
-                        onEditClick = onEditClick,
-                        onBooleanToggle = onBooleanToggle,
+                        onAction = onAction,
                     )
                 }
             }
@@ -185,9 +172,7 @@ private fun LazyListScope.konfeatureItems(
 
 @Composable
 private fun ToolbarChips(
-    onRefreshClick: () -> Unit,
-    onCollapseAllClick: () -> Unit,
-    onResetAllClick: () -> Unit,
+    onAction: (KonfeatureAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -198,15 +183,15 @@ private fun ToolbarChips(
     ) {
         ActionChip(
             label = stringResource(Res.string.konfeature_plugin_refresh),
-            onClick = onRefreshClick,
+            onClick = { onAction(KonfeatureAction.RefreshClick) },
         )
         ActionChip(
             label = stringResource(Res.string.konfeature_plugin_collapse_all),
-            onClick = onCollapseAllClick,
+            onClick = { onAction(KonfeatureAction.CollapseAllClick) },
         )
         ActionChip(
             label = stringResource(Res.string.konfeature_plugin_reset_all),
-            onClick = onResetAllClick,
+            onClick = { onAction(KonfeatureAction.ResetAllClick) },
         )
     }
 }
@@ -287,13 +272,20 @@ private fun ConfigGroupHeader(
 @Composable
 private fun ConfigValueItem(
     item: KonfeatureItem.Value,
-    onEditClick: (key: String, value: KonfeatureValue, isDebugSource: Boolean) -> Unit,
-    onBooleanToggle: (String, Boolean) -> Unit,
+    onAction: (KonfeatureAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isBool = item.value is KonfeatureValue.Bool
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .then(
+                if (isBool) {
+                    Modifier
+                } else {
+                    Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.key)) }
+                }
+            )
             .padding(start = 32.dp, end = 8.dp)
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -304,19 +296,11 @@ private fun ConfigValueItem(
             modifier = Modifier.weight(weight = 1f),
         )
 
-        when (val value = item.value) {
-            is KonfeatureValue.Bool -> KonfeatureToggle(
-                checked = value.value,
-                onCheckedChange = { newValue -> onBooleanToggle(item.key, newValue) },
+        if (item.value is KonfeatureValue.Bool) {
+            KonfeatureToggle(
+                checked = item.value.value,
+                onCheckedChange = { newValue -> onAction(KonfeatureAction.ToggleChange(item.key, newValue)) },
             )
-
-            is KonfeatureValue.Int64,
-            is KonfeatureValue.Float64,
-            is KonfeatureValue.Text -> EditButton(
-                onClick = { onEditClick(item.key, value, item.isDebugSource) },
-            )
-
-            is KonfeatureValue.Unsupported -> Unit
         }
     }
 }
@@ -377,24 +361,6 @@ private fun ValueSourceLabel(
             source = item.sourceName,
             isDebug = item.isDebugSource,
             modifier = modifier,
-        )
-    }
-}
-
-@Composable
-private fun EditButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.size(size = 32.dp),
-    ) {
-        Icon(
-            painter = painterResource(Res.drawable.icon_edit),
-            contentDescription = null,
-            tint = ContentColors.accent,
-            modifier = Modifier.size(size = 20.dp),
         )
     }
 }
