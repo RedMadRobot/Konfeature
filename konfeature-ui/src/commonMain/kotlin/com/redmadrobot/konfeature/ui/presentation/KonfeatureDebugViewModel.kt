@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.redmadrobot.konfeature.FeatureValueSpec
 import com.redmadrobot.konfeature.Konfeature
 import com.redmadrobot.konfeature.source.FeatureValueSource
-import com.redmadrobot.konfeature.ui.KonfeatureScreenData
-import com.redmadrobot.konfeature.ui.presentation.data.EditDialogState
-import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureItem
-import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureValue
-import com.redmadrobot.konfeature.ui.presentation.data.KonfeatureViewState
+import com.redmadrobot.konfeature.ui.KonfeatureDebugStore
+import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
+import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
+import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
+import com.redmadrobot.konfeature.ui.presentation.state.KonfeatureDebugViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,36 +26,41 @@ import kotlinx.coroutines.withContext
 
 private const val SEARCH_QUERY_DELAY_MILLIS = 500L
 
-internal class KonfeatureViewModel(
-    private val panel: KonfeatureScreenData,
+internal class KonfeatureDebugViewModel(
+    private val konfeature: Konfeature,
+    private val store: KonfeatureDebugStore,
+    private val interceptorName: String,
+    private val onValueClick: (key: String) -> Unit,
 ) : ViewModel() {
 
-    private val configs: Map<String, KonfeatureItem.Config> = buildConfigs(panel.konfeature)
+    private val configs: Map<String, KonfeatureItem.Config> = buildConfigs(konfeature)
 
     private val _state = MutableStateFlow(buildInitialState())
-    val state: StateFlow<KonfeatureViewState> = _state.asStateFlow()
+    val state: StateFlow<KonfeatureDebugViewState> = _state.asStateFlow()
 
     init {
-        panel.interceptor.valuesFlow
+        store.values
             .onEach { refreshValues() }
             .launchIn(viewModelScope)
 
         observeSearchQuery()
     }
 
-    fun onValueChanged(key: String, value: KonfeatureValue) {
-        viewModelScope.launch {
-            panel.interceptor.setValue(key, value.unwrap())
+    fun onAction(action: KonfeatureAction) {
+        when (action) {
+            KonfeatureAction.RefreshClick -> refreshValues()
+            KonfeatureAction.CollapseAllClick -> collapseAll()
+            KonfeatureAction.ResetAllClick -> viewModelScope.launch { store.resetAll() }
+            is KonfeatureAction.ConfigHeaderClick -> toggleConfigCollapse(action.configName)
+            is KonfeatureAction.SearchQueryChange -> setSearchQuery(action.query)
+            is KonfeatureAction.ToggleChange -> viewModelScope.launch {
+                store.setValue(action.key, action.checked)
+            }
+            is KonfeatureAction.ValueClick -> onValueClick(action.key)
         }
     }
 
-    fun onValueReset(key: String) {
-        viewModelScope.launch {
-            panel.interceptor.resetValue(key)
-        }
-    }
-
-    fun onConfigHeaderClick(configName: String) {
+    private fun toggleConfigCollapse(configName: String) {
         _state.update { state ->
             val collapsed = state.collapsedConfigs
             val newCollapsed = if (configName in collapsed) collapsed - configName else collapsed + configName
@@ -63,34 +68,16 @@ internal class KonfeatureViewModel(
         }
     }
 
-    fun onRefreshClick() {
-        refreshValues()
-    }
-
-    fun onResetAllClick() {
-        viewModelScope.launch {
-            panel.interceptor.resetAllValues()
-        }
-    }
-
-    fun onCollapseAllClick() {
+    private fun collapseAll() {
         _state.update { state -> state.copy(collapsedConfigs = configs.keys) }
     }
 
-    fun onEditClick(key: String, value: KonfeatureValue, isDebugSource: Boolean) {
-        _state.update { it.copy(editDialogState = EditDialogState(key, value, isDebugSource)) }
-    }
-
-    fun onEditDialogCloseClicked() {
-        _state.update { it.copy(editDialogState = null) }
-    }
-
-    fun onSearchQueryChanged(query: String) {
+    private fun setSearchQuery(query: String) {
         _state.update { it.copy(searchQuery = query) }
     }
 
     private fun refreshValues() {
-        val values = buildValues(panel.konfeature)
+        val values = buildValues(konfeature)
         _state.update { state ->
             state.copy(
                 values = values,
@@ -112,9 +99,9 @@ internal class KonfeatureViewModel(
             .launchIn(viewModelScope)
     }
 
-    private fun buildInitialState(): KonfeatureViewState {
-        val values = buildValues(panel.konfeature)
-        return KonfeatureViewState(
+    private fun buildInitialState(): KonfeatureDebugViewState {
+        val values = buildValues(konfeature)
+        return KonfeatureDebugViewState(
             configs = configs,
             values = values,
             items = buildItems(values),
@@ -170,7 +157,7 @@ internal class KonfeatureViewModel(
     }
 
     private fun isDebugSource(source: FeatureValueSource): Boolean {
-        return (source as? FeatureValueSource.Interceptor)?.name == panel.interceptor.name
+        return (source as? FeatureValueSource.Interceptor)?.name == interceptorName
     }
 
     private fun getSourceName(source: FeatureValueSource): String {

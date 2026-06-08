@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation.data
+package com.redmadrobot.konfeature.ui.presentation.model
 
 internal sealed interface KonfeatureItem {
     val itemKey: String
