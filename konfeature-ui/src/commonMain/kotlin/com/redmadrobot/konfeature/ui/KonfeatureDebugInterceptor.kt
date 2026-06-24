@@ -6,21 +6,17 @@ import com.redmadrobot.konfeature.source.Interceptor
 /**
  * An [Interceptor] implementation that overrides feature values at runtime via a debug panel.
  *
- * It is a thin wrapper over a [KonfeatureDebugStore], which owns the overrides and their
- * persistence; this class only answers "which value should be substituted?" on each `getValue`.
- *
  * ```kotlin
- * val store = KonfeatureDebugStore(producePath = { /* ... */ })
+ * val store = KonfeatureDebugStore.create(path = "...")
  * val interceptor = KonfeatureDebugInterceptor(store)
  *
  * val konfeature = konfeature {
  *     addInterceptor(interceptor)
- *     register(myConfig)
  * }
  * ```
  *
- * Until [KonfeatureDebugStore.load] completes the store reports no overrides, so [intercept]
- * returns `null` and Konfeature yields the source/default value.
+ * Until the store is loaded (see [KonfeatureDebugStore.create]) it
+ * reports no overrides, so [intercept] returns `null` and Konfeature yields the source/default value.
  *
  * @param store holds and persists the overrides this interceptor applies.
  */

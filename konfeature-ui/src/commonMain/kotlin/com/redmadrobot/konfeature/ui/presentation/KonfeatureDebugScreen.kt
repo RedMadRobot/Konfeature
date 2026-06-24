@@ -66,21 +66,18 @@ import org.jetbrains.compose.resources.stringResource
  * @param konfeature the built [Konfeature] whose configs are displayed.
  * @param store the [KonfeatureDebugStore] backing the overrides.
  * @param onValueClick invoked when a non-boolean value row is tapped. Not called for booleans.
- * @param interceptorName name of the debug interceptor, used to mark debug-sourced values.
  */
 @Composable
 public fun KonfeatureDebugScreen(
     konfeature: Konfeature,
     store: KonfeatureDebugStore,
     onValueClick: (key: String) -> Unit = {},
-    interceptorName: String = KonfeatureDebugInterceptor.NAME,
     modifier: Modifier = Modifier,
 ) {
     val viewModel = viewModel {
         KonfeatureDebugViewModel(
             konfeature = konfeature,
             store = store,
-            interceptorName = interceptorName,
             onValueClick = onValueClick,
         )
     }

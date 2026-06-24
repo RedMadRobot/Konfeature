@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.redmadrobot.konfeature.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,39 +25,40 @@ import okio.Path.Companion.toPath
 /**
  * Stores and persists feature value overrides applied by a debug panel.
  *
- * The store owns no coroutine scope and is **not** [AutoCloseable]: every background action runs
- * under a `suspend` call driven by the integrator. Read the initial overrides from disk once on
- * startup via [load]; perform mutations via the `suspend` [setValue] / [resetValue] / [resetAll],
- * each of which returns only after the write to DataStore completes.
- *
- * The current overrides are exposed both as a [values] flow (observed by the debug screen) and via
- * the synchronous, non-blocking [currentValue], which [KonfeatureDebugInterceptor.intercept] calls
- * on every `getValue`.
+ * Prefer the [create] factory, which constructs the store **and** completes the initial [load] in
+ * one `suspend` call, so the returned store already reflects any persisted overrides — callers
+ * cannot forget to load it:
  *
  * ```kotlin
- * val store = KonfeatureDebugStore(
- *     producePath = { context.filesDir.resolve("konfeature_debug.preferences_pb").absolutePath }
+ * // Once on startup, from a suitable coroutine scope (DI init, application scope, etc.):
+ * val store = KonfeatureDebugStore.create(
+ *     path = context.filesDir.resolve("konfeature_debug.preferences_pb").absolutePath,
+ *     logger = konfeatureLogger, // optional
  * )
  * val interceptor = KonfeatureDebugInterceptor(store)
  *
  * val konfeature = konfeature {
  *     addInterceptor(interceptor)
- *     register(myConfig)
  * }
- *
- * // Once on startup, from any suitable scope:
- * applicationScope.launch { store.load() }
  * ```
  *
- * @param producePath provides an absolute file path for the DataStore storage file.
- *   Platform-specific: on Android use `context.filesDir`, on iOS use `NSDocumentDirectory`.
+ * **Hold a single instance.** Creation is a one-time startup operation; provide the store as a
+ * singleton (DI graph or a shared `object`) and reuse it for the interceptor and the debug screen.
+ *
+ * The current overrides are exposed both as a [values] flow (observed by the debug screen) and via
+ * the synchronous, non-blocking [currentValue].
+ *
+ * @param path absolute file path for the DataStore storage file. Platform-specific: on Android use
+ *   `context.filesDir`, on iOS use `NSDocumentDirectory`.
+ * @param logger optional logger.
  */
 public class KonfeatureDebugStore(
-    producePath: () -> String,
+    path: String,
+    private val logger: Logger? = null,
 ) {
 
     private val dataStore: DataStore<Preferences> = PreferenceDataStoreFactory.createWithPath(
-        produceFile = { producePath().toPath() },
+        produceFile = { path.toPath() },
     )
 
     private val _values = MutableStateFlow<Map<String, Any>>(emptyMap())
@@ -66,8 +68,6 @@ public class KonfeatureDebugStore(
 
     /**
      * Loads overrides from DataStore. Idempotent: a repeated call re-reads the disk.
-     * Should be called at least once on startup; before the first call [currentValue] returns
-     * `null` and the interceptor reports default/source values.
      */
     @Suppress("TooGenericExceptionCaught")
     public suspend fun load() {
@@ -77,30 +77,34 @@ public class KonfeatureDebugStore(
             if (json != null) {
                 _values.value = deserializeMap(json)
             }
-        } catch (_: Exception) {
-            // If loading fails, start with an empty map — acceptable for a debug tool.
+        } catch (e: Exception) {
+            // A debug tool can run without persisted overrides; surface the failure but don't crash.
+            logger?.warn("Failed to load debug overrides, starting empty: ${e.message}")
         }
     }
 
-    /** Sets an override for [key]. Returns after the write to DataStore succeeds. */
+    /** Sets an override for [key]. */
     public suspend fun setValue(key: String, value: Any) {
         _values.update { it + (key to value) }
         persist()
+        logger?.info("Set debug override '$key' = '$value'")
     }
 
     /** Removes the override for a single [key]. */
     public suspend fun resetValue(key: String) {
         _values.update { it - key }
         persist()
+        logger?.info("Reset debug override '$key'")
     }
 
     /** Removes all overrides. */
     public suspend fun resetAll() {
         _values.update { emptyMap() }
         persist()
+        logger?.info("Reset all debug overrides")
     }
 
-    /** Synchronous read of the current override (used from [KonfeatureDebugInterceptor.intercept]). */
+    /** Synchronous read of the current override. */
     public fun currentValue(key: String): Any? = _values.value[key]
 
     private suspend fun persist() {
@@ -109,12 +113,13 @@ public class KonfeatureDebugStore(
             if (map.isEmpty()) {
                 prefs.remove(VALUES_KEY)
             } else {
-                prefs[VALUES_KEY] = serializeMap(map)
+                prefs[VALUES_KEY] = serializeMap(map, logger)
             }
         }
     }
 
-    private companion object {
+    public companion object {
+
         private val VALUES_KEY = stringPreferencesKey("debug_values")
 
         private val json = Json {
@@ -122,7 +127,17 @@ public class KonfeatureDebugStore(
             isLenient = false
         }
 
-        private fun serializeMap(map: Map<String, Any>): String {
+        /**
+         * Creates a store for [path] and completes the initial [load] before returning.
+         *
+         * Call once on startup from any suitable coroutine scope; the returned store already
+         * reflects persisted overrides.
+         */
+        public suspend fun create(path: String, logger: Logger? = null): KonfeatureDebugStore {
+            return KonfeatureDebugStore(path, logger).apply { load() }
+        }
+
+        private fun serializeMap(map: Map<String, Any>, logger: Logger?): String {
             return buildJsonObject {
                 map.forEach { (key, value) ->
                     when (value) {
@@ -132,7 +147,9 @@ public class KonfeatureDebugStore(
                         is Float -> put(key, value.toDouble())
                         is Double -> put(key, value)
                         is String -> put(key, value)
-                        else -> { /* unsupported type, skip */ }
+                        else -> logger?.warn(
+                            "Skipping override '$key': unsupported type '${value::class.simpleName}'",
+                        )
                     }
                 }
             }.toString()
