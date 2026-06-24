@@ -29,7 +29,6 @@ private const val SEARCH_QUERY_DELAY_MILLIS = 500L
 internal class KonfeatureDebugViewModel(
     private val konfeature: Konfeature,
     private val store: KonfeatureDebugStore,
-    private val interceptorName: String,
     private val onValueClick: (key: String) -> Unit,
 ) : ViewModel() {
 
@@ -151,13 +150,13 @@ internal class KonfeatureDebugViewModel(
             configName = configName,
             sourceName = getSourceName(source),
             description = valueSpec.description,
-            isDebugSource = isDebugSource(source),
+            isDebugSource = isDebugSource(source, valueSpec.key),
             isDefaultSource = source is FeatureValueSource.Default,
         )
     }
 
-    private fun isDebugSource(source: FeatureValueSource): Boolean {
-        return (source as? FeatureValueSource.Interceptor)?.name == interceptorName
+    private fun isDebugSource(source: FeatureValueSource, key: String): Boolean {
+        return source is FeatureValueSource.Interceptor && store.currentValue(key) != null
     }
 
     private fun getSourceName(source: FeatureValueSource): String {

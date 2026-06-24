@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="konfeature_plugin_item_key">key: %s</string>
-    <string name="konfeature_plugin_item_source">source: %s</string>
-    <string name="konfeature_plugin_item_value">value: %s</string>
-
     <string name="konfeature_plugin_refresh">Refresh</string>
     <string name="konfeature_plugin_collapse_all">Collapse All</string>
     <string name="konfeature_plugin_reset_all">Reset All</string>
 
     <string name="konfeature_plugin_search_hint">Search by key…</string>
-    <string name="konfeature_plugin_search_clear">Clear search</string>
     <string name="konfeature_plugin_search_empty">No toggles found</string>
 </resources>

@@ -33,4 +33,5 @@ include(
     ":sample",
     ":konfeature",
     ":konfeature-ui",
+    ":konfeature-ui-noop",
 )

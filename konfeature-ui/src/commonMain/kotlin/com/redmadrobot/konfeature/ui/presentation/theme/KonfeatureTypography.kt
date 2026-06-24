@@ -6,9 +6,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-/** Monospace font family for technical values (URLs, config keys, code). */
-public val MonoFontFamily: FontFamily = FontFamily.Monospace
-
 @Stable
 internal data object KonfeatureTypography {
     /** Dialog titles. */
