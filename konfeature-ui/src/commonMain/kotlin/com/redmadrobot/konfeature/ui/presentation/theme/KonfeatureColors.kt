@@ -13,7 +13,7 @@ import dev.drewhamilton.poko.Poko
  * These are the only theming tokens the panel reads at runtime, resolved through [KonfeatureTheme].
  * Integrators customize the panel by passing a modified instance to `KonfeatureTheme(colors = ...)`,
  * typically starting from [lightKonfeatureColors] / [darkKonfeatureColors] and overriding individual
- * slots via `copy`.
+ * slots via their named arguments.
  *
  * @property background screen background.
  * @property surface elevated surfaces (the search bar).
@@ -45,8 +45,8 @@ public class KonfeatureColors(
 )
 
 /**
- * Default light color palette. Override individual slots via named arguments (or [KonfeatureColors.copy])
- * to brand the panel while keeping the rest of the defaults.
+ * Default light color palette. Override individual slots via named arguments to brand the panel
+ * while keeping the rest of the defaults.
  */
 public fun lightKonfeatureColors(
     background: Color = KonfeatureBaseColors.Purple99,
@@ -75,8 +75,8 @@ public fun lightKonfeatureColors(
 )
 
 /**
- * Default dark color palette. Override individual slots via named arguments (or [KonfeatureColors.copy])
- * to brand the panel while keeping the rest of the defaults.
+ * Default dark color palette. Override individual slots via named arguments to brand the panel
+ * while keeping the rest of the defaults.
  */
 public fun darkKonfeatureColors(
     background: Color = KonfeatureBaseColors.Neutral10,
