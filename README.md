@@ -35,6 +35,12 @@ We have made every effort to meet all these requirements in the development of K
   - [Logger](#logger)
   - [Spec](#spec)
   - [Ordering](#ordering)
+- [Debug UI (konfeature-ui)](#debug-ui-konfeature-ui)
+  - [What problem it solves](#what-problem-it-solves)
+  - [Installation](#installation-1)
+  - [Usage](#usage-1)
+  - [Theming](#theming)
+  - [No-op implementation (konfeature-ui-noop)](#no-op-implementation-konfeature-ui-noop)
 - [Contributing](#contributing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -46,7 +52,7 @@ Konfeature is a **Kotlin Multiplatform** library with support for:
 | Platform | Status | Targets |
 |----------|--------|---------|
 | **Android** | ✅ Fully Supported | JVM (via Kotlin/JVM) |
-| **iOS** | ✅ Fully Supported | arm64, x86_64, simulator arm64 |
+| **iOS** | ✅ Fully Supported | arm64, simulator arm64 |
 | **JVM** | ✅ Fully Supported | Java/Kotlin applications |
 
 ## Installation
@@ -382,6 +388,195 @@ The value of the configuration element is determined in the following order:
   Upon successful search, the value from `Source` is assigned with `Source(name=SourceName)` source.
 - Search the list of `Interceptors` in the order they were added to `Konfeature`.
   If `Interceptor` returns a value other than `null`, this value is assigned with `Interceptor(name=InterceptorName)` source.
+
+## Debug UI (konfeature-ui)
+
+`konfeature-ui` is a separate, optional **Compose Multiplatform** module that ships a ready-made debug
+panel for Konfeature. Add it on top of the core `konfeature` dependency when you want a screen to
+inspect and override feature values at runtime.
+
+<video src="https://github.com/user-attachments/assets/5e12c5f7-7bab-4856-b536-c52d0145c44c" width="320" controls>
+  <a href="https://github.com/user-attachments/assets/5e12c5f7-7bab-4856-b536-c52d0145c44c">Watch the konfeature-ui demo</a>
+</video>
+
+| Module | Artifact | Targets | Purpose |
+|--------|----------|---------|---------|
+| **konfeature-ui** | `com.redmadrobot.konfeature:konfeature-ui` | Android, iOS | Debug panel + persisted overrides |
+| **konfeature-ui-noop** | `com.redmadrobot.konfeature:konfeature-ui-noop` | Android, iOS | API-compatible no-op for release builds |
+
+### What problem it solves
+
+The core library already exposes everything needed to build a debug panel — [`spec`](#spec) for the
+list of registered configs, [`getValue`](#spec) for the current value and its source, and the
+[`Interceptor`](#interceptor) mechanism for overriding values. Wiring all of this together (an
+interceptor, persistence of overrides across app restarts, and a Compose screen) is repetitive
+boilerplate that every project ends up re-implementing.
+
+`konfeature-ui` provides that out of the box:
+
+- **`KonfeatureDebugPanel`** — a Compose Multiplatform screen listing every registered `FeatureConfig`,
+  grouped and collapsible, with search (by key, description or config name), the current value, and the
+  source it came from (`Default` / a `Source` / the debug interceptor). Each config header shows how many
+  of its values are currently overridden, an overridden value can be reset individually, and toolbar
+  actions let you refresh, collapse all groups, or reset all overrides at once.
+- **`KonfeatureDebugInterceptor`** — an `Interceptor` that applies the overrides made in the screen,
+  so a value changed in the panel is reflected everywhere the config is read.
+- **`KonfeatureDebugStore`** — persists overrides to disk (via DataStore) so they survive app
+  restarts, and exposes them as a `StateFlow` for the screen and a synchronous `currentValue(key)`
+  read for the interceptor. Overrides can be removed one at a time (`resetValue(key)`) or all at once
+  (`resetAll()`).
+
+Booleans are toggled inline in the screen. For non-boolean values the screen does not edit in place —
+it reports the tapped value via `onValueClick(info)`, where `info` is a `KonfeatureValueInfo` carrying
+everything needed to build an editor: the `key`, `configName`, `description`, the declared `type`
+(a `KonfeatureValueType`), the `currentValue` and `defaultValue`, the `sourceName` it resolved from,
+and whether it `isOverridden`. Open your own editor pre-filled with that value and write the result
+back with `store.setValue(key, newValue)`.
+
+> [!IMPORTANT]
+> **Only primitive override types are persisted:** `Boolean`, `Int`, `Long`, `Float`, `Double` and
+> `String`. `KonfeatureDebugStore.setValue` accepts `Any`, but values of other types (enums, data
+> classes, lists, etc.) **cannot be serialized**, so `setValue` **throws `IllegalArgumentException`**
+> for them and leaves the current overrides untouched — this prevents an override that would apply in
+> memory only to silently vanish on the next load. Values of such a type are surfaced as
+> `KonfeatureValueType.OTHER` and shown read-only in the panel (their rows are not clickable). If you
+> need to override a complex type, model it as one of the supported primitives (e.g. store an enum by
+> its `name` and map it back in your config).
+
+### Installation
+
+`konfeature-ui` depends on (`api`) the core `konfeature` module, so adding it pulls the core in
+transitively.
+
+**For a Kotlin Multiplatform project:**
+
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("com.redmadrobot.konfeature:konfeature-ui:<version>")
+        }
+    }
+}
+```
+
+**For a pure Android (non-KMP) project:**
+
+Being a KMP library with an Android target, `konfeature-ui` is consumable from a plain Android Gradle
+project — Gradle resolves its Android variant automatically:
+
+```kotlin
+dependencies {
+    implementation("com.redmadrobot.konfeature:konfeature-ui:<version>")
+}
+```
+
+`KonfeatureDebugPanel` is a `@Composable`, so the app must have Jetpack Compose set up (Compose
+Multiplatform builds on top of it on Android) to render it.
+
+> Unlike the core library, `konfeature-ui` targets **Android and iOS** only (it builds on Compose
+> Multiplatform), so there is no plain-JVM (desktop/server) artifact — but Android is fully supported.
+
+### Usage
+
+1. Create the store once on startup. `KonfeatureDebugStore.create(...)` constructs the store **and**
+   loads any persisted overrides before returning, so callers can't forget to load it. It is a
+   `suspend` function (the initial load reads from disk), so call it from a coroutine scope during
+   startup. Hold a single instance (DI singleton or shared `object`) and reuse it for both the
+   interceptor and the screen.
+
+   The `path` is platform-specific — on Android use `context.filesDir`, on iOS use `NSDocumentDirectory`.
+
+   ```kotlin
+   // inside a coroutine / suspend context
+   val store = KonfeatureDebugStore.create(
+       path = context.filesDir.resolve("konfeature_debug.preferences_pb").absolutePath,
+       logger = konfeatureLogger, // optional, reuses Konfeature's Logger
+   )
+   ```
+
+2. Register the interceptor backed by the store. Add it like any other [interceptor](#interceptor);
+   until the store is loaded it reports no overrides, so values fall through to the source/default.
+
+   ```kotlin
+   val interceptor = KonfeatureDebugInterceptor(store)
+
+   val konfeature = konfeature {
+       addSource(source)
+       register(profileFeatureConfig)
+       addInterceptor(interceptor)
+   }
+   ```
+
+3. Show the screen from a debug-only entry point, passing the same `konfeature` and `store`:
+
+   ```kotlin
+   KonfeatureDebugPanel(
+       konfeature = konfeature,
+       store = store,
+       onValueClick = { info ->
+           // Non-boolean value tapped. `info` (KonfeatureValueInfo) carries info.key,
+           // info.currentValue, info.type, etc. Open your own editor pre-filled with the
+           // current value, then persist the result:
+           // store.setValue(info.key, newValue)
+       },
+   )
+   ```
+
+### Theming
+
+The panel ships with a default look and works out of the box: if it is not wrapped in a
+`KonfeatureTheme`, it installs one for you, picking a light or dark palette based on
+`isSystemInDarkTheme()`. To brand it, wrap `KonfeatureDebugPanel` in your own `KonfeatureTheme` and
+pass a customized `KonfeatureColors`:
+
+```kotlin
+KonfeatureTheme(
+    colors = lightKonfeatureColors(
+        accent = Color(0xFF00695C),
+        sourceRemote = Color(0xFFB26A00),
+        sourceDebug = Color(0xFF2E7D32),
+    ),
+) {
+    KonfeatureDebugPanel(konfeature = konfeature, store = store)
+}
+```
+
+`KonfeatureColors` is the set of semantic color tokens the panel reads (`background`, `surface`,
+`surfaceHighlight`, `stroke`, `contentPrimary` / `contentSecondary` / `contentTertiary`, `accent`,
+`onAccent`, and `sourceRemote` / `sourceDebug` for the value-source labels). Start from
+`lightKonfeatureColors(...)` or `darkKonfeatureColors(...)` and override individual slots via named
+arguments to keep the remaining defaults. `KonfeatureTheme` also
+maps the palette onto a Material 3 `ColorScheme`, so Material components rendered inside the panel
+follow the same light/dark appearance.
+
+> [!NOTE]
+> Only colors are customizable. Typography and shapes are internal to the panel.
+
+### No-op implementation (konfeature-ui-noop)
+
+`konfeature-ui-noop` exposes the **same `KonfeatureDebugStore` and `KonfeatureDebugInterceptor` API**
+(same package, same class names and signatures) but does nothing: the store holds no overrides and
+performs no I/O, and the interceptor always returns `null`. It has no Compose dependency and does not
+contain `KonfeatureDebugPanel`.
+
+This lets you keep the store/interceptor wiring in your shared production code and swap the
+implementation per build type, so the debug tooling and its DataStore/persistence cost are stripped
+from release builds:
+
+```kotlin
+dependencies {
+    debugImplementation("com.redmadrobot.konfeature:konfeature-ui:<version>")
+    releaseImplementation("com.redmadrobot.konfeature:konfeature-ui-noop:<version>")
+}
+```
+
+> [!IMPORTANT]
+> `KonfeatureDebugPanel` exists **only** in `konfeature-ui` — there is no no-op counterpart for it.
+> Only `KonfeatureDebugStore` and `KonfeatureDebugInterceptor` are swappable between the two modules.
+> Keep any reference to `KonfeatureDebugPanel` in a debug-only source set / module: the store and
+> interceptor compile against both modules, but the screen compiles against `konfeature-ui` only, so a
+> release build wired to `konfeature-ui-noop` will not see it.
 
 ## Contributing
 
