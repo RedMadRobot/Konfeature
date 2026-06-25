@@ -1,0 +1,206 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.redmadrobot.konfeature:konfeature-ui>
+final enum class com.redmadrobot.konfeature.ui/KonfeatureValueType : kotlin/Enum<com.redmadrobot.konfeature.ui/KonfeatureValueType> { // com.redmadrobot.konfeature.ui/KonfeatureValueType|null[0]
+    enum entry BOOLEAN // com.redmadrobot.konfeature.ui/KonfeatureValueType.BOOLEAN|null[0]
+    enum entry DOUBLE // com.redmadrobot.konfeature.ui/KonfeatureValueType.DOUBLE|null[0]
+    enum entry FLOAT // com.redmadrobot.konfeature.ui/KonfeatureValueType.FLOAT|null[0]
+    enum entry INT // com.redmadrobot.konfeature.ui/KonfeatureValueType.INT|null[0]
+    enum entry LONG // com.redmadrobot.konfeature.ui/KonfeatureValueType.LONG|null[0]
+    enum entry OTHER // com.redmadrobot.konfeature.ui/KonfeatureValueType.OTHER|null[0]
+    enum entry STRING // com.redmadrobot.konfeature.ui/KonfeatureValueType.STRING|null[0]
+
+    final val entries // com.redmadrobot.konfeature.ui/KonfeatureValueType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.redmadrobot.konfeature.ui/KonfeatureValueType> // com.redmadrobot.konfeature.ui/KonfeatureValueType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.redmadrobot.konfeature.ui/KonfeatureValueType // com.redmadrobot.konfeature.ui/KonfeatureValueType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.redmadrobot.konfeature.ui/KonfeatureValueType> // com.redmadrobot.konfeature.ui/KonfeatureValueType.values|values#static(){}[0]
+}
+
+abstract interface com.redmadrobot.konfeature.ui/KonfeatureDebugStore { // com.redmadrobot.konfeature.ui/KonfeatureDebugStore|null[0]
+    abstract val values // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.values|{}values[0]
+        abstract fun <get-values>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Map<kotlin/String, kotlin/Any>> // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.values.<get-values>|<get-values>(){}[0]
+
+    abstract fun currentValue(kotlin/String): kotlin/Any? // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.currentValue|currentValue(kotlin.String){}[0]
+    abstract suspend fun load() // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.load|load(){}[0]
+    abstract suspend fun resetAll() // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.resetAll|resetAll(){}[0]
+    abstract suspend fun resetValue(kotlin/String) // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.resetValue|resetValue(kotlin.String){}[0]
+    abstract suspend fun setValue(kotlin/String, kotlin/Any) // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.setValue|setValue(kotlin.String;kotlin.Any){}[0]
+
+    final object Companion { // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.Companion|null[0]
+        final suspend fun create(kotlin/String, com.redmadrobot.konfeature/Logger? = ...): com.redmadrobot.konfeature.ui/KonfeatureDebugStore // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.Companion.create|create(kotlin.String;com.redmadrobot.konfeature.Logger?){}[0]
+    }
+}
+
+final class com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors { // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors|null[0]
+    constructor <init>(androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color) // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.<init>|<init>(androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color){}[0]
+
+    final val accent // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.accent|{}accent[0]
+        final fun <get-accent>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.accent.<get-accent>|<get-accent>(){}[0]
+    final val background // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.background|{}background[0]
+        final fun <get-background>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.background.<get-background>|<get-background>(){}[0]
+    final val contentPrimary // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.contentPrimary|{}contentPrimary[0]
+        final fun <get-contentPrimary>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.contentPrimary.<get-contentPrimary>|<get-contentPrimary>(){}[0]
+    final val contentSecondary // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.contentSecondary|{}contentSecondary[0]
+        final fun <get-contentSecondary>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.contentSecondary.<get-contentSecondary>|<get-contentSecondary>(){}[0]
+    final val contentTertiary // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.contentTertiary|{}contentTertiary[0]
+        final fun <get-contentTertiary>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.contentTertiary.<get-contentTertiary>|<get-contentTertiary>(){}[0]
+    final val onAccent // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.onAccent|{}onAccent[0]
+        final fun <get-onAccent>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.onAccent.<get-onAccent>|<get-onAccent>(){}[0]
+    final val sourceDebug // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.sourceDebug|{}sourceDebug[0]
+        final fun <get-sourceDebug>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.sourceDebug.<get-sourceDebug>|<get-sourceDebug>(){}[0]
+    final val sourceRemote // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.sourceRemote|{}sourceRemote[0]
+        final fun <get-sourceRemote>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.sourceRemote.<get-sourceRemote>|<get-sourceRemote>(){}[0]
+    final val stroke // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.stroke|{}stroke[0]
+        final fun <get-stroke>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.stroke.<get-stroke>|<get-stroke>(){}[0]
+    final val surface // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.surface|{}surface[0]
+        final fun <get-surface>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.surface.<get-surface>|<get-surface>(){}[0]
+    final val surfaceHighlight // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.surfaceHighlight|{}surfaceHighlight[0]
+        final fun <get-surfaceHighlight>(): androidx.compose.ui.graphics/Color // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.surfaceHighlight.<get-surfaceHighlight>|<get-surfaceHighlight>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors.toString|toString(){}[0]
+}
+
+final class com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor : com.redmadrobot.konfeature.source/Interceptor { // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor|null[0]
+    constructor <init>(com.redmadrobot.konfeature.ui/KonfeatureDebugStore) // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.<init>|<init>(com.redmadrobot.konfeature.ui.KonfeatureDebugStore){}[0]
+
+    final val name // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.name.<get-name>|<get-name>(){}[0]
+
+    final fun intercept(com.redmadrobot.konfeature.source/FeatureValueSource, kotlin/String, kotlin/Any): kotlin/Any? // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.intercept|intercept(com.redmadrobot.konfeature.source.FeatureValueSource;kotlin.String;kotlin.Any){}[0]
+
+    final object Companion { // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.Companion|null[0]
+        final const val NAME // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.Companion.NAME|{}NAME[0]
+            final fun <get-NAME>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.Companion.NAME.<get-NAME>|<get-NAME>(){}[0]
+    }
+}
+
+final class com.redmadrobot.konfeature.ui/KonfeatureValueInfo { // com.redmadrobot.konfeature.ui/KonfeatureValueInfo|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String, com.redmadrobot.konfeature.ui/KonfeatureValueType, kotlin/Any, kotlin/Any, kotlin/String, kotlin/Boolean) // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;com.redmadrobot.konfeature.ui.KonfeatureValueType;kotlin.Any;kotlin.Any;kotlin.String;kotlin.Boolean){}[0]
+
+    final val configName // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.configName|{}configName[0]
+        final fun <get-configName>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.configName.<get-configName>|<get-configName>(){}[0]
+    final val currentValue // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.currentValue|{}currentValue[0]
+        final fun <get-currentValue>(): kotlin/Any // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.currentValue.<get-currentValue>|<get-currentValue>(){}[0]
+    final val defaultValue // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.defaultValue|{}defaultValue[0]
+        final fun <get-defaultValue>(): kotlin/Any // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.defaultValue.<get-defaultValue>|<get-defaultValue>(){}[0]
+    final val description // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.description|{}description[0]
+        final fun <get-description>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.description.<get-description>|<get-description>(){}[0]
+    final val isOverridden // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.isOverridden|{}isOverridden[0]
+        final fun <get-isOverridden>(): kotlin/Boolean // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.isOverridden.<get-isOverridden>|<get-isOverridden>(){}[0]
+    final val key // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.key|{}key[0]
+        final fun <get-key>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.key.<get-key>|<get-key>(){}[0]
+    final val sourceName // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.sourceName|{}sourceName[0]
+        final fun <get-sourceName>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.sourceName.<get-sourceName>|<get-sourceName>(){}[0]
+    final val type // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.type|{}type[0]
+        final fun <get-type>(): com.redmadrobot.konfeature.ui/KonfeatureValueType // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.type.<get-type>|<get-type>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureValueInfo.toString|toString(){}[0]
+}
+
+final object com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureTheme { // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureTheme|null[0]
+    final val colors // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureTheme.colors|{}colors[0]
+        final fun <get-colors>(androidx.compose.runtime/Composer?, kotlin/Int): com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureTheme.colors.<get-colors>|<get-colors>(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+}
+
+final object com.redmadrobot.konfeature.ui.resources/Res { // com.redmadrobot.konfeature.ui.resources/Res|null[0]
+    final fun getUri(kotlin/String): kotlin/String // com.redmadrobot.konfeature.ui.resources/Res.getUri|getUri(kotlin.String){}[0]
+    final suspend fun readBytes(kotlin/String): kotlin/ByteArray // com.redmadrobot.konfeature.ui.resources/Res.readBytes|readBytes(kotlin.String){}[0]
+
+    final object array // com.redmadrobot.konfeature.ui.resources/Res.array|null[0]
+
+    final object drawable // com.redmadrobot.konfeature.ui.resources/Res.drawable|null[0]
+
+    final object font // com.redmadrobot.konfeature.ui.resources/Res.font|null[0]
+
+    final object plurals // com.redmadrobot.konfeature.ui.resources/Res.plurals|null[0]
+
+    final object string // com.redmadrobot.konfeature.ui.resources/Res.string|null[0]
+}
+
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_CollapseAllClick$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_CollapseAllClick$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_CollapseAllClick$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ConfigHeaderClick$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ConfigHeaderClick$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ConfigHeaderClick$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_RefreshClick$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_RefreshClick$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_RefreshClick$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetAllClick$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetAllClick$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetAllClick$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetValueClick$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetValueClick$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetValueClick$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_SearchQueryChange$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_SearchQueryChange$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_SearchQueryChange$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ToggleChange$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ToggleChange$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ToggleChange$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ValueClick$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ValueClick$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ValueClick$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Config$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Config$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Config$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Value$stableprop // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Value$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Value$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureColors$stableprop // com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureColors$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureColors$stableprop[0]
+final val com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureTheme$stableprop // com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureTheme$stableprop|#static{}com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureTheme$stableprop[0]
+final val com.redmadrobot.konfeature.ui.resources/allDrawableResources // com.redmadrobot.konfeature.ui.resources/allDrawableResources|@com.redmadrobot.konfeature.ui.resources.Res{}allDrawableResources[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res).<get-allDrawableResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/DrawableResource> // com.redmadrobot.konfeature.ui.resources/allDrawableResources.<get-allDrawableResources>|<get-allDrawableResources>@com.redmadrobot.konfeature.ui.resources.Res(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/allFontResources // com.redmadrobot.konfeature.ui.resources/allFontResources|@com.redmadrobot.konfeature.ui.resources.Res{}allFontResources[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res).<get-allFontResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/FontResource> // com.redmadrobot.konfeature.ui.resources/allFontResources.<get-allFontResources>|<get-allFontResources>@com.redmadrobot.konfeature.ui.resources.Res(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/allPluralStringResources // com.redmadrobot.konfeature.ui.resources/allPluralStringResources|@com.redmadrobot.konfeature.ui.resources.Res{}allPluralStringResources[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res).<get-allPluralStringResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/PluralStringResource> // com.redmadrobot.konfeature.ui.resources/allPluralStringResources.<get-allPluralStringResources>|<get-allPluralStringResources>@com.redmadrobot.konfeature.ui.resources.Res(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/allStringArrayResources // com.redmadrobot.konfeature.ui.resources/allStringArrayResources|@com.redmadrobot.konfeature.ui.resources.Res{}allStringArrayResources[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res).<get-allStringArrayResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/StringArrayResource> // com.redmadrobot.konfeature.ui.resources/allStringArrayResources.<get-allStringArrayResources>|<get-allStringArrayResources>@com.redmadrobot.konfeature.ui.resources.Res(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/allStringResources // com.redmadrobot.konfeature.ui.resources/allStringResources|@com.redmadrobot.konfeature.ui.resources.Res{}allStringResources[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res).<get-allStringResources>(): kotlin.collections/Map<kotlin/String, org.jetbrains.compose.resources/StringResource> // com.redmadrobot.konfeature.ui.resources/allStringResources.<get-allStringResources>|<get-allStringResources>@com.redmadrobot.konfeature.ui.resources.Res(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res$stableprop // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res$stableprop|#static{}com_redmadrobot_konfeature_ui_resources_Res$stableprop[0]
+final val com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_array$stableprop // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_array$stableprop|#static{}com_redmadrobot_konfeature_ui_resources_Res_array$stableprop[0]
+final val com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_drawable$stableprop // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_drawable$stableprop|#static{}com_redmadrobot_konfeature_ui_resources_Res_drawable$stableprop[0]
+final val com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_font$stableprop // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_font$stableprop|#static{}com_redmadrobot_konfeature_ui_resources_Res_font$stableprop[0]
+final val com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_plurals$stableprop // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_plurals$stableprop|#static{}com_redmadrobot_konfeature_ui_resources_Res_plurals$stableprop[0]
+final val com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_string$stableprop // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_string$stableprop|#static{}com_redmadrobot_konfeature_ui_resources_Res_string$stableprop[0]
+final val com.redmadrobot.konfeature.ui.resources/icon_clear // com.redmadrobot.konfeature.ui.resources/icon_clear|@com.redmadrobot.konfeature.ui.resources.Res.drawable{}icon_clear[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.drawable).<get-icon_clear>(): org.jetbrains.compose.resources/DrawableResource // com.redmadrobot.konfeature.ui.resources/icon_clear.<get-icon_clear>|<get-icon_clear>@com.redmadrobot.konfeature.ui.resources.Res.drawable(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/icon_keyboard_arrow_down // com.redmadrobot.konfeature.ui.resources/icon_keyboard_arrow_down|@com.redmadrobot.konfeature.ui.resources.Res.drawable{}icon_keyboard_arrow_down[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.drawable).<get-icon_keyboard_arrow_down>(): org.jetbrains.compose.resources/DrawableResource // com.redmadrobot.konfeature.ui.resources/icon_keyboard_arrow_down.<get-icon_keyboard_arrow_down>|<get-icon_keyboard_arrow_down>@com.redmadrobot.konfeature.ui.resources.Res.drawable(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/icon_keyboard_arrow_up // com.redmadrobot.konfeature.ui.resources/icon_keyboard_arrow_up|@com.redmadrobot.konfeature.ui.resources.Res.drawable{}icon_keyboard_arrow_up[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.drawable).<get-icon_keyboard_arrow_up>(): org.jetbrains.compose.resources/DrawableResource // com.redmadrobot.konfeature.ui.resources/icon_keyboard_arrow_up.<get-icon_keyboard_arrow_up>|<get-icon_keyboard_arrow_up>@com.redmadrobot.konfeature.ui.resources.Res.drawable(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/icon_reset // com.redmadrobot.konfeature.ui.resources/icon_reset|@com.redmadrobot.konfeature.ui.resources.Res.drawable{}icon_reset[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.drawable).<get-icon_reset>(): org.jetbrains.compose.resources/DrawableResource // com.redmadrobot.konfeature.ui.resources/icon_reset.<get-icon_reset>|<get-icon_reset>@com.redmadrobot.konfeature.ui.resources.Res.drawable(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/icon_search // com.redmadrobot.konfeature.ui.resources/icon_search|@com.redmadrobot.konfeature.ui.resources.Res.drawable{}icon_search[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.drawable).<get-icon_search>(): org.jetbrains.compose.resources/DrawableResource // com.redmadrobot.konfeature.ui.resources/icon_search.<get-icon_search>|<get-icon_search>@com.redmadrobot.konfeature.ui.resources.Res.drawable(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/konfeature_plugin_collapse_all // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_collapse_all|@com.redmadrobot.konfeature.ui.resources.Res.string{}konfeature_plugin_collapse_all[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.string).<get-konfeature_plugin_collapse_all>(): org.jetbrains.compose.resources/StringResource // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_collapse_all.<get-konfeature_plugin_collapse_all>|<get-konfeature_plugin_collapse_all>@com.redmadrobot.konfeature.ui.resources.Res.string(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/konfeature_plugin_refresh // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_refresh|@com.redmadrobot.konfeature.ui.resources.Res.string{}konfeature_plugin_refresh[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.string).<get-konfeature_plugin_refresh>(): org.jetbrains.compose.resources/StringResource // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_refresh.<get-konfeature_plugin_refresh>|<get-konfeature_plugin_refresh>@com.redmadrobot.konfeature.ui.resources.Res.string(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/konfeature_plugin_reset // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_reset|@com.redmadrobot.konfeature.ui.resources.Res.string{}konfeature_plugin_reset[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.string).<get-konfeature_plugin_reset>(): org.jetbrains.compose.resources/StringResource // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_reset.<get-konfeature_plugin_reset>|<get-konfeature_plugin_reset>@com.redmadrobot.konfeature.ui.resources.Res.string(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/konfeature_plugin_reset_all // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_reset_all|@com.redmadrobot.konfeature.ui.resources.Res.string{}konfeature_plugin_reset_all[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.string).<get-konfeature_plugin_reset_all>(): org.jetbrains.compose.resources/StringResource // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_reset_all.<get-konfeature_plugin_reset_all>|<get-konfeature_plugin_reset_all>@com.redmadrobot.konfeature.ui.resources.Res.string(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/konfeature_plugin_search_empty // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_search_empty|@com.redmadrobot.konfeature.ui.resources.Res.string{}konfeature_plugin_search_empty[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.string).<get-konfeature_plugin_search_empty>(): org.jetbrains.compose.resources/StringResource // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_search_empty.<get-konfeature_plugin_search_empty>|<get-konfeature_plugin_search_empty>@com.redmadrobot.konfeature.ui.resources.Res.string(){}[0]
+final val com.redmadrobot.konfeature.ui.resources/konfeature_plugin_search_hint // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_search_hint|@com.redmadrobot.konfeature.ui.resources.Res.string{}konfeature_plugin_search_hint[0]
+    final fun (com.redmadrobot.konfeature.ui.resources/Res.string).<get-konfeature_plugin_search_hint>(): org.jetbrains.compose.resources/StringResource // com.redmadrobot.konfeature.ui.resources/konfeature_plugin_search_hint.<get-konfeature_plugin_search_hint>|<get-konfeature_plugin_search_hint>@com.redmadrobot.konfeature.ui.resources.Res.string(){}[0]
+final val com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureDebugInterceptor$stableprop // com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureDebugInterceptor$stableprop|#static{}com_redmadrobot_konfeature_ui_KonfeatureDebugInterceptor$stableprop[0]
+final val com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureValueInfo$stableprop // com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureValueInfo$stableprop|#static{}com_redmadrobot_konfeature_ui_KonfeatureValueInfo$stableprop[0]
+
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_CollapseAllClick$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_CollapseAllClick$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_CollapseAllClick$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ConfigHeaderClick$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ConfigHeaderClick$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ConfigHeaderClick$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_RefreshClick$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_RefreshClick$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_RefreshClick$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetAllClick$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetAllClick$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetAllClick$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetValueClick$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetValueClick$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ResetValueClick$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_SearchQueryChange$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_SearchQueryChange$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_SearchQueryChange$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ToggleChange$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ToggleChange$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ToggleChange$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ValueClick$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ValueClick$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureAction_ValueClick$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Config$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Config$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Config$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Value$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.model/com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Value$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_model_KonfeatureItem_Value$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureTheme(kotlin/Boolean, com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors?, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureTheme|KonfeatureTheme(kotlin.Boolean;com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureColors?;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureColors$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureColors$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureColors$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureTheme$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.presentation.theme/com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureTheme$stableprop_getter|com_redmadrobot_konfeature_ui_presentation_theme_KonfeatureTheme$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.theme/darkKonfeatureColors(androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ...): com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors // com.redmadrobot.konfeature.ui.presentation.theme/darkKonfeatureColors|darkKonfeatureColors(androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color){}[0]
+final fun com.redmadrobot.konfeature.ui.presentation.theme/lightKonfeatureColors(androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ...): com.redmadrobot.konfeature.ui.presentation.theme/KonfeatureColors // com.redmadrobot.konfeature.ui.presentation.theme/lightKonfeatureColors|lightKonfeatureColors(androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color){}[0]
+final fun com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res$stableprop_getter|com_redmadrobot_konfeature_ui_resources_Res$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_array$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_array$stableprop_getter|com_redmadrobot_konfeature_ui_resources_Res_array$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_drawable$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_drawable$stableprop_getter|com_redmadrobot_konfeature_ui_resources_Res_drawable$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_font$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_font$stableprop_getter|com_redmadrobot_konfeature_ui_resources_Res_font$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_plurals$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_plurals$stableprop_getter|com_redmadrobot_konfeature_ui_resources_Res_plurals$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_string$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui.resources/com_redmadrobot_konfeature_ui_resources_Res_string$stableprop_getter|com_redmadrobot_konfeature_ui_resources_Res_string$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui/KonfeatureDebugPanel(com.redmadrobot.konfeature/Konfeature, com.redmadrobot.konfeature.ui/KonfeatureDebugStore, kotlin/Function1<com.redmadrobot.konfeature.ui/KonfeatureValueInfo, kotlin/Unit>?, androidx.compose.ui/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.redmadrobot.konfeature.ui/KonfeatureDebugPanel|KonfeatureDebugPanel(com.redmadrobot.konfeature.Konfeature;com.redmadrobot.konfeature.ui.KonfeatureDebugStore;kotlin.Function1<com.redmadrobot.konfeature.ui.KonfeatureValueInfo,kotlin.Unit>?;androidx.compose.ui.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureDebugInterceptor$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureDebugInterceptor$stableprop_getter|com_redmadrobot_konfeature_ui_KonfeatureDebugInterceptor$stableprop_getter(){}[0]
+final fun com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureValueInfo$stableprop_getter(): kotlin/Int // com.redmadrobot.konfeature.ui/com_redmadrobot_konfeature_ui_KonfeatureValueInfo$stableprop_getter|com_redmadrobot_konfeature_ui_KonfeatureValueInfo$stableprop_getter(){}[0]

@@ -43,6 +43,13 @@ kotlin {
             implementation(stack.compose.resources)
         }
     }
+
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation()
+}
+
+tasks.check.configure {
+    dependsOn("checkLegacyAbi")
 }
 
 compose.resources {

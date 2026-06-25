@@ -1,0 +1,36 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.redmadrobot.konfeature:konfeature-ui-noop>
+abstract interface com.redmadrobot.konfeature.ui/KonfeatureDebugStore { // com.redmadrobot.konfeature.ui/KonfeatureDebugStore|null[0]
+    abstract val values // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.values|{}values[0]
+        abstract fun <get-values>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/Map<kotlin/String, kotlin/Any>> // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.values.<get-values>|<get-values>(){}[0]
+
+    abstract fun currentValue(kotlin/String): kotlin/Any? // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.currentValue|currentValue(kotlin.String){}[0]
+    abstract suspend fun load() // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.load|load(){}[0]
+    abstract suspend fun resetAll() // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.resetAll|resetAll(){}[0]
+    abstract suspend fun resetValue(kotlin/String) // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.resetValue|resetValue(kotlin.String){}[0]
+    abstract suspend fun setValue(kotlin/String, kotlin/Any) // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.setValue|setValue(kotlin.String;kotlin.Any){}[0]
+
+    final object Companion { // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.Companion|null[0]
+        final suspend fun create(kotlin/String, com.redmadrobot.konfeature/Logger? = ...): com.redmadrobot.konfeature.ui/KonfeatureDebugStore // com.redmadrobot.konfeature.ui/KonfeatureDebugStore.Companion.create|create(kotlin.String;com.redmadrobot.konfeature.Logger?){}[0]
+    }
+}
+
+final class com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor : com.redmadrobot.konfeature.source/Interceptor { // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor|null[0]
+    constructor <init>(com.redmadrobot.konfeature.ui/KonfeatureDebugStore) // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.<init>|<init>(com.redmadrobot.konfeature.ui.KonfeatureDebugStore){}[0]
+
+    final val name // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.name.<get-name>|<get-name>(){}[0]
+
+    final fun intercept(com.redmadrobot.konfeature.source/FeatureValueSource, kotlin/String, kotlin/Any): kotlin/Any? // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.intercept|intercept(com.redmadrobot.konfeature.source.FeatureValueSource;kotlin.String;kotlin.Any){}[0]
+
+    final object Companion { // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.Companion|null[0]
+        final const val NAME // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.Companion.NAME|{}NAME[0]
+            final fun <get-NAME>(): kotlin/String // com.redmadrobot.konfeature.ui/KonfeatureDebugInterceptor.Companion.NAME.<get-NAME>|<get-NAME>(){}[0]
+    }
+}
