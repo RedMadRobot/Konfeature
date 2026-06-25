@@ -28,4 +28,11 @@ kotlin {
             implementation(stack.kotlinx.coroutines.core)
         }
     }
+
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation()
+}
+
+tasks.check.configure {
+    dependsOn("checkLegacyAbi")
 }
