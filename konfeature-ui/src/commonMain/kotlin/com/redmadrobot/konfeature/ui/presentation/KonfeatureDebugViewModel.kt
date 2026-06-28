@@ -10,6 +10,13 @@ import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
 import com.redmadrobot.konfeature.ui.presentation.state.KonfeatureDebugViewState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,10 +36,10 @@ private const val SEARCH_QUERY_DELAY_MILLIS = 500L
 internal class KonfeatureDebugViewModel(
     private val konfeature: Konfeature,
     private val store: KonfeatureDebugStore,
-    private val onValueClick: (key: String) -> Unit,
+    private val onValueClick: (key: String, value: Any) -> Unit,
 ) : ViewModel() {
 
-    private val configs: Map<String, KonfeatureItem.Config> = buildConfigs(konfeature)
+    private val configs: ImmutableMap<String, KonfeatureItem.Config> = buildConfigs(konfeature)
 
     private val _state = MutableStateFlow(buildInitialState())
     val state: StateFlow<KonfeatureDebugViewState> = _state.asStateFlow()
@@ -55,20 +62,20 @@ internal class KonfeatureDebugViewModel(
             is KonfeatureAction.ToggleChange -> viewModelScope.launch {
                 store.setValue(action.key, action.checked)
             }
-            is KonfeatureAction.ValueClick -> onValueClick(action.key)
+            is KonfeatureAction.ValueClick -> onValueClick(action.key, action.value)
         }
     }
 
     private fun toggleConfigCollapse(configName: String) {
         _state.update { state ->
             val collapsed = state.collapsedConfigs
-            val newCollapsed = if (configName in collapsed) collapsed - configName else collapsed + configName
+            val newCollapsed = if (configName in collapsed) collapsed.remove(configName) else collapsed.add(configName)
             state.copy(collapsedConfigs = newCollapsed)
         }
     }
 
     private fun collapseAll() {
-        _state.update { state -> state.copy(collapsedConfigs = configs.keys) }
+        _state.update { state -> state.copy(collapsedConfigs = configs.keys.toPersistentSet()) }
     }
 
     private fun setSearchQuery(query: String) {
@@ -108,13 +115,13 @@ internal class KonfeatureDebugViewModel(
         )
     }
 
-    private fun buildConfigs(konfeature: Konfeature): Map<String, KonfeatureItem.Config> {
+    private fun buildConfigs(konfeature: Konfeature): ImmutableMap<String, KonfeatureItem.Config> {
         return konfeature.spec.associate { spec ->
             spec.name to KonfeatureItem.Config(name = spec.name, description = spec.description)
-        }
+        }.toImmutableMap()
     }
 
-    private fun buildValues(konfeature: Konfeature): List<KonfeatureItem.Value> {
+    private fun buildValues(konfeature: Konfeature): ImmutableList<KonfeatureItem.Value> {
         return konfeature.spec.flatMap { configSpec ->
             configSpec.values.map { valueSpec ->
                 createConfigValueItem(
@@ -123,10 +130,10 @@ internal class KonfeatureDebugViewModel(
                     konfeature = konfeature,
                 )
             }
-        }
+        }.toImmutableList()
     }
 
-    private fun buildItems(values: List<KonfeatureItem.Value>): List<KonfeatureItem> {
+    private fun buildItems(values: List<KonfeatureItem.Value>): ImmutableList<KonfeatureItem> {
         return values.groupBy { it.configName }
             .flatMap { (configName, groupValues) ->
                 val header = configs[configName]?.let { config ->
@@ -134,6 +141,7 @@ internal class KonfeatureDebugViewModel(
                 }
                 listOfNotNull(header) + groupValues
             }
+            .toImmutableList()
     }
 
     private fun createConfigValueItem(
@@ -170,19 +178,19 @@ internal class KonfeatureDebugViewModel(
     private suspend fun computeMatchingKeys(
         values: List<KonfeatureItem.Value>,
         query: String,
-    ): Set<String> {
+    ): ImmutableSet<String> {
         return withContext(Dispatchers.Default) {
             val matching = if (query.isBlank()) values else values.filter { it.key.contains(query, ignoreCase = true) }
             matching.toMatchingKeys()
         }
     }
 
-    private fun List<KonfeatureItem.Value>.toMatchingKeys(): Set<String> {
+    private fun List<KonfeatureItem.Value>.toMatchingKeys(): ImmutableSet<String> {
         return flatMapTo(mutableSetOf()) { value ->
             listOf(
                 "${KonfeatureItem.ITEM_KEY_PREFIX_CONFIG}${value.configName}",
                 "${KonfeatureItem.ITEM_KEY_PREFIX_VALUE}${value.key}",
             )
-        }
+        }.toImmutableSet()
     }
 }

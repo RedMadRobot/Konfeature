@@ -29,8 +29,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.konfeature)
+            api(libs.compose.runtime)
+            api(libs.compose.ui)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.compose.runtime)
+            implementation(libs.kotlinx.collections.immutable)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.lifecycle.viewmodel.compose)

@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation
+package com.redmadrobot.konfeature.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -27,8 +27,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.redmadrobot.konfeature.Konfeature
-import com.redmadrobot.konfeature.ui.KonfeatureDebugInterceptor
-import com.redmadrobot.konfeature.ui.KonfeatureDebugStore
+import com.redmadrobot.konfeature.ui.presentation.KonfeatureDebugViewModel
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
@@ -59,19 +58,21 @@ import org.jetbrains.compose.resources.stringResource
  * their values at runtime via [KonfeatureDebugInterceptor].
  *
  * Boolean values are toggled directly in the list. For non-boolean values the screen does not edit
- * anything in place — instead it invokes [onValueClick] with the value's key, leaving the integrator
- * to decide what to do (open a custom editor, copy to clipboard, etc.). The value and its source can
- * be read back via [Konfeature.getValue] by key.
+ * anything in place — instead it invokes [onValueClick] with the value's key and its current
+ * resolved value, leaving the integrator to decide what to do (open a custom editor pre-filled with
+ * the current value, copy to clipboard, etc.) and to apply the result via
+ * [KonfeatureDebugStore.setValue].
  *
  * @param konfeature the built [Konfeature] whose configs are displayed.
  * @param store the [KonfeatureDebugStore] backing the overrides.
- * @param onValueClick invoked when a non-boolean value row is tapped. Not called for booleans.
+ * @param onValueClick invoked when a non-boolean value row is tapped, with the value's key and its
+ *   current resolved value.
  */
 @Composable
-public fun KonfeatureDebugScreen(
+public fun KonfeatureDebugPanel(
     konfeature: Konfeature,
     store: KonfeatureDebugStore,
-    onValueClick: (key: String) -> Unit = {},
+    onValueClick: (key: String, value: Any) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
 ) {
     val viewModel = viewModel {
@@ -280,7 +281,7 @@ private fun ConfigValueItem(
                 if (isBool) {
                     Modifier
                 } else {
-                    Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.key)) }
+                    Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.key, item.value.unwrap())) }
                 }
             )
             .padding(start = 32.dp, end = 8.dp)

@@ -2,14 +2,21 @@ package com.redmadrobot.konfeature.ui.presentation.state
 
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem.Companion.ITEM_KEY_PREFIX_VALUE
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
 
 internal data class KonfeatureDebugViewState(
     val searchQuery: String = "",
-    val collapsedConfigs: Set<String> = emptySet(),
-    val configs: Map<String, KonfeatureItem.Config> = emptyMap(),
-    val values: List<KonfeatureItem.Value> = emptyList(),
-    val items: List<KonfeatureItem> = emptyList(),
-    val matchingKeys: Set<String> = emptySet(),
+    val collapsedConfigs: PersistentSet<String> = persistentSetOf(),
+    val configs: ImmutableMap<String, KonfeatureItem.Config> = persistentMapOf(),
+    val values: ImmutableList<KonfeatureItem.Value> = persistentListOf(),
+    val items: ImmutableList<KonfeatureItem> = persistentListOf(),
+    val matchingKeys: ImmutableSet<String> = persistentSetOf(),
 ) {
     val isSearchActive: Boolean
         get() = searchQuery.isNotBlank()
