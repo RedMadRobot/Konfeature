@@ -11,49 +11,59 @@ import kotlinx.coroutines.flow.asStateFlow
  * It exposes the same public API but holds no overrides and performs no I/O: [values] is always an
  * empty map, [currentValue] always returns `null`, and [load] / [setValue] / [resetValue] /
  * [resetAll] do nothing.
- *
- * @param path unused; accepted only to match the real constructor signature.
- * @param logger unused; accepted only to match the real constructor signature.
  */
-public class KonfeatureDebugStore(
-    path: String,
-    logger: Logger? = null,
-) {
-
-    private val _values = MutableStateFlow<Map<String, Any>>(emptyMap())
+public interface KonfeatureDebugStore {
 
     /** Always an empty map: the no-op store holds no overrides. */
-    public val values: StateFlow<Map<String, Any>> = _values.asStateFlow()
+    public val values: StateFlow<Map<String, Any>>
 
     /** No-op. */
-    public suspend fun load() {
-        // no-op
-    }
+    public suspend fun load()
 
     /** No-op. */
-    public suspend fun setValue(key: String, value: Any) {
-        // no-op
-    }
+    public suspend fun setValue(key: String, value: Any)
 
     /** No-op. */
-    public suspend fun resetValue(key: String) {
-        // no-op
-    }
+    public suspend fun resetValue(key: String)
 
     /** No-op. */
-    public suspend fun resetAll() {
-        // no-op
-    }
+    public suspend fun resetAll()
 
     /** Always returns `null`: the no-op store has no overrides. */
-    @Suppress("FunctionOnlyReturningConstant")
-    public fun currentValue(key: String): Any? = null
+    public fun currentValue(key: String): Any?
 
     public companion object {
 
-        /** Returns a no-op store. */
+        /** Returns a no-op store. The [path] and [logger] are accepted only to match the real API. */
+        @Suppress("UNUSED_PARAMETER")
         public suspend fun create(path: String, logger: Logger? = null): KonfeatureDebugStore {
-            return KonfeatureDebugStore(path, logger)
+            return NoOpKonfeatureDebugStore()
         }
     }
+}
+
+private class NoOpKonfeatureDebugStore : KonfeatureDebugStore {
+
+    private val _values = MutableStateFlow<Map<String, Any>>(emptyMap())
+
+    override val values: StateFlow<Map<String, Any>> = _values.asStateFlow()
+
+    override suspend fun load() {
+        // no-op
+    }
+
+    override suspend fun setValue(key: String, value: Any) {
+        // no-op
+    }
+
+    override suspend fun resetValue(key: String) {
+        // no-op
+    }
+
+    override suspend fun resetAll() {
+        // no-op
+    }
+
+    @Suppress("FunctionOnlyReturningConstant")
+    override fun currentValue(key: String): Any? = null
 }
