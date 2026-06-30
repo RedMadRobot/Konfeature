@@ -216,9 +216,17 @@ internal class KonfeatureDebugViewModel(
         query: String,
     ): ImmutableSet<String> {
         return withContext(Dispatchers.Default) {
-            val matching = if (query.isBlank()) values else values.filter { it.key.contains(query, ignoreCase = true) }
+            val matching = if (query.isBlank()) values else values.filter { it.matches(query) }
             matching.toMatchingKeys()
         }
+    }
+
+    private fun KonfeatureItem.Value.matches(query: String): Boolean {
+        val config = configs[configName]
+        return key.contains(query, ignoreCase = true) ||
+            description.contains(query, ignoreCase = true) ||
+            configName.contains(query, ignoreCase = true) ||
+            config?.description?.contains(query, ignoreCase = true) == true
     }
 
     private fun List<KonfeatureItem.Value>.toMatchingKeys(): ImmutableSet<String> {
