@@ -9,6 +9,7 @@ import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
 
 internal data class KonfeatureDebugViewState(
     val searchQuery: String = "",
@@ -22,4 +23,17 @@ internal data class KonfeatureDebugViewState(
         get() = searchQuery.isNotBlank()
     val shouldShowEmptySearchItemsHint
         get() = isSearchActive && matchingKeys.none { it.startsWith(ITEM_KEY_PREFIX_VALUE) }
+
+    /**
+     * Returns the subset of [items] that should be visible in the list. Hidden items are dropped
+     * here rather than rendered at zero height, which avoids performance problems when hiding or
+     * showing a large number of elements.
+     */
+    fun visibleItems(): ImmutableList<KonfeatureItem> = items.filter { item ->
+        val matchesFilter = item.itemKey in matchingKeys
+        when (item) {
+            is KonfeatureItem.Config -> matchesFilter
+            is KonfeatureItem.Value -> matchesFilter && (isSearchActive || item.configName !in collapsedConfigs)
+        }
+    }.toImmutableList()
 }

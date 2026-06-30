@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +40,6 @@ import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
 import com.redmadrobot.konfeature.ui.presentation.theme.SourceColors
 import com.redmadrobot.konfeature.ui.presentation.theme.StrokeColors
 import com.redmadrobot.konfeature.ui.presentation.theme.SurfaceColors
-import com.redmadrobot.konfeature.ui.presentation.view.AnimatedFilterItem
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureSearchBar
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureToggle
 import com.redmadrobot.konfeature.ui.resources.Res
@@ -50,6 +50,7 @@ import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_refresh
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_reset_all
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_search_empty
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_search_hint
+import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -117,9 +118,14 @@ private fun KonfeatureLayout(
                 modifier = Modifier.padding(all = 16.dp),
             )
         }
+        val visibleItems = remember(state.items, state.matchingKeys, state.collapsedConfigs, state.isSearchActive) {
+            state.visibleItems()
+        }
         LazyColumn(modifier = Modifier.weight(weight = 1f)) {
             konfeatureItems(
-                state = state,
+                items = visibleItems,
+                isSearchActive = state.isSearchActive,
+                collapsedConfigs = state.collapsedConfigs,
                 onAction = onAction,
             )
         }
@@ -127,11 +133,13 @@ private fun KonfeatureLayout(
 }
 
 private fun LazyListScope.konfeatureItems(
-    state: KonfeatureDebugViewState,
+    items: ImmutableList<KonfeatureItem>,
+    isSearchActive: Boolean,
+    collapsedConfigs: Set<String>,
     onAction: (KonfeatureAction) -> Unit,
 ) {
     items(
-        items = state.items,
+        items = items,
         key = { item -> item.itemKey },
         contentType = { item ->
             when (item) {
@@ -140,29 +148,24 @@ private fun LazyListScope.konfeatureItems(
             }
         },
     ) { item ->
-        val isMatchingFilter = item.itemKey in state.matchingKeys
-
         when (item) {
             is KonfeatureItem.Config -> {
-                val isCollapsed = !state.isSearchActive && item.name in state.collapsedConfigs
-                AnimatedFilterItem(visible = isMatchingFilter) {
-                    ConfigGroupHeader(
-                        name = item.description.takeIf { it.isNotEmpty() } ?: item.name,
-                        overrideCount = item.overrideCount,
-                        isCollapsed = isCollapsed,
-                        onClick = { onAction(KonfeatureAction.ConfigHeaderClick(item.name)) },
-                    )
-                }
+                val isCollapsed = !isSearchActive && item.name in collapsedConfigs
+                ConfigGroupHeader(
+                    name = item.description.takeIf { it.isNotEmpty() } ?: item.name,
+                    overrideCount = item.overrideCount,
+                    isCollapsed = isCollapsed,
+                    onClick = { onAction(KonfeatureAction.ConfigHeaderClick(item.name)) },
+                    modifier = Modifier.animateItem(),
+                )
             }
 
             is KonfeatureItem.Value -> {
-                val isVisible = isMatchingFilter && (state.isSearchActive || item.configName !in state.collapsedConfigs)
-                AnimatedFilterItem(visible = isVisible) {
-                    ConfigValueItem(
-                        item = item,
-                        onAction = onAction,
-                    )
-                }
+                ConfigValueItem(
+                    item = item,
+                    onAction = onAction,
+                    modifier = Modifier.animateItem(),
+                )
             }
         }
     }
