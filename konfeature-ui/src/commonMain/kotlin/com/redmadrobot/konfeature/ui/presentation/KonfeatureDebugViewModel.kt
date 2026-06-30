@@ -63,6 +63,9 @@ internal class KonfeatureDebugViewModel(
                 store.setValue(action.key, action.checked)
             }
             is KonfeatureAction.ValueClick -> onValueClick(action.key, action.value)
+            is KonfeatureAction.ResetValueClick -> viewModelScope.launch {
+                store.resetValue(action.key)
+            }
         }
     }
 

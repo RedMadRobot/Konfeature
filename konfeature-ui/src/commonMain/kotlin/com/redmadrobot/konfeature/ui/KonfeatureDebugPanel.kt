@@ -43,6 +43,7 @@ import com.redmadrobot.konfeature.ui.presentation.theme.SurfaceColors
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureSearchBar
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureToggle
 import com.redmadrobot.konfeature.ui.resources.Res
+import com.redmadrobot.konfeature.ui.resources.icon_clear
 import com.redmadrobot.konfeature.ui.resources.icon_keyboard_arrow_down
 import com.redmadrobot.konfeature.ui.resources.icon_keyboard_arrow_up
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_collapse_all
@@ -296,6 +297,19 @@ private fun ConfigValueItem(
             item = item,
             modifier = Modifier.weight(weight = 1f),
         )
+
+        if (item.isDebugSource) {
+            Icon(
+                painter = painterResource(Res.drawable.icon_clear),
+                contentDescription = null,
+                tint = ContentColors.tertiary,
+                modifier = Modifier
+                    .clip(shape = KonfeatureShapes.medium)
+                    .clickable { onAction(KonfeatureAction.ResetValueClick(item.key)) }
+                    .padding(all = 4.dp)
+                    .size(size = 20.dp),
+            )
+        }
 
         if (item.value is KonfeatureValue.Bool) {
             KonfeatureToggle(
