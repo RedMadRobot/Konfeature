@@ -60,21 +60,21 @@ import org.jetbrains.compose.resources.stringResource
  * their values at runtime via [KonfeatureDebugInterceptor].
  *
  * Boolean values are toggled directly in the list. For non-boolean values the screen does not edit
- * anything in place — instead it invokes [onValueClick] with the value's key and its current
- * resolved value, leaving the integrator to decide what to do (open a custom editor pre-filled with
- * the current value, copy to clipboard, etc.) and to apply the result via
- * [KonfeatureDebugStore.setValue].
+ * anything in place — instead it invokes [onValueClick] with a [KonfeatureValueInfo] describing the
+ * tapped value (its key, declared type, current and default values, and current source), leaving the
+ * integrator to decide what to do (open a custom editor pre-filled with the current value, copy to
+ * clipboard, etc.) and to apply the result via [KonfeatureDebugStore.setValue].
  *
  * @param konfeature the built [Konfeature] whose configs are displayed.
  * @param store the [KonfeatureDebugStore] backing the overrides.
- * @param onValueClick invoked when a non-boolean value row is tapped, with the value's key and its
- *   current resolved value.
+ * @param onValueClick invoked when a non-boolean value row is tapped, with a [KonfeatureValueInfo]
+ *   carrying the context needed to build an editor for that value.
  */
 @Composable
 public fun KonfeatureDebugPanel(
     konfeature: Konfeature,
     store: KonfeatureDebugStore,
-    onValueClick: (key: String, value: Any) -> Unit = { _, _ -> },
+    onValueClick: (value: KonfeatureValueInfo) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val viewModel = viewModel {
@@ -285,7 +285,7 @@ private fun ConfigValueItem(
                 if (isBool) {
                     Modifier
                 } else {
-                    Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.key, item.value.unwrap())) }
+                    Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.key)) }
                 }
             )
             .padding(start = 32.dp, end = 8.dp)

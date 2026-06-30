@@ -6,6 +6,8 @@ import com.redmadrobot.konfeature.FeatureValueSpec
 import com.redmadrobot.konfeature.Konfeature
 import com.redmadrobot.konfeature.source.FeatureValueSource
 import com.redmadrobot.konfeature.ui.KonfeatureDebugStore
+import com.redmadrobot.konfeature.ui.KonfeatureValueInfo
+import com.redmadrobot.konfeature.ui.KonfeatureValueType
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
@@ -36,10 +38,14 @@ private const val SEARCH_QUERY_DELAY_MILLIS = 500L
 internal class KonfeatureDebugViewModel(
     private val konfeature: Konfeature,
     private val store: KonfeatureDebugStore,
-    private val onValueClick: (key: String, value: Any) -> Unit,
+    private val onValueClick: (value: KonfeatureValueInfo) -> Unit,
 ) : ViewModel() {
 
     private val configs: ImmutableMap<String, KonfeatureItem.Config> = buildConfigs(konfeature)
+
+    private val valueSpecs: Map<String, FeatureValueSpec<out Any>> = konfeature.spec
+        .flatMap { it.values }
+        .associateBy { it.key }
 
     private val _state = MutableStateFlow(buildInitialState())
     val state: StateFlow<KonfeatureDebugViewState> = _state.asStateFlow()
@@ -62,11 +68,38 @@ internal class KonfeatureDebugViewModel(
             is KonfeatureAction.ToggleChange -> viewModelScope.launch {
                 store.setValue(action.key, action.checked)
             }
-            is KonfeatureAction.ValueClick -> onValueClick(action.key, action.value)
+            is KonfeatureAction.ValueClick -> emitValueClick(action.key)
             is KonfeatureAction.ResetValueClick -> viewModelScope.launch {
                 store.resetValue(action.key)
             }
         }
+    }
+
+    private fun emitValueClick(key: String) {
+        val item = _state.value.values.firstOrNull { it.key == key } ?: return
+        val spec = valueSpecs[key] ?: return
+        onValueClick(
+            KonfeatureValueInfo(
+                key = key,
+                configName = item.configName,
+                description = item.description,
+                type = valueTypeOf(spec.defaultValue),
+                currentValue = item.value.unwrap(),
+                defaultValue = spec.defaultValue,
+                sourceName = item.sourceName,
+                isOverridden = item.isDebugSource,
+            )
+        )
+    }
+
+    private fun valueTypeOf(value: Any): KonfeatureValueType = when (value) {
+        is Boolean -> KonfeatureValueType.BOOLEAN
+        is Int -> KonfeatureValueType.INT
+        is Long -> KonfeatureValueType.LONG
+        is Float -> KonfeatureValueType.FLOAT
+        is Double -> KonfeatureValueType.DOUBLE
+        is String -> KonfeatureValueType.STRING
+        else -> KonfeatureValueType.OTHER
     }
 
     private fun toggleConfigCollapse(configName: String) {
