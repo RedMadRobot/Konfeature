@@ -61,6 +61,10 @@ internal class DefaultKonfeatureDebugStore(
     }
 
     override suspend fun setValue(key: String, value: Any) {
+        require(isPersistable(value)) {
+            "Cannot override '$key': type '${value::class.simpleName}' is not persistable. " +
+                "Only Boolean, Int, Long, Float, Double and String are supported."
+        }
         _values.update { it + (key to value) }
         persist()
         logger?.info("Set debug override '$key' = '$value'")
@@ -100,6 +104,16 @@ internal class DefaultKonfeatureDebugStore(
             isLenient = false
         }
 
+        /**
+         * The set of types the store can persist. Kept as a single source of truth for [setValue]'s
+         * guard and [serializeMap]'s dispatch, so an override can never take effect in memory only to
+         * silently vanish on the next [load]. Both lists must stay in sync.
+         */
+        private fun isPersistable(value: Any): Boolean = when (value) {
+            is Boolean, is Int, is Long, is Float, is Double, is String -> true
+            else -> false
+        }
+
         private fun serializeMap(map: Map<String, Any>, logger: Logger?): String {
             return buildJsonObject {
                 map.forEach { (key, value) ->
@@ -110,6 +124,8 @@ internal class DefaultKonfeatureDebugStore(
                         is Float -> put(key, value.toDouble())
                         is Double -> put(key, value)
                         is String -> put(key, value)
+                        // Unreachable: setValue rejects non-persistable types before they reach _values.
+                        // Kept defensively so a future mutation path cannot corrupt the persisted blob.
                         else -> logger?.warn(
                             "Skipping override '$key': unsupported type '${value::class.simpleName}'",
                         )

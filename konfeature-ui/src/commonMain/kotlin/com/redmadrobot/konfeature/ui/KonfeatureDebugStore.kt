@@ -45,7 +45,16 @@ public interface KonfeatureDebugStore {
      */
     public suspend fun load()
 
-    /** Sets an override for [key]. */
+    /**
+     * Sets an override for [key].
+     *
+     * Only persistable types are accepted: `Boolean`, `Int`, `Long`, `Float`, `Double` and `String`.
+     * Passing any other type throws [IllegalArgumentException] and leaves the current overrides
+     * untouched — this prevents an override that would apply in memory but silently vanish on the next
+     * [load]. Guard against it by not offering an editor for [KonfeatureValueType.OTHER] values.
+     *
+     * @throws IllegalArgumentException if [value] is of a non-persistable type.
+     */
     public suspend fun setValue(key: String, value: Any)
 
     /** Removes the override for a single [key]. */
