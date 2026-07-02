@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,10 +66,14 @@ import org.jetbrains.compose.resources.stringResource
  * integrator to decide what to do (open a custom editor pre-filled with the current value, copy to
  * clipboard, etc.) and to apply the result via [KonfeatureDebugStore.setValue].
  *
- * @param konfeature the built [Konfeature] whose configs are displayed.
- * @param store the [KonfeatureDebugStore] backing the overrides.
+ * @param konfeature the built [Konfeature] whose configs are displayed. Must be a stable instance for
+ *   the lifetime of this composable: the backing [KonfeatureDebugViewModel] is created once and does
+ *   not observe changes to this parameter.
+ * @param store the [KonfeatureDebugStore] backing the overrides. Same stability requirement as
+ *   [konfeature] — pass a remembered/singleton instance, not one recreated on recomposition.
  * @param onValueClick invoked when a non-boolean value row is tapped, with a [KonfeatureValueInfo]
- *   carrying the context needed to build an editor for that value.
+ *   carrying the context needed to build an editor for that value. Unlike [konfeature] and [store],
+ *   this callback may change between recompositions; the latest instance is always invoked.
  */
 @Composable
 public fun KonfeatureDebugPanel(
@@ -77,11 +82,15 @@ public fun KonfeatureDebugPanel(
     onValueClick: (value: KonfeatureValueInfo) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    // The viewModel { } factory runs only once, so it would otherwise capture the onValueClick
+    // identity from the first composition forever. Route calls through a stable wrapper that reads
+    // the latest callback via rememberUpdatedState.
+    val currentOnValueClick = rememberUpdatedState(onValueClick)
     val viewModel = viewModel {
         KonfeatureDebugViewModel(
             konfeature = konfeature,
             store = store,
-            onValueClick = onValueClick,
+            onValueClick = { currentOnValueClick.value(it) },
         )
     }
     val state by viewModel.state.collectAsState()

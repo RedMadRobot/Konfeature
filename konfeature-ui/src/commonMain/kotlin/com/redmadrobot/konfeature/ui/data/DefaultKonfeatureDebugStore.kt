@@ -1,6 +1,8 @@
 package com.redmadrobot.konfeature.ui.data
 
+import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
@@ -54,8 +57,17 @@ internal class DefaultKonfeatureDebugStore(
             if (json != null) {
                 _values.value = deserializeMap(json)
             }
+        } catch (e: CorruptionException) {
+            // The storage file exists but can't be de-serialized (data-format corruption).
+            logger?.warn("Debug overrides storage is corrupted, starting empty: ${e.message}")
+        } catch (e: IOException) {
+            // Transient disk read failure (missing file, permissions, etc.).
+            logger?.warn("Failed to read debug overrides from disk, starting empty: ${e.message}")
+        } catch (e: SerializationException) {
+            // The persisted blob is present but not valid JSON of the expected shape.
+            logger?.warn("Failed to parse persisted debug overrides, starting empty: ${e.message}")
         } catch (e: Exception) {
-            // A debug tool can run without persisted overrides; surface the failure but don't crash.
+            // Catch-all so a debug tool can always run without persisted overrides.
             logger?.warn("Failed to load debug overrides, starting empty: ${e.message}")
         }
     }
@@ -84,14 +96,28 @@ internal class DefaultKonfeatureDebugStore(
 
     override fun currentValue(key: String): Any? = _values.value[key]
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun persist() {
         val map = _values.value
-        dataStore.edit { prefs ->
-            if (map.isEmpty()) {
-                prefs.remove(VALUES_KEY)
-            } else {
-                prefs[VALUES_KEY] = serializeMap(map, logger)
+        try {
+            dataStore.edit { prefs ->
+                if (map.isEmpty()) {
+                    prefs.remove(VALUES_KEY)
+                } else {
+                    prefs[VALUES_KEY] = serializeMap(map, logger)
+                }
             }
+        } catch (e: CorruptionException) {
+            // Existing storage can't be read back to be rewritten (data-format corruption).
+            logger?.warn("Cannot persist debug overrides, storage is corrupted: ${e.message}")
+        } catch (e: IOException) {
+            // Most likely cause here: out of disk space or missing write permissions.
+            logger?.warn("Failed to write debug overrides to disk: ${e.message}")
+        } catch (e: Exception) {
+            // The in-memory override is already applied; a debug tool can tolerate a failed disk
+            // write. Surface the failure but don't crash the coroutine scope that launched the
+            // mutation — the override just won't survive the next reload.
+            logger?.warn("Failed to persist debug overrides: ${e.message}")
         }
     }
 
@@ -140,10 +166,11 @@ internal class DefaultKonfeatureDebugStore(
 
         private fun parseEntry(entry: Map.Entry<String, JsonElement>): Pair<String, Any>? {
             val primitive = entry.value as? JsonPrimitive
-            val value: Any? = primitive?.booleanOrNull
-                ?: primitive?.longOrNull
-                ?: primitive?.doubleOrNull
-                ?: primitive?.content?.takeIf { primitive.isString }
+            val value: Any? = when {
+                primitive == null -> null
+                primitive.isString -> primitive.content
+                else -> primitive.booleanOrNull ?: primitive.longOrNull ?: primitive.doubleOrNull
+            }
             return value?.let { entry.key to it }
         }
     }

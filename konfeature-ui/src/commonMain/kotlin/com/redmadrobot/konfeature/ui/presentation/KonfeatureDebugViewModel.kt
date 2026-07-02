@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.redmadrobot.konfeature.FeatureValueSpec
 import com.redmadrobot.konfeature.Konfeature
 import com.redmadrobot.konfeature.source.FeatureValueSource
+import com.redmadrobot.konfeature.ui.KonfeatureDebugInterceptor
 import com.redmadrobot.konfeature.ui.KonfeatureDebugStore
 import com.redmadrobot.konfeature.ui.KonfeatureValueInfo
 import com.redmadrobot.konfeature.ui.KonfeatureValueType
@@ -24,6 +25,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -55,7 +57,7 @@ internal class KonfeatureDebugViewModel(
             .onEach { refreshValues() }
             .launchIn(viewModelScope)
 
-        observeSearchQuery()
+        observeMatchingKeys()
     }
 
     fun onAction(action: KonfeatureAction) {
@@ -84,7 +86,7 @@ internal class KonfeatureDebugViewModel(
                 configName = item.configName,
                 description = item.description,
                 type = valueTypeOf(spec.defaultValue),
-                currentValue = item.value.unwrap(),
+                currentValue = item.rawValue,
                 defaultValue = spec.defaultValue,
                 sourceName = item.sourceName,
                 isOverridden = item.isDebugSource,
@@ -128,16 +130,24 @@ internal class KonfeatureDebugViewModel(
         }
     }
 
+    /**
+     * Keeps [KonfeatureDebugViewState.matchingKeys] a derived function of both the search query and
+     * the current [KonfeatureDebugViewState.values]. Typing is debounced, while a values refresh
+     * recomputes immediately against the current query so the filter never lags behind the list.
+     */
     @OptIn(FlowPreview::class)
-    private fun observeSearchQuery() {
-        _state
+    private fun observeMatchingKeys() {
+        val queries = _state
             .map { it.searchQuery }
             .distinctUntilChanged()
             .debounce(SEARCH_QUERY_DELAY_MILLIS)
-            .onEach { query ->
-                val keys = computeMatchingKeys(_state.value.values, query)
-                _state.update { it.copy(matchingKeys = keys) }
-            }
+
+        val values = _state
+            .map { it.values }
+            .distinctUntilChanged()
+
+        combine(queries, values) { query, currentValues -> computeMatchingKeys(currentValues, query) }
+            .onEach { keys -> _state.update { it.copy(matchingKeys = keys) } }
             .launchIn(viewModelScope)
     }
 
@@ -191,16 +201,17 @@ internal class KonfeatureDebugViewModel(
         return KonfeatureItem.Value(
             key = valueSpec.key,
             value = KonfeatureValue.of(configValue.value),
+            rawValue = configValue.value,
             configName = configName,
             sourceName = getSourceName(source),
             description = valueSpec.description,
-            isDebugSource = isDebugSource(source, valueSpec.key),
+            isDebugSource = isDebugSource(source),
             isDefaultSource = source is FeatureValueSource.Default,
         )
     }
 
-    private fun isDebugSource(source: FeatureValueSource, key: String): Boolean {
-        return source is FeatureValueSource.Interceptor && store.currentValue(key) != null
+    private fun isDebugSource(source: FeatureValueSource): Boolean {
+        return source is FeatureValueSource.Interceptor && source.name == KonfeatureDebugInterceptor.NAME
     }
 
     private fun getSourceName(source: FeatureValueSource): String {

@@ -27,8 +27,12 @@ public class KonfeatureDebugInterceptor(
     override val name: String = NAME
 
     override fun intercept(valueSource: FeatureValueSource, key: String, value: Any): Any? {
+        // The presence of a store entry — not whether it differs from the resolved value — is what makes
+        // this an override. Returning it unconditionally lets Konfeature tag the value as coming from this
+        // interceptor, so an override equal to the source/default value is still marked and counted
+        // (notably a Boolean toggle set to the value it already had).
         val override = store.currentValue(key) ?: return null
-        return coerceToType(override, value).takeIf { it != value }
+        return coerceToType(override, value)
     }
 
     /**

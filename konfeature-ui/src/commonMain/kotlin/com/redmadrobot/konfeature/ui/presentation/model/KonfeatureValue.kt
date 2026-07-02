@@ -12,14 +12,6 @@ internal sealed class KonfeatureValue {
 
     data class Unsupported(val raw: Any) : KonfeatureValue()
 
-    fun unwrap(): Any = when (this) {
-        is Bool -> value
-        is Int64 -> value
-        is Float64 -> value
-        is Text -> value
-        is Unsupported -> raw
-    }
-
     companion object {
         fun of(raw: Any): KonfeatureValue = when (raw) {
             is Boolean -> Bool(raw)

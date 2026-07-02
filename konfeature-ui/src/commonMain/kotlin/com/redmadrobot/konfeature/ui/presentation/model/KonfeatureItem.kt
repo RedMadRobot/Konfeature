@@ -21,6 +21,7 @@ internal sealed interface KonfeatureItem {
         val key: String,
         val configName: String,
         val value: KonfeatureValue,
+        val rawValue: Any,
         val description: String,
         val sourceName: String,
         val isDebugSource: Boolean,

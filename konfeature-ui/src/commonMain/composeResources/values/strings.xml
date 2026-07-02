@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="konfeature_plugin_refresh">Refresh</string>
+    <string name="konfeature_plugin_refresh">Re-resolve</string>
     <string name="konfeature_plugin_collapse_all">Collapse All</string>
     <string name="konfeature_plugin_reset_all">Reset All</string>
 
