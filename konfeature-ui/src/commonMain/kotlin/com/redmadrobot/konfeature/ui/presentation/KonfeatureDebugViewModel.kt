@@ -44,10 +44,6 @@ internal class KonfeatureDebugViewModel(
 
     private val configs: ImmutableMap<String, KonfeatureItem.Config> = buildConfigs(konfeature)
 
-    private val valueSpecs: Map<String, FeatureValueSpec<out Any>> = konfeature.spec
-        .flatMap { it.values }
-        .associateBy { it.key }
-
     private val _state = MutableStateFlow(buildInitialState())
     val state: StateFlow<KonfeatureDebugViewState> = _state.asStateFlow()
 
@@ -69,27 +65,27 @@ internal class KonfeatureDebugViewModel(
             is KonfeatureAction.ToggleChange -> viewModelScope.launch {
                 store.setValue(action.key, action.checked)
             }
-            is KonfeatureAction.ValueClick -> emitValueClick(action.key)
+            is KonfeatureAction.ValueClick -> emitValueClick(action.configName, action.key)
             is KonfeatureAction.ResetValueClick -> viewModelScope.launch {
                 store.resetValue(action.key)
             }
         }
     }
 
-    private fun emitValueClick(key: String) {
-        val item = _state.value.values.firstOrNull { it.key == key }
-        val spec = valueSpecs[key]
-        if (item == null || spec == null) return
-        val type = valueTypeOf(spec.defaultValue)
+    private fun emitValueClick(configName: String, key: String) {
+        val item = _state.value.values
+            .firstOrNull { it.configName == configName && it.key == key }
+            ?: return
+        val type = valueTypeOf(item.defaultValue)
         if (type == KonfeatureValueType.OTHER) return
         onValueClick(
             KonfeatureValueInfo(
-                key = key,
+                key = item.key,
                 configName = item.configName,
                 description = item.description,
                 type = type,
                 currentValue = item.rawValue,
-                defaultValue = spec.defaultValue,
+                defaultValue = item.defaultValue,
                 sourceName = item.sourceName,
                 isOverridden = item.isDebugSource,
             )
@@ -205,6 +201,7 @@ internal class KonfeatureDebugViewModel(
             key = valueSpec.key,
             displayValue = formatValue(rawValue),
             rawValue = rawValue,
+            defaultValue = valueSpec.defaultValue,
             isEditable = valueTypeOf(rawValue) != KonfeatureValueType.OTHER,
             configName = configName,
             sourceName = getSourceName(source),
@@ -252,7 +249,7 @@ internal class KonfeatureDebugViewModel(
         return flatMapTo(mutableSetOf()) { value ->
             listOf(
                 "${KonfeatureItem.ITEM_KEY_PREFIX_CONFIG}${value.configName}",
-                "${KonfeatureItem.ITEM_KEY_PREFIX_VALUE}${value.key}",
+                KonfeatureItem.Value.getItemKey(value.configName, value.key),
             )
         }.toImmutableSet()
     }

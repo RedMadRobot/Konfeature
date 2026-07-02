@@ -295,7 +295,7 @@ private fun ConfigValueItem(
             .fillMaxWidth()
             .then(
                 if (toggleValue == null && item.isEditable) {
-                    Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.key)) }
+                    Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.configName, item.key)) }
                 } else {
                     Modifier
                 }
