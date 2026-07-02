@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.luminance
  * slots via `copy`.
  *
  * @property background screen background.
- * @property surface elevated surfaces (search bar, cards).
+ * @property surface elevated surfaces (the search bar).
  * @property surfaceHighlight subtle highlighted surface (override-count badge background).
  * @property stroke borders and dividers, including the toggle track in its off state.
  * @property contentPrimary primary text and icons.

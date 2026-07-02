@@ -31,7 +31,6 @@ import com.redmadrobot.konfeature.Konfeature
 import com.redmadrobot.konfeature.ui.presentation.KonfeatureDebugViewModel
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
-import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
 import com.redmadrobot.konfeature.ui.presentation.state.KonfeatureDebugViewState
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
@@ -56,11 +55,15 @@ import org.jetbrains.compose.resources.stringResource
  * Compose Multiplatform screen that displays all registered feature configs and allows overriding
  * their values at runtime via [KonfeatureDebugInterceptor].
  *
- * Boolean values are toggled directly in the list. For non-boolean values the screen does not edit
+ * Boolean values are toggled directly in the list. For other editable values the screen does not edit
  * anything in place — instead it invokes [onValueClick] with a [KonfeatureValueInfo] describing the
  * tapped value (its key, declared type, current and default values, and current source), leaving the
  * integrator to decide what to do (open a custom editor pre-filled with the current value, copy to
  * clipboard, etc.) and to apply the result via [KonfeatureDebugStore.setValue].
+ *
+ * Values of a type the debug store cannot persist ([KonfeatureValueType.OTHER]) are shown read-only:
+ * their rows are not clickable and [onValueClick] is never invoked for them, since they could not be
+ * overridden anyway.
  *
  * @param konfeature the built [Konfeature] whose configs are displayed. Must be a stable instance for
  *   the lifetime of this composable: the backing [KonfeatureDebugViewModel] is created once and does
@@ -286,15 +289,15 @@ private fun ConfigValueItem(
     onAction: (KonfeatureAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isBool = item.value is KonfeatureValue.Bool
+    val toggleValue = item.rawValue as? Boolean
     Row(
         modifier = modifier
             .fillMaxWidth()
             .then(
-                if (isBool) {
-                    Modifier
-                } else {
+                if (toggleValue == null && item.isEditable) {
                     Modifier.clickable { onAction(KonfeatureAction.ValueClick(item.key)) }
+                } else {
+                    Modifier
                 }
             )
             .padding(start = 32.dp, end = 8.dp)
@@ -320,9 +323,9 @@ private fun ConfigValueItem(
             )
         }
 
-        if (item.value is KonfeatureValue.Bool) {
+        if (toggleValue != null) {
             KonfeatureToggle(
-                checked = item.value.value,
+                checked = toggleValue,
                 onCheckedChange = { newValue -> onAction(KonfeatureAction.ToggleChange(item.key, newValue)) },
             )
         }
@@ -348,7 +351,7 @@ private fun ValueInfoColumn(
                 color = KonfeatureTheme.colors.contentTertiary,
             )
         }
-        if (item.value is KonfeatureValue.Bool) {
+        if (item.rawValue is Boolean) {
             ValueSourceLabel(item = item, modifier = Modifier.padding(top = 8.dp))
         } else {
             ValueWithSource(item = item)
@@ -367,7 +370,7 @@ private fun ValueWithSource(
         horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
     ) {
         Text(
-            text = formatValue(value = item.value),
+            text = item.displayValue,
             style = KonfeatureTypography.labelMedium,
             color = sourceColor(item = item),
         )
@@ -405,14 +408,6 @@ private fun SourceLabel(
         },
         modifier = modifier,
     )
-}
-
-private fun formatValue(value: KonfeatureValue): String = when (value) {
-    is KonfeatureValue.Bool -> value.value.toString()
-    is KonfeatureValue.Int64 -> value.value.toString()
-    is KonfeatureValue.Float64 -> value.value.toString()
-    is KonfeatureValue.Text -> "\"${value.value}\""
-    is KonfeatureValue.Unsupported -> value.raw.toString()
 }
 
 @Composable

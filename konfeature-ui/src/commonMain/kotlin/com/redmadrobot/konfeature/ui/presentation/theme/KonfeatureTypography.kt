@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.sp
 
 @Stable
 internal data object KonfeatureTypography {
-    /** Section headers, group names. */
+    /** Config group headers. */
     val titleMedium: TextStyle = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
@@ -16,7 +16,7 @@ internal data object KonfeatureTypography {
         letterSpacing = 0.15.sp,
     )
 
-    /** Secondary body text, config values. */
+    /** Search hint and placeholder text. */
     val bodyMedium: TextStyle = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
@@ -24,10 +24,10 @@ internal data object KonfeatureTypography {
         letterSpacing = 0.25.sp,
     )
 
-    /** Technical values (keys, descriptions) — monospace variant of [bodyMedium]. */
+    /** Technical text: value keys, descriptions, and the search input — monospace variant of [bodyMedium]. */
     val mono: TextStyle = bodyMedium.copy(fontFamily = FontFamily.Monospace)
 
-    /** Tab labels, chip text, button labels. */
+    /** Toolbar chip labels. */
     val labelLarge: TextStyle = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
@@ -35,7 +35,7 @@ internal data object KonfeatureTypography {
         letterSpacing = 0.1.sp,
     )
 
-    /** Badges, source indicators. */
+    /** Non-boolean config values and their source labels. */
     val labelMedium: TextStyle = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
@@ -43,7 +43,7 @@ internal data object KonfeatureTypography {
         letterSpacing = 0.5.sp,
     )
 
-    /** Section headers (uppercase), overline text. */
+    /** Override-count badge on config group headers. */
     val labelSmall: TextStyle = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,

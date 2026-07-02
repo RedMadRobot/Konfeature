@@ -20,8 +20,9 @@ internal sealed interface KonfeatureItem {
     data class Value(
         val key: String,
         val configName: String,
-        val value: KonfeatureValue,
+        val displayValue: String,
         val rawValue: Any,
+        val isEditable: Boolean,
         val description: String,
         val sourceName: String,
         val isDebugSource: Boolean,

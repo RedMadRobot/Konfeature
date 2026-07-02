@@ -11,7 +11,6 @@ import com.redmadrobot.konfeature.ui.KonfeatureValueInfo
 import com.redmadrobot.konfeature.ui.KonfeatureValueType
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
-import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
 import com.redmadrobot.konfeature.ui.presentation.state.KonfeatureDebugViewState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
@@ -78,14 +77,17 @@ internal class KonfeatureDebugViewModel(
     }
 
     private fun emitValueClick(key: String) {
-        val item = _state.value.values.firstOrNull { it.key == key } ?: return
-        val spec = valueSpecs[key] ?: return
+        val item = _state.value.values.firstOrNull { it.key == key }
+        val spec = valueSpecs[key]
+        if (item == null || spec == null) return
+        val type = valueTypeOf(spec.defaultValue)
+        if (type == KonfeatureValueType.OTHER) return
         onValueClick(
             KonfeatureValueInfo(
                 key = key,
                 configName = item.configName,
                 description = item.description,
-                type = valueTypeOf(spec.defaultValue),
+                type = type,
                 currentValue = item.rawValue,
                 defaultValue = spec.defaultValue,
                 sourceName = item.sourceName,
@@ -197,17 +199,23 @@ internal class KonfeatureDebugViewModel(
     ): KonfeatureItem.Value {
         val configValue = konfeature.getValue(valueSpec)
         val source = configValue.source
+        val rawValue = configValue.value
 
         return KonfeatureItem.Value(
             key = valueSpec.key,
-            value = KonfeatureValue.of(configValue.value),
-            rawValue = configValue.value,
+            displayValue = formatValue(rawValue),
+            rawValue = rawValue,
+            isEditable = valueTypeOf(rawValue) != KonfeatureValueType.OTHER,
             configName = configName,
             sourceName = getSourceName(source),
             description = valueSpec.description,
             isDebugSource = isDebugSource(source),
             isDefaultSource = source is FeatureValueSource.Default,
         )
+    }
+
+    private fun formatValue(value: Any): String {
+        return if (value is String) "\"$value\"" else value.toString()
     }
 
     private fun isDebugSource(source: FeatureValueSource): Boolean {
