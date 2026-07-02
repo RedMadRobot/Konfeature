@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.redmadrobot.konfeature.Konfeature
@@ -34,13 +33,10 @@ import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureValue
 import com.redmadrobot.konfeature.ui.presentation.state.KonfeatureDebugViewState
-import com.redmadrobot.konfeature.ui.presentation.theme.BackgroundColors
-import com.redmadrobot.konfeature.ui.presentation.theme.ContentColors
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
+import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
-import com.redmadrobot.konfeature.ui.presentation.theme.SourceColors
-import com.redmadrobot.konfeature.ui.presentation.theme.StrokeColors
-import com.redmadrobot.konfeature.ui.presentation.theme.SurfaceColors
+import com.redmadrobot.konfeature.ui.presentation.theme.LocalKonfeatureColors
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureSearchBar
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureToggle
 import com.redmadrobot.konfeature.ui.resources.Res
@@ -82,9 +78,6 @@ public fun KonfeatureDebugPanel(
     onValueClick: (value: KonfeatureValueInfo) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    // The viewModel { } factory runs only once, so it would otherwise capture the onValueClick
-    // identity from the first composition forever. Route calls through a stable wrapper that reads
-    // the latest callback via rememberUpdatedState.
     val currentOnValueClick = rememberUpdatedState(onValueClick)
     val viewModel = viewModel {
         KonfeatureDebugViewModel(
@@ -95,11 +88,18 @@ public fun KonfeatureDebugPanel(
     }
     val state by viewModel.state.collectAsState()
 
-    KonfeatureLayout(
-        modifier = modifier,
-        state = state,
-        onAction = viewModel::onAction,
-    )
+    val layout: @Composable () -> Unit = {
+        KonfeatureLayout(
+            modifier = modifier,
+            state = state,
+            onAction = viewModel::onAction,
+        )
+    }
+    if (LocalKonfeatureColors.current == null) {
+        KonfeatureTheme { layout() }
+    } else {
+        layout()
+    }
 }
 
 @Composable
@@ -111,7 +111,7 @@ private fun KonfeatureLayout(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = BackgroundColors.primary)
+            .background(color = KonfeatureTheme.colors.background)
     ) {
         ToolbarChips(onAction = onAction)
         KonfeatureSearchBar(
@@ -124,7 +124,7 @@ private fun KonfeatureLayout(
             Text(
                 text = stringResource(Res.string.konfeature_plugin_search_empty),
                 style = KonfeatureTypography.bodyMedium,
-                color = ContentColors.tertiary,
+                color = KonfeatureTheme.colors.contentTertiary,
                 modifier = Modifier.padding(all = 16.dp),
             )
         }
@@ -216,12 +216,12 @@ private fun ActionChip(
     Text(
         text = label,
         style = KonfeatureTypography.labelLarge,
-        color = ContentColors.secondary,
+        color = KonfeatureTheme.colors.contentSecondary,
         modifier = modifier
             .clip(shape = KonfeatureShapes.medium)
             .border(
                 width = 1.dp,
-                color = StrokeColors.primary,
+                color = KonfeatureTheme.colors.stroke,
                 shape = KonfeatureShapes.medium,
             )
             .clickable(onClick = onClick)
@@ -255,23 +255,23 @@ private fun ConfigGroupHeader(
                 }
             ),
             contentDescription = null,
-            tint = ContentColors.tertiary,
+            tint = KonfeatureTheme.colors.contentTertiary,
             modifier = Modifier.size(size = 20.dp),
         )
         Text(
             text = name,
             style = KonfeatureTypography.titleMedium,
-            color = ContentColors.primary,
+            color = KonfeatureTheme.colors.contentPrimary,
             modifier = Modifier.weight(weight = 1f),
         )
         if (overrideCount > 0) {
             Text(
                 text = overrideCount.toString(),
                 style = KonfeatureTypography.labelSmall,
-                color = ContentColors.accent,
+                color = KonfeatureTheme.colors.accent,
                 modifier = Modifier
                     .background(
-                        color = SurfaceColors.tertiary,
+                        color = KonfeatureTheme.colors.surfaceHighlight,
                         shape = KonfeatureShapes.small,
                     )
                     .padding(horizontal = 8.dp, vertical = 2.dp),
@@ -311,7 +311,7 @@ private fun ConfigValueItem(
             Icon(
                 painter = painterResource(Res.drawable.icon_clear),
                 contentDescription = null,
-                tint = ContentColors.tertiary,
+                tint = KonfeatureTheme.colors.contentTertiary,
                 modifier = Modifier
                     .clip(shape = KonfeatureShapes.medium)
                     .clickable { onAction(KonfeatureAction.ResetValueClick(item.key)) }
@@ -337,15 +337,15 @@ private fun ValueInfoColumn(
     Column(modifier = modifier) {
         Text(
             text = item.key,
-            style = KonfeatureTypography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-            color = ContentColors.secondary,
+            style = KonfeatureTypography.mono,
+            color = KonfeatureTheme.colors.contentSecondary,
         )
         if (item.description.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = item.description,
-                style = KonfeatureTypography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                color = ContentColors.tertiary,
+                style = KonfeatureTypography.mono,
+                color = KonfeatureTheme.colors.contentTertiary,
             )
         }
         if (item.value is KonfeatureValue.Bool) {
@@ -399,9 +399,9 @@ private fun SourceLabel(
         text = source,
         style = KonfeatureTypography.labelMedium,
         color = if (isDebug) {
-            ContentColors.teal
+            KonfeatureTheme.colors.sourceDebug
         } else {
-            SourceColors.remoteText
+            KonfeatureTheme.colors.sourceRemote
         },
         modifier = modifier,
     )
@@ -417,7 +417,7 @@ private fun formatValue(value: KonfeatureValue): String = when (value) {
 
 @Composable
 private fun sourceColor(item: KonfeatureItem.Value): Color = when {
-    item.isDebugSource -> ContentColors.teal
-    !item.isDefaultSource -> SourceColors.remoteText
-    else -> ContentColors.tertiary
+    item.isDebugSource -> KonfeatureTheme.colors.sourceDebug
+    !item.isDefaultSource -> KonfeatureTheme.colors.sourceRemote
+    else -> KonfeatureTheme.colors.contentTertiary
 }

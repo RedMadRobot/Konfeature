@@ -1,56 +1,136 @@
 package com.redmadrobot.konfeature.ui.presentation.theme
 
-import androidx.compose.runtime.Stable
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 
-@Stable
-internal data object BackgroundColors {
-    val primary: Color = KonfeatureBaseColors.Purple99
-    val secondary: Color = KonfeatureBaseColors.Purple95
-    val tertiary: Color = KonfeatureBaseColors.Purple90
-}
+/**
+ * Semantic color palette for the Konfeature debug panel.
+ *
+ * These are the only theming tokens the panel reads at runtime, resolved through [KonfeatureTheme].
+ * Integrators customize the panel by passing a modified instance to `KonfeatureTheme(colors = ...)`,
+ * typically starting from [lightKonfeatureColors] / [darkKonfeatureColors] and overriding individual
+ * slots via `copy`.
+ *
+ * @property background screen background.
+ * @property surface elevated surfaces (search bar, cards).
+ * @property surfaceHighlight subtle highlighted surface (override-count badge background).
+ * @property stroke borders and dividers, including the toggle track in its off state.
+ * @property contentPrimary primary text and icons.
+ * @property contentSecondary secondary text (config keys, chip labels).
+ * @property contentTertiary tertiary text and icons (hints, descriptions, the default value source).
+ * @property accent accent elements: accent text, cursor, override badge, the toggle track when on.
+ * @property onAccent content drawn on top of [accent] (the toggle thumb).
+ * @property sourceRemote label and value color for values coming from a remote feature source.
+ * @property sourceDebug label and value color for values overridden via the debug store.
+ */
+@Immutable
+public data class KonfeatureColors(
+    public val background: Color,
+    public val surface: Color,
+    public val surfaceHighlight: Color,
+    public val stroke: Color,
+    public val contentPrimary: Color,
+    public val contentSecondary: Color,
+    public val contentTertiary: Color,
+    public val accent: Color,
+    public val onAccent: Color,
+    public val sourceRemote: Color,
+    public val sourceDebug: Color,
+)
 
-@Stable
-internal data object ButtonColors {
-    val primary: Color = KonfeatureBaseColors.Purple40
-    val onPrimary: Color = KonfeatureBaseColors.White
-    val secondary: Color = KonfeatureBaseColors.Purple90
-    val onSecondary: Color = KonfeatureBaseColors.Purple40
-    val error: Color = KonfeatureBaseColors.Error40
-    val onError: Color = KonfeatureBaseColors.White
-}
+/**
+ * Default light color palette. Override individual slots via named arguments (or [KonfeatureColors.copy])
+ * to brand the panel while keeping the rest of the defaults.
+ */
+public fun lightKonfeatureColors(
+    background: Color = KonfeatureBaseColors.Purple99,
+    surface: Color = KonfeatureBaseColors.Purple95,
+    surfaceHighlight: Color = KonfeatureBaseColors.Purple90,
+    stroke: Color = KonfeatureBaseColors.Neutral95,
+    contentPrimary: Color = KonfeatureBaseColors.Neutral10,
+    contentSecondary: Color = KonfeatureBaseColors.Neutral30,
+    contentTertiary: Color = KonfeatureBaseColors.Neutral50,
+    accent: Color = KonfeatureBaseColors.Purple40,
+    onAccent: Color = KonfeatureBaseColors.White,
+    sourceRemote: Color = KonfeatureBaseColors.Orange,
+    sourceDebug: Color = KonfeatureBaseColors.Green,
+): KonfeatureColors = KonfeatureColors(
+    background = background,
+    surface = surface,
+    surfaceHighlight = surfaceHighlight,
+    stroke = stroke,
+    contentPrimary = contentPrimary,
+    contentSecondary = contentSecondary,
+    contentTertiary = contentTertiary,
+    accent = accent,
+    onAccent = onAccent,
+    sourceRemote = sourceRemote,
+    sourceDebug = sourceDebug,
+)
 
-@Stable
-internal data object ContentColors {
-    val primary: Color = KonfeatureBaseColors.Neutral10
-    val secondary: Color = KonfeatureBaseColors.Neutral30
-    val tertiary: Color = KonfeatureBaseColors.Neutral50
-    val accent: Color = KonfeatureBaseColors.Purple40
-    val error: Color = KonfeatureBaseColors.Error40
-    val teal: Color = KonfeatureBaseColors.Teal
-}
+/**
+ * Default dark color palette. Override individual slots via named arguments (or [KonfeatureColors.copy])
+ * to brand the panel while keeping the rest of the defaults.
+ */
+public fun darkKonfeatureColors(
+    background: Color = KonfeatureBaseColors.Neutral10,
+    surface: Color = KonfeatureBaseColors.NeutralVariant20,
+    surfaceHighlight: Color = KonfeatureBaseColors.NeutralVariant30,
+    stroke: Color = KonfeatureBaseColors.NeutralVariant40,
+    contentPrimary: Color = KonfeatureBaseColors.Neutral90,
+    contentSecondary: Color = KonfeatureBaseColors.Neutral80,
+    contentTertiary: Color = KonfeatureBaseColors.Neutral60,
+    accent: Color = KonfeatureBaseColors.Purple80,
+    onAccent: Color = KonfeatureBaseColors.Neutral10,
+    sourceRemote: Color = KonfeatureBaseColors.OrangeDarkText,
+    sourceDebug: Color = KonfeatureBaseColors.GreenDarkText,
+): KonfeatureColors = KonfeatureColors(
+    background = background,
+    surface = surface,
+    surfaceHighlight = surfaceHighlight,
+    stroke = stroke,
+    contentPrimary = contentPrimary,
+    contentSecondary = contentSecondary,
+    contentTertiary = contentTertiary,
+    accent = accent,
+    onAccent = onAccent,
+    sourceRemote = sourceRemote,
+    sourceDebug = sourceDebug,
+)
 
-@Stable
-internal data object StrokeColors {
-    val primary: Color = KonfeatureBaseColors.Neutral95
-    val secondary: Color = KonfeatureBaseColors.Neutral80
-}
-
-@Stable
-internal data object SurfaceColors {
-    val primary: Color = KonfeatureBaseColors.Purple99
-    val secondary: Color = KonfeatureBaseColors.Purple95
-    val tertiary: Color = KonfeatureBaseColors.Purple90
-    val dialog: Color = KonfeatureBaseColors.Neutral99
-    val selected: Color = KonfeatureBaseColors.Purple90
-}
-
-@Stable
-internal data object SourceColors {
-    val defaultText: Color = KonfeatureBaseColors.Neutral50
-    val defaultBackground: Color = KonfeatureBaseColors.Neutral95
-    val debugText: Color = KonfeatureBaseColors.Green
-    val debugBackground: Color = KonfeatureBaseColors.GreenLight
-    val remoteText: Color = KonfeatureBaseColors.Orange
-    val remoteBackground: Color = KonfeatureBaseColors.OrangeLight
+/**
+ * Maps the semantic palette onto a Material 3 [ColorScheme] so that Material components used inside the
+ * panel (ripples, text selection, `IconButton`) follow the same light/dark appearance. Light vs. dark
+ * is inferred from the luminance of [background].
+ */
+internal fun KonfeatureColors.toMaterialColorScheme(): ColorScheme {
+    return if (background.luminance() < 0.5f) {
+        darkColorScheme(
+            primary = accent,
+            onPrimary = onAccent,
+            background = background,
+            onBackground = contentPrimary,
+            surface = surface,
+            onSurface = contentPrimary,
+            surfaceVariant = surfaceHighlight,
+            onSurfaceVariant = contentSecondary,
+            outline = stroke,
+        )
+    } else {
+        lightColorScheme(
+            primary = accent,
+            onPrimary = onAccent,
+            background = background,
+            onBackground = contentPrimary,
+            surface = surface,
+            onSurface = contentPrimary,
+            surfaceVariant = surfaceHighlight,
+            onSurfaceVariant = contentSecondary,
+            outline = stroke,
+        )
+    }
 }

@@ -16,12 +16,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import com.redmadrobot.konfeature.ui.presentation.theme.ContentColors
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
+import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
-import com.redmadrobot.konfeature.ui.presentation.theme.SurfaceColors
 import com.redmadrobot.konfeature.ui.resources.Res
 import com.redmadrobot.konfeature.ui.resources.icon_clear
 import com.redmadrobot.konfeature.ui.resources.icon_search
@@ -45,7 +43,7 @@ internal fun KonfeatureSearchBar(
             .fillMaxWidth()
             .heightIn(min = minHeight)
             .background(
-                color = SurfaceColors.secondary,
+                color = KonfeatureTheme.colors.surface,
                 shape = KonfeatureShapes.medium,
             )
             .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -54,7 +52,7 @@ internal fun KonfeatureSearchBar(
         Icon(
             painter = painterResource(Res.drawable.icon_search),
             contentDescription = null,
-            tint = ContentColors.tertiary,
+            tint = KonfeatureTheme.colors.contentTertiary,
             modifier = Modifier.size(size = 20.dp),
         )
         BasicTextField(
@@ -63,18 +61,15 @@ internal fun KonfeatureSearchBar(
             modifier = Modifier
                 .weight(weight = 1f)
                 .padding(horizontal = 8.dp),
-            textStyle = KonfeatureTypography.bodyMedium.copy(
-                fontFamily = FontFamily.Monospace,
-                color = ContentColors.primary,
-            ),
+            textStyle = KonfeatureTypography.mono.copy(color = KonfeatureTheme.colors.contentPrimary),
             singleLine = true,
-            cursorBrush = SolidColor(value = ContentColors.accent),
+            cursorBrush = SolidColor(value = KonfeatureTheme.colors.accent),
             decorationBox = { innerTextField ->
                 if (query.isEmpty()) {
                     Text(
                         text = placeholder,
                         style = KonfeatureTypography.bodyMedium,
-                        color = ContentColors.tertiary,
+                        color = KonfeatureTheme.colors.contentTertiary,
                     )
                 }
                 innerTextField()
@@ -88,7 +83,7 @@ internal fun KonfeatureSearchBar(
                 Icon(
                     painter = painterResource(Res.drawable.icon_clear),
                     contentDescription = null,
-                    tint = ContentColors.tertiary,
+                    tint = KonfeatureTheme.colors.contentTertiary,
                     modifier = Modifier.size(size = 20.dp),
                 )
             }

@@ -17,11 +17,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.redmadrobot.konfeature.ui.presentation.theme.ContentColors
-import com.redmadrobot.konfeature.ui.presentation.theme.StrokeColors
+import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
 
 @Composable
 internal fun KonfeatureToggle(
@@ -30,9 +28,9 @@ internal fun KonfeatureToggle(
     modifier: Modifier = Modifier,
 ) {
     val (trackColor, thumbOffset) = if (checked) {
-        ContentColors.teal to 22.dp
+        KonfeatureTheme.colors.accent to 22.dp
     } else {
-        StrokeColors.primary to 2.dp
+        KonfeatureTheme.colors.stroke to 2.dp
     }
     val animatedTrackColor by animateColorAsState(
         targetValue = trackColor,
@@ -64,7 +62,7 @@ internal fun KonfeatureToggle(
                 modifier = Modifier
                     .padding(start = animatedThumbOffset, top = 2.dp)
                     .size(size = 20.dp)
-                    .background(color = Color.White, shape = CircleShape),
+                    .background(color = KonfeatureTheme.colors.onAccent, shape = CircleShape),
             )
         }
     }
