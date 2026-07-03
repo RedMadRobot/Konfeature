@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.kotlin.multiplatform.library")
-    alias(libs.plugins.compose.compiler)
+    alias(stack.plugins.kotlin.compose)
     alias(libs.plugins.composeMultiplatform)
     convention.publishing
     convention.detekt
@@ -31,13 +31,13 @@ kotlin {
             api(projects.konfeature)
             api(libs.compose.runtime)
             api(libs.compose.ui)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.collections.immutable)
+            implementation(stack.kotlinx.coroutines.core)
+            implementation(stack.kotlinx.collections.immutable)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.lifecycle.viewmodel.compose)
-            implementation(libs.datastore.preferences.core)
-            implementation(libs.serialization.json)
+            implementation(androidx.datastore.preferences.core)
+            implementation(stack.kotlinx.serialization.json)
             implementation(libs.compose.resources)
         }
     }

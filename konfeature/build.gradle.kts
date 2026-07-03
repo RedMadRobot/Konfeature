@@ -21,14 +21,12 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
-            implementation(libs.kotest.assertions.core)
+            implementation(stack.kotest.assertions.core)
         }
     }
 
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
-    abiValidation {
-        enabled.set(true)
-    }
+    abiValidation()
 }
 
 tasks.check.configure {

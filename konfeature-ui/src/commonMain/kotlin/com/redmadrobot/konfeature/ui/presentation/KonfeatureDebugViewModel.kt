@@ -105,7 +105,11 @@ internal class KonfeatureDebugViewModel(
     private fun toggleConfigCollapse(configName: String) {
         _state.update { state ->
             val collapsed = state.collapsedConfigs
-            val newCollapsed = if (configName in collapsed) collapsed.remove(configName) else collapsed.add(configName)
+            val newCollapsed = if (configName in collapsed) {
+                collapsed.removing(configName)
+            } else {
+                collapsed.adding(configName)
+            }
             state.copy(collapsedConfigs = newCollapsed)
         }
     }

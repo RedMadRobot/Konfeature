@@ -24,7 +24,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.konfeature)
-            implementation(libs.kotlinx.coroutines.core)
+            implementation(stack.kotlinx.coroutines.core)
         }
     }
 }
