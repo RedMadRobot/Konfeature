@@ -6,7 +6,7 @@ plugins {
 
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
-    signAllPublications()
+    if (isRunningOnCi) signAllPublications()
 
     pom {
         name.convention(project.provider { project.name })
