@@ -1,4 +1,5 @@
 import com.redmadrobot.konfeature.Versions
+import com.redmadrobot.konfeature.build.CheckNoopApiTask
 
 plugins {
     kotlin("multiplatform")
@@ -35,4 +36,16 @@ kotlin {
 
 tasks.check.configure {
     dependsOn("checkLegacyAbi")
+}
+
+val checkApiMatchesUi by tasks.registering(CheckNoopApiTask::class) {
+    group = "verification"
+    description = "Verifies konfeature-ui-noop public API stays in sync with konfeature-ui"
+
+    noopDump.set(layout.projectDirectory.file("api/konfeature-ui-noop.klib.api"))
+    uiDump.set(project(":konfeature-ui").layout.projectDirectory.file("api/konfeature-ui.klib.api"))
+}
+
+tasks.check.configure {
+    dependsOn(checkApiMatchesUi)
 }
