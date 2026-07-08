@@ -3,6 +3,7 @@ plugins {
     id("com.android.kotlin.multiplatform.library")
     alias(stack.plugins.kotlin.compose)
     alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.poko)
     convention.publishing
     convention.detekt
 }

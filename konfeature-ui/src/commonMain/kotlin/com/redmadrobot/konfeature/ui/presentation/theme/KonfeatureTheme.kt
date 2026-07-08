@@ -40,10 +40,11 @@ public object KonfeatureTheme {
  */
 @Composable
 public fun KonfeatureTheme(
-    colors: KonfeatureColors = if (isSystemInDarkTheme()) darkKonfeatureColors() else lightKonfeatureColors(),
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    colors: KonfeatureColors = if (isDarkTheme) darkKonfeatureColors() else lightKonfeatureColors(),
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(LocalKonfeatureColors provides colors) {
-        MaterialTheme(colorScheme = colors.toMaterialColorScheme(), content = content)
+        MaterialTheme(colorScheme = colors.toMaterialColorScheme(isDarkTheme), content = content)
     }
 }

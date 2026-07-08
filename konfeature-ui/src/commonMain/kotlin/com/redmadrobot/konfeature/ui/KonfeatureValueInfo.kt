@@ -1,5 +1,7 @@
 package com.redmadrobot.konfeature.ui
 
+import dev.drewhamilton.poko.Poko
+
 /**
  * Enriched description of a single non-boolean feature value, handed to
  * [KonfeatureDebugPanel]'s `onValueClick`.
@@ -16,6 +18,7 @@ package com.redmadrobot.konfeature.ui
  *   source name, or the interceptor name for an active override).
  * @property isOverridden `true` when [currentValue] comes from an active debug override.
  */
+@Poko
 @Suppress("LongParameterList")
 public class KonfeatureValueInfo(
     public val key: String,

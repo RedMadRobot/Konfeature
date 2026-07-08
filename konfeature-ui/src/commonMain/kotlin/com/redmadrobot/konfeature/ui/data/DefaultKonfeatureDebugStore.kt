@@ -27,6 +27,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.longOrNull
 import kotlinx.serialization.json.put
 import okio.Path.Companion.toPath
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Default [com.redmadrobot.konfeature.ui.KonfeatureDebugStore] that persists overrides to a DataStore preferences file.
@@ -66,6 +67,8 @@ internal class DefaultKonfeatureDebugStore(
         } catch (e: SerializationException) {
             // The persisted blob is present but not valid JSON of the expected shape.
             logger?.warn("Failed to parse persisted debug overrides, starting empty: ${e.message}")
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             // Catch-all so a debug tool can always run without persisted overrides.
             logger?.warn("Failed to load debug overrides, starting empty: ${e.message}")
@@ -113,6 +116,8 @@ internal class DefaultKonfeatureDebugStore(
         } catch (e: IOException) {
             // Most likely cause here: out of disk space or missing write permissions.
             logger?.warn("Failed to write debug overrides to disk: ${e.message}")
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             // The in-memory override is already applied; a debug tool can tolerate a failed disk
             // write. Surface the failure but don't crash the coroutine scope that launched the

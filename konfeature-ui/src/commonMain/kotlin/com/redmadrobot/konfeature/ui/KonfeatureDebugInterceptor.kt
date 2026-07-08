@@ -36,25 +36,25 @@ public class KonfeatureDebugInterceptor(
     }
 
     /**
-     * Aligns the numeric type of [override] with [current].
+     * Aligns the numeric type of [debugValue] with [current].
      *
      * Overrides round-trip through DataStore as JSON, where `Int` is restored as `Long` and `Float`
      * as `Double`. Konfeature resolves values via `defaultValue::class.isInstance(...)`, so a `Long`
      * override for an `Int` config (or a `Double` for a `Float`) would fail the cast and be dropped.
      * Coercing to [current]'s numeric type keeps such overrides effective across restarts.
      */
-    private fun coerceToType(override: Any, current: Any): Any {
-        if (override::class == current::class || override !is Number || current !is Number) {
-            return override
+    private fun coerceToType(debugValue: Any, current: Any): Any {
+        if (debugValue::class == current::class || debugValue !is Number || current !is Number) {
+            return debugValue
         }
         return when (current) {
-            is Int -> override.toInt()
-            is Long -> override.toLong()
-            is Float -> override.toFloat()
-            is Double -> override.toDouble()
-            is Short -> override.toShort()
-            is Byte -> override.toByte()
-            else -> override
+            is Int -> debugValue.toInt()
+            is Long -> debugValue.toLong()
+            is Float -> debugValue.toFloat()
+            is Double -> debugValue.toDouble()
+            is Short -> debugValue.toShort()
+            is Byte -> debugValue.toByte()
+            else -> debugValue
         }
     }
 

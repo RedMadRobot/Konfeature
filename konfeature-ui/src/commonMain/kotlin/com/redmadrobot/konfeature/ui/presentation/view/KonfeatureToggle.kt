@@ -1,24 +1,9 @@
 package com.redmadrobot.konfeature.ui.presentation.view
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
 
 @Composable
@@ -27,43 +12,17 @@ internal fun KonfeatureToggle(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val (trackColor, thumbOffset) = if (checked) {
-        KonfeatureTheme.colors.accent to 22.dp
-    } else {
-        KonfeatureTheme.colors.stroke to 2.dp
-    }
-    val animatedTrackColor by animateColorAsState(
-        targetValue = trackColor,
-        label = "toggleTrackColor",
+    val colors = KonfeatureTheme.colors
+    Switch(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = modifier,
+        colors = SwitchDefaults.colors(
+            checkedTrackColor = colors.accent,
+            checkedThumbColor = colors.onAccent,
+            uncheckedTrackColor = colors.stroke,
+            uncheckedThumbColor = colors.onAccent,
+            uncheckedBorderColor = colors.stroke,
+        ),
     )
-    val animatedThumbOffset by animateDpAsState(
-        targetValue = thumbOffset,
-        label = "toggleThumbOffset",
-    )
-
-    Box(
-        modifier = modifier
-            .toggleable(
-                value = checked,
-                role = Role.Switch,
-                onValueChange = onCheckedChange,
-            )
-            .minimumInteractiveComponentSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            modifier = Modifier
-                .width(width = 44.dp)
-                .height(height = 24.dp)
-                .clip(shape = RoundedCornerShape(size = 12.dp))
-                .background(color = animatedTrackColor),
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(start = animatedThumbOffset, top = 2.dp)
-                    .size(size = 20.dp)
-                    .background(color = KonfeatureTheme.colors.onAccent, shape = CircleShape),
-            )
-        }
-    }
 }

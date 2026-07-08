@@ -131,8 +131,8 @@ private fun KonfeatureLayout(
                 modifier = Modifier.padding(all = 16.dp),
             )
         }
-        val visibleItems = remember(state.items, state.matchingKeys, state.collapsedConfigs, state.isSearchActive) {
-            state.visibleItems()
+        val visibleItems = remember(state.groups, state.matchingKeys, state.collapsedConfigs, state.isSearchActive) {
+            state.visibleItems
         }
         LazyColumn(modifier = Modifier.weight(weight = 1f)) {
             konfeatureItems(
@@ -289,7 +289,7 @@ private fun ConfigValueItem(
     onAction: (KonfeatureAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val toggleValue = item.rawValue as? Boolean
+    val toggleValue = item.value as? Boolean
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -351,7 +351,7 @@ private fun ValueInfoColumn(
                 color = KonfeatureTheme.colors.contentTertiary,
             )
         }
-        if (item.rawValue is Boolean) {
+        if (item.value is Boolean) {
             ValueSourceLabel(item = item, modifier = Modifier.padding(top = 8.dp))
         } else {
             ValueWithSource(item = item)

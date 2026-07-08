@@ -5,7 +5,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
+import dev.drewhamilton.poko.Poko
 
 /**
  * Semantic color palette for the Konfeature debug panel.
@@ -28,7 +28,9 @@ import androidx.compose.ui.graphics.luminance
  * @property sourceDebug label and value color for values overridden via the debug store.
  */
 @Immutable
-public data class KonfeatureColors(
+@Poko
+@Suppress("LongParameterList")
+public class KonfeatureColors(
     public val background: Color,
     public val surface: Color,
     public val surfaceHighlight: Color,
@@ -107,8 +109,8 @@ public fun darkKonfeatureColors(
  * panel (ripples, text selection, `IconButton`) follow the same light/dark appearance. Light vs. dark
  * is inferred from the luminance of [background].
  */
-internal fun KonfeatureColors.toMaterialColorScheme(): ColorScheme {
-    return if (background.luminance() < 0.5f) {
+internal fun KonfeatureColors.toMaterialColorScheme(isDarkTheme: Boolean): ColorScheme {
+    return if (isDarkTheme) {
         darkColorScheme(
             primary = accent,
             onPrimary = onAccent,
