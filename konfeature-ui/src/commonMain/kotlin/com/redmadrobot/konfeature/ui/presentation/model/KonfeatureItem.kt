@@ -24,11 +24,14 @@ internal sealed interface KonfeatureItem {
      * @property description Human-readable config description shown under the name.
      * @property overrideCount Number of values in this config currently overridden via the debug
      *  source; used to render an "overrides applied" badge on the header.
+     * @property isCollapsed Whether the header is currently collapsed (its values hidden). Always
+     *  `false` while a search is active, since search forces every matching group expanded.
      */
     data class Config(
         val name: String,
         val description: String,
         val overrideCount: Int = 0,
+        val isCollapsed: Boolean = false,
     ) : KonfeatureItem {
         override val itemKey: String = "${ITEM_KEY_PREFIX_CONFIG}$name"
     }

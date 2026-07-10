@@ -9,9 +9,7 @@ import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureConfigGroup
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.model.valueTypeOf
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableSet
 
 internal class KonfeatureItemMapper {
 
@@ -33,20 +31,36 @@ internal class KonfeatureItemMapper {
     }
 
     /**
-     * Item keys of the *values* visible for [query]. A blank query matches every value; otherwise the
-     * value's key/description and its config's name/description are searched case-insensitively. Header
-     * visibility is derived from its values, so config keys are not part of the set.
+     * The flat list rendered by the debug panel, derived from [groups]. Hidden rows are dropped here
+     * rather than rendered at zero height, which avoids performance problems when hiding or showing a
+     * large number of elements.
+     *
+     * While searching, only values matching the query are kept and a config header is shown only when
+     * at least one of its values survives (a config whose name/description matches keeps all of its
+     * values). Search also forces every surviving group expanded. Without a search, every value is
+     * shown unless its config is in [collapsedConfigs].
      */
-    fun matchingKeys(
+    fun filterItems(
         groups: List<KonfeatureConfigGroup>,
         query: String,
-    ): ImmutableSet<String> {
-        return groups
-            .flatMap { group ->
-                if (group.config.matches(query)) group.values else group.values.filter { it.matches(query) }
+        collapsedConfigs: Set<String>,
+    ): ImmutableList<KonfeatureItem> {
+        val isSearchActive = query.isNotBlank()
+        return buildList {
+            for (group in groups) {
+                val visibleValues = when {
+                    !isSearchActive -> group.values
+                    group.config.matches(query) -> group.values
+                    else -> group.values.filter { it.matches(query) }
+                }
+                if (visibleValues.isEmpty()) continue
+                val isCollapsed = !isSearchActive && group.config.name in collapsedConfigs
+                add(group.config.copy(isCollapsed = isCollapsed))
+                if (!isCollapsed) {
+                    addAll(visibleValues)
+                }
             }
-            .map { it.itemKey }
-            .toImmutableSet()
+        }.toImmutableList()
     }
 
     private fun mapValue(

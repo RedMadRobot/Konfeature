@@ -10,6 +10,6 @@ internal sealed interface KonfeatureAction {
     data class SearchQueryChange(val query: String) : KonfeatureAction
 
     data class ToggleChange(val key: String, val checked: Boolean) : KonfeatureAction
-    data class ValueClick(val configName: String, val key: String) : KonfeatureAction
+    data class ValueClick(val item: KonfeatureItem.Value) : KonfeatureAction
     data class ResetValueClick(val key: String) : KonfeatureAction
 }

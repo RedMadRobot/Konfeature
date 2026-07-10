@@ -7,6 +7,7 @@ import com.redmadrobot.konfeature.ui.KonfeatureDebugStore
 import com.redmadrobot.konfeature.ui.KonfeatureValueInfo
 import com.redmadrobot.konfeature.ui.presentation.mapper.KonfeatureItemMapper
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
+import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.model.valueTypeOf
 import com.redmadrobot.konfeature.ui.presentation.state.*
 import kotlinx.collections.immutable.toPersistentSet
@@ -33,7 +34,7 @@ internal class KonfeatureDebugViewModel(
             .onEach { recomputeGroups() }
             .launchIn(viewModelScope)
 
-        observeMatchingKeys()
+        observeVisibleItems()
     }
 
     fun onAction(action: KonfeatureAction) {
@@ -46,17 +47,14 @@ internal class KonfeatureDebugViewModel(
             is KonfeatureAction.ToggleChange -> viewModelScope.launch {
                 store.setValue(action.key, action.checked)
             }
-            is KonfeatureAction.ValueClick -> emitValueClick(action.configName, action.key)
+            is KonfeatureAction.ValueClick -> emitValueClick(action.item)
             is KonfeatureAction.ResetValueClick -> viewModelScope.launch {
                 store.resetValue(action.key)
             }
         }
     }
 
-    private fun emitValueClick(configName: String, key: String) {
-        val item = _state.value.groups
-            .firstNotNullOfOrNull { group -> group.values.firstOrNull { it.configName == configName && it.key == key } }
-            ?: return
+    private fun emitValueClick(item: KonfeatureItem.Value) {
         if (!item.isEditable) return
         onValueClick(
             KonfeatureValueInfo(
@@ -95,22 +93,22 @@ internal class KonfeatureDebugViewModel(
 
     /**
      * The single path that recomputes resolved values. The heavy mapping (source resolution per value)
-     * runs on [Dispatchers.Default]; the state update itself only swaps in the precomputed groups, so a
-     * CAS retry is cheap.
+     * runs on [Dispatchers.Default].
      */
-    private suspend fun recomputeGroups() {
-        val groups = withContext(Dispatchers.Default) { mapper.mapGroups(konfeature) }
+    private suspend fun recomputeGroups() = withContext(Dispatchers.Default) {
+        val groups = mapper.mapGroups(konfeature)
         _state.update { it.copy(groups = groups) }
     }
 
     /**
-     * Keeps [KonfeatureDebugViewState.matchingKeys] the sole derived function of the search query and
-     * the current [KonfeatureDebugViewState.groups]. A blank query is applied immediately (no initial
-     * flash of an empty list); real typing is debounced. A groups refresh recomputes against the
-     * current query so the filter never lags behind the list.
+     * Keeps [KonfeatureDebugViewState.visibleItems] the sole derived function of the search query, the
+     * current [KonfeatureDebugViewState.groups] and [KonfeatureDebugViewState.collapsedConfigs]. A blank
+     * query is applied immediately (no initial flash of an empty list); real typing is debounced.
+     * Collapsing and a groups refresh recompute against the current query so the list never lags behind
+     * its inputs. Only the query source is debounced, so collapse/expand stays responsive.
      */
     @OptIn(FlowPreview::class)
-    private fun observeMatchingKeys() {
+    private fun observeVisibleItems() {
         val queries = _state
             .map { it.searchQuery }
             .distinctUntilChanged()
@@ -120,10 +118,15 @@ internal class KonfeatureDebugViewModel(
             .map { it.groups }
             .distinctUntilChanged()
 
-        combine(queries, groups) { query, currentGroups ->
-            withContext(Dispatchers.Default) { mapper.matchingKeys(currentGroups, query) }
+        val collapsedConfigs = _state
+            .map { it.collapsedConfigs }
+            .distinctUntilChanged()
+
+        combine(queries, groups, collapsedConfigs) { query, currentGroups, collapsed ->
+            mapper.filterItems(currentGroups, query, collapsed)
         }
-            .onEach { keys -> _state.update { it.copy(matchingKeys = keys) } }
+            .onEach { items -> _state.update { it.copy(visibleItems = items) } }
+            .flowOn(Dispatchers.Default)
             .launchIn(viewModelScope)
     }
 }
