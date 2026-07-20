@@ -30,7 +30,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         // Keep it in sync with buildSrc/settings.gradle.kts
-        val rmrVersion = "2026.06.26"
+        val rmrVersion = "2026.07.10"
         create("rmr") {
             from("com.redmadrobot.versions:versions-redmadrobot:$rmrVersion")
         }

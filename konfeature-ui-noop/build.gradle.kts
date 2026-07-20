@@ -1,3 +1,5 @@
+import com.redmadrobot.konfeature.Versions
+
 plugins {
     kotlin("multiplatform")
     id("com.android.kotlin.multiplatform.library")
@@ -13,11 +15,10 @@ kotlin {
 
     android {
         namespace = "com.redmadrobot.konfeature.ui.noop"
-        compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        compileSdk = Versions.COMPILE_SDK
+        minSdk = Versions.MIN_SDK
     }
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 

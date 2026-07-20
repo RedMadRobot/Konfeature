@@ -1,9 +1,11 @@
+import com.redmadrobot.konfeature.Versions
+
 plugins {
     kotlin("multiplatform")
     id("com.android.kotlin.multiplatform.library")
     alias(stack.plugins.kotlin.compose)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.poko)
+    alias(stack.plugins.composeMultiplatform)
+    alias(stack.plugins.poko)
     convention.publishing
     convention.detekt
 }
@@ -16,30 +18,29 @@ kotlin {
 
     android {
         namespace = "com.redmadrobot.konfeature.ui"
-        compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        compileSdk = Versions.COMPILE_SDK
+        minSdk = Versions.MIN_SDK
         androidResources {
             enable = true
         }
     }
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
     sourceSets {
         commonMain.dependencies {
             api(projects.konfeature)
-            api(libs.compose.runtime)
-            api(libs.compose.ui)
+            api(stack.compose.runtime)
+            api(stack.compose.ui)
             implementation(stack.kotlinx.coroutines.core)
             implementation(stack.kotlinx.collections.immutable)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
-            implementation(libs.lifecycle.viewmodel.compose)
+            implementation(stack.compose.foundation)
+            implementation(stack.compose.material3)
+            implementation(stack.lifecycle.viewmodel.compose)
             implementation(androidx.datastore.preferences.core)
             implementation(stack.kotlinx.serialization.json)
-            implementation(libs.compose.resources)
+            implementation(stack.compose.resources)
         }
     }
 }

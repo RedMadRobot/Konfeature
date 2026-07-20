@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    alias(libs.plugins.poko)
+    alias(stack.plugins.poko)
     convention.publishing
     convention.detekt
 }
@@ -11,7 +11,6 @@ kotlin {
     explicitApi()
     jvm()
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
