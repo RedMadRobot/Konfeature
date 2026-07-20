@@ -37,8 +37,8 @@ internal class KonfeatureItemMapper {
      *
      * While searching, only values matching the query are kept and a config header is shown only when
      * at least one of its values survives (a config whose name/description matches keeps all of its
-     * values). Search also forces every surviving group expanded. Without a search, every value is
-     * shown unless its config is in [collapsedConfigs].
+     * values). A group is expanded unless its config is in [collapsedConfigs], both while searching and
+     * while browsing — so the user can collapse a config in either mode.
      */
     fun filterItems(
         groups: List<KonfeatureConfigGroup>,
@@ -54,7 +54,7 @@ internal class KonfeatureItemMapper {
                     else -> group.values.filter { it.matches(query) }
                 }
                 if (visibleValues.isEmpty()) continue
-                val isCollapsed = !isSearchActive && group.config.name in collapsedConfigs
+                val isCollapsed = group.config.name in collapsedConfigs
                 add(group.config.copy(isCollapsed = isCollapsed))
                 if (!isCollapsed) {
                     addAll(visibleValues)

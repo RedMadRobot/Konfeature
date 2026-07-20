@@ -9,7 +9,8 @@ import kotlinx.collections.immutable.persistentSetOf
 
 /**
  * @property searchQuery Current search text.
- * @property collapsedConfigs Names of configs the user has collapsed (ignored while searching).
+ * @property collapsedConfigs Names of configs the user has collapsed. Applied while browsing and while
+ *  searching alike.
  * @property groups Structural source of truth: every config header with its resolved values.
  * @property visibleItems The flat list actually rendered by the panel, derived from [groups],
  *  [searchQuery] and [collapsedConfigs] off the main thread. See

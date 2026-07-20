@@ -4,6 +4,6 @@
     <string name="konfeature_plugin_collapse_all">Collapse All</string>
     <string name="konfeature_plugin_reset_all">Reset All</string>
 
-    <string name="konfeature_plugin_search_hint">Search by key…</string>
-    <string name="konfeature_plugin_search_empty">No toggles found</string>
+    <string name="konfeature_plugin_search_hint">Search by key or description…</string>
+    <string name="konfeature_plugin_search_empty">No matches found</string>
 </resources>
