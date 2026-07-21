@@ -57,7 +57,14 @@ internal class KonfeatureItemMapper {
                 val isCollapsed = group.config.name in collapsedConfigs
                 add(group.config.copy(isCollapsed = isCollapsed))
                 if (!isCollapsed) {
-                    addAll(visibleValues)
+                    visibleValues.forEachIndexed { index, value ->
+                        add(
+                            value.copy(
+                                isOddRow = index % 2 == 0,
+                                isLastInConfig = index == visibleValues.lastIndex,
+                            )
+                        )
+                    }
                 }
             }
         }.toImmutableList()

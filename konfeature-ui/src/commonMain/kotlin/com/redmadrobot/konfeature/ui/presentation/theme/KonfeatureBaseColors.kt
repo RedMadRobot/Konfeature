@@ -34,8 +34,8 @@ internal object KonfeatureBaseColors {
     // Source accents (remote / debug indicators)
     val Green = Color(0xFF1B6E2D)
     val GreenDarkText = Color(0xFF7DD99E)
-    val Orange = Color(0xFFE65100)
-    val OrangeDarkText = Color(0xFFFFB74D)
+    val Red = Color(0xFFC62828)
+    val RedDarkText = Color(0xFFEF9A9A)
 
     val White = Color(0xFFFFFFFF)
 }

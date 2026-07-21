@@ -24,8 +24,11 @@ internal data object KonfeatureTypography {
         letterSpacing = 0.25.sp,
     )
 
-    /** Technical text: value keys, descriptions, and the search input — monospace variant of [bodyMedium]. */
+    /** Technical text: value descriptions and the search input — monospace variant of [bodyMedium]. */
     val mono: TextStyle = bodyMedium.copy(fontFamily = FontFamily.Monospace)
+
+    /** Value keys — bold monospace variant of [mono], so the key stands out from its description. */
+    val monoBold: TextStyle = mono.copy(fontWeight = FontWeight.Bold)
 
     /** Toolbar chip labels. */
     val labelLarge: TextStyle = TextStyle(

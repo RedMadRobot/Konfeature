@@ -24,8 +24,8 @@ import dev.drewhamilton.poko.Poko
  * @property contentTertiary tertiary text and icons (hints, descriptions, the default value source).
  * @property accent accent elements: accent text, cursor, override badge, the toggle track when on.
  * @property onAccent content drawn on top of [accent] (the toggle thumb).
- * @property sourceRemote label and value color for values coming from a remote feature source.
- * @property sourceDebug label and value color for values overridden via the debug store.
+ * @property sourceRemote label and value color for values coming from a remote feature source (green).
+ * @property sourceDebug label and value color for values overridden via the debug store (red).
  */
 @Immutable
 @Poko
@@ -58,8 +58,8 @@ public fun lightKonfeatureColors(
     contentTertiary: Color = KonfeatureBaseColors.Neutral50,
     accent: Color = KonfeatureBaseColors.Purple40,
     onAccent: Color = KonfeatureBaseColors.White,
-    sourceRemote: Color = KonfeatureBaseColors.Orange,
-    sourceDebug: Color = KonfeatureBaseColors.Green,
+    sourceRemote: Color = KonfeatureBaseColors.Green,
+    sourceDebug: Color = KonfeatureBaseColors.Red,
 ): KonfeatureColors = KonfeatureColors(
     background = background,
     surface = surface,
@@ -88,8 +88,8 @@ public fun darkKonfeatureColors(
     contentTertiary: Color = KonfeatureBaseColors.Neutral60,
     accent: Color = KonfeatureBaseColors.Purple80,
     onAccent: Color = KonfeatureBaseColors.Neutral10,
-    sourceRemote: Color = KonfeatureBaseColors.OrangeDarkText,
-    sourceDebug: Color = KonfeatureBaseColors.GreenDarkText,
+    sourceRemote: Color = KonfeatureBaseColors.GreenDarkText,
+    sourceDebug: Color = KonfeatureBaseColors.RedDarkText,
 ): KonfeatureColors = KonfeatureColors(
     background = background,
     surface = surface,

@@ -50,6 +50,10 @@ internal sealed interface KonfeatureItem {
      * @property isDebugSource `true` when the current value comes from the debug interceptor
      *  (i.e. it is a debug override).
      * @property isDefaultSource `true` when the current value is the unmodified default.
+     * @property isOddRow `true` for the odd rows (1st, 3rd, …) among the currently visible values of a
+     *  config; used to alternate row backgrounds inside the config card.
+     * @property isLastInConfig `true` for the last currently visible value of its config; used to round
+     *  off the bottom of the config card.
      */
     data class Value(
         val key: String,
@@ -62,6 +66,8 @@ internal sealed interface KonfeatureItem {
         val sourceName: String,
         val isDebugSource: Boolean,
         val isDefaultSource: Boolean,
+        val isOddRow: Boolean = false,
+        val isLastInConfig: Boolean = false,
     ) : KonfeatureItem {
         override val itemKey: String = getItemKey(configName, key)
 
