@@ -2,6 +2,12 @@
 
 ### Changes
 
+- *No changes*
+
+## [1.1.0] (2026-07-22)
+
+### Changes
+
 - New optional **`konfeature-ui`** module — a Compose Multiplatform debug panel (Android, iOS):
   - `KonfeatureDebugPanel` — screen listing all registered configs (grouped, collapsible, searchable by key/description/config name) with the current value and its source, allowing runtime overrides. Booleans are toggled inline; other values report a `KonfeatureValueInfo` via `onValueClick` for a custom editor. Shows a per-config override count and supports resetting a single override or all of them.
   - `KonfeatureDebugInterceptor` — `Interceptor` that applies the overrides made in the panel
@@ -25,5 +31,6 @@
 
 Initial public release
 
-[unreleased]: https://github.com/RedMadRobot/Konfeature/compare/v1.0.0...main
+[unreleased]: https://github.com/RedMadRobot/Konfeature/compare/v1.1.0...main
+[1.1.0]: https://github.com/RedMadRobot/Konfeature/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/RedMadRobot/Konfeature/compare/v0.1.0...v1.0.0
