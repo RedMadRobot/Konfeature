@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.infrastructure.detekt)
-    alias(libs.plugins.versions)
+    alias(rmr.plugins.detekt)
+    alias(stack.plugins.versions)
     convention.detekt
 }

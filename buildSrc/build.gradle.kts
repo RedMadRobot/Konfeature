@@ -14,11 +14,11 @@ java {
 }
 
 dependencies {
-    implementation(libs.infrastructure.publish)
-    implementation(libs.infrastructure.android)
-    implementation(libs.publish.gradlePlugin)
-    implementation(libs.gradle.android.cacheFixGradlePlugin)
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.detekt.gradlePlugin)
-    implementation(libs.android.gradlePlugin)
+    implementation(rmr.infrastructure.publish)
+    implementation(rmr.infrastructure.android)
+    implementation(stack.publish.gradlePlugin)
+    implementation(stack.gradle.android.cacheFixGradlePlugin)
+    implementation(stack.kotlin.gradlePlugin)
+    implementation(stack.detekt.gradlePlugin)
+    implementation(stack.android.tools.build.gradle)
 }

@@ -1,3 +1,5 @@
+@file:Suppress("StringLiteralDuplication")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -30,8 +32,16 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs {
-        create("libs") {
-            from(files("../gradle/libs.versions.toml"))
+        // Keep it in sync with the root settings.gradle.kts
+        val rmrVersion = "2026.07.10"
+        create("rmr") {
+            from("com.redmadrobot.versions:versions-redmadrobot:$rmrVersion")
+        }
+        create("androidx") {
+            from("com.redmadrobot.versions:versions-androidx:$rmrVersion")
+        }
+        create("stack") {
+            from("com.redmadrobot.versions:versions-stack:$rmrVersion")
         }
     }
 }
