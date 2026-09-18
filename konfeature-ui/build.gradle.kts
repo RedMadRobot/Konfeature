@@ -52,7 +52,9 @@ kotlin {
         common {
             group("dataStore") {
                 withJvm()
-                withAndroidTarget()
+                // The AGP KMP plugin's target is not a KotlinAndroidTarget, so withAndroidTarget()
+                // alone does not match it and androidMain would miss the actual declarations.
+                withCompilations { it.target.name == "android" }
                 withApple()
             }
         }
