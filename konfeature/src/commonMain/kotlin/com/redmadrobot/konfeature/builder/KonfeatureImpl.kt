@@ -37,8 +37,8 @@ internal class KonfeatureImpl(
                     key = spec.key,
                     source = FeatureValueSource.Source(source.name),
                     value = actualSourceValue,
-                    actualClass = actualSourceValue::class.qualifiedName,
-                    expectedClass = expectedClass.qualifiedName,
+                    actualClass = actualSourceValue::class.loggableName,
+                    expectedClass = expectedClass.loggableName,
                 )
             }
 
@@ -58,8 +58,8 @@ internal class KonfeatureImpl(
                     key = spec.key,
                     source = FeatureValueSource.Interceptor(interceptor.name),
                     value = actualInterceptorValue,
-                    actualClass = actualInterceptorValue::class.qualifiedName,
-                    expectedClass = expectedClass.qualifiedName,
+                    actualClass = actualInterceptorValue::class.loggableName,
+                    expectedClass = expectedClass.loggableName,
                 )
             }
 

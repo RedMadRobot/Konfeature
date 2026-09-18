@@ -47,13 +47,22 @@ We have made every effort to meet all these requirements in the development of K
 
 ## Supported Platforms
 
-Konfeature is a **Kotlin Multiplatform** library with support for:
+Konfeature is a **Kotlin Multiplatform** library. The core module has no third-party dependencies,
+so it is published for every target Kotlin supports; `konfeature-ui` is limited to the targets
+Compose Multiplatform and DataStore publish artifacts for.
 
-| Platform | Status | Targets |
-|----------|--------|---------|
-| **Android** | ✅ Fully Supported | JVM (via Kotlin/JVM) |
-| **iOS** | ✅ Fully Supported | arm64, simulator arm64 |
-| **JVM** | ✅ Fully Supported | Java/Kotlin applications |
+| Platform | `konfeature` | `konfeature-ui` / `-ui-noop` |
+|----------|--------------|------------------------------|
+| **JVM** (server, desktop, Android) | ✅ `jvm` | ✅ `jvm` (Compose Desktop), `android` |
+| **iOS** | ✅ `iosArm64`, `iosX64`, `iosSimulatorArm64` | ✅ `iosArm64`, `iosSimulatorArm64` |
+| **macOS** | ✅ `macosArm64`, `macosX64` | ✅ `macosArm64` (Compose macOS is experimental) |
+| **tvOS / watchOS** | ✅ all targets | ❌ |
+| **Linux / Windows (native)** | ✅ `linuxX64`, `linuxArm64`, `mingwX64` | ❌ |
+| **Android Native** | ✅ arm32, arm64, x86, x64 | ❌ |
+| **Web** | ✅ `js`, `wasmJs`, `wasmWasi` | ❌ (DataStore has no `js` artifact) |
+
+`konfeature-ui` omits `iosX64` and `macosX64` because Compose Multiplatform publishes its Apple
+artifacts for arm64 only.
 
 ## Installation
 
@@ -401,8 +410,8 @@ inspect and override feature values at runtime.
 
 | Module | Artifact | Targets | Purpose |
 |--------|----------|---------|---------|
-| **konfeature-ui** | `com.redmadrobot.konfeature:konfeature-ui` | Android, iOS | Debug panel + persisted overrides |
-| **konfeature-ui-noop** | `com.redmadrobot.konfeature:konfeature-ui-noop` | Android, iOS | API-compatible no-op for release builds |
+| **konfeature-ui** | `com.redmadrobot.konfeature:konfeature-ui` | Android, JVM, iOS, macOS | Debug panel + persisted overrides |
+| **konfeature-ui-noop** | `com.redmadrobot.konfeature:konfeature-ui-noop` | Android, JVM, iOS, macOS | API-compatible no-op for release builds |
 
 ### What problem it solves
 
@@ -474,8 +483,10 @@ dependencies {
 `KonfeatureDebugPanel` is a `@Composable`, so the app must have Jetpack Compose set up (Compose
 Multiplatform builds on top of it on Android) to render it.
 
-> Unlike the core library, `konfeature-ui` targets **Android and iOS** only (it builds on Compose
-> Multiplatform), so there is no plain-JVM (desktop/server) artifact — but Android is fully supported.
+> Unlike the core library, `konfeature-ui` is limited to the targets Compose Multiplatform and
+> DataStore publish — Android, JVM (Compose Desktop), `iosArm64`/`iosSimulatorArm64` and
+> `macosArm64`. There is no web or non-Apple native artifact of the debug panel; use
+> `konfeature` alone on those targets.
 
 ### Usage
 

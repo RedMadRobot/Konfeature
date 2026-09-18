@@ -1,0 +1,26 @@
+public final class com/redmadrobot/konfeature/ui/KonfeatureDebugInterceptor : com/redmadrobot/konfeature/source/Interceptor {
+	public static final field Companion Lcom/redmadrobot/konfeature/ui/KonfeatureDebugInterceptor$Companion;
+	public static final field NAME Ljava/lang/String;
+	public fun <init> (Lcom/redmadrobot/konfeature/ui/KonfeatureDebugStore;)V
+	public fun getName ()Ljava/lang/String;
+	public fun intercept (Lcom/redmadrobot/konfeature/source/FeatureValueSource;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/redmadrobot/konfeature/ui/KonfeatureDebugInterceptor$Companion {
+}
+
+public abstract interface class com/redmadrobot/konfeature/ui/KonfeatureDebugStore {
+	public static final field Companion Lcom/redmadrobot/konfeature/ui/KonfeatureDebugStore$Companion;
+	public abstract fun currentValue (Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun getValues ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun load (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun resetAll (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun resetValue (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setValue (Ljava/lang/String;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/redmadrobot/konfeature/ui/KonfeatureDebugStore$Companion {
+	public final fun create (Ljava/lang/String;Lcom/redmadrobot/konfeature/Logger;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun create$default (Lcom/redmadrobot/konfeature/ui/KonfeatureDebugStore$Companion;Ljava/lang/String;Lcom/redmadrobot/konfeature/Logger;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+

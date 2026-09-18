@@ -25,8 +25,15 @@ kotlin {
         }
     }
 
+    // Desktop (JVM) target of Compose Multiplatform.
+    jvm()
+
+    // Compose Multiplatform 1.12 publishes Apple targets only for arm64:
+    // there are no iosX64/macosX64 artifacts of compose-ui to depend on.
     iosArm64()
     iosSimulatorArm64()
+
+    macosArm64()
 
     sourceSets {
         commonMain.dependencies {
