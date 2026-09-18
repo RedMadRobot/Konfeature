@@ -49,6 +49,11 @@ kotlin {
             implementation(stack.kotlinx.serialization.json)
             implementation(stack.compose.resources)
         }
+        jvmMain.dependencies {
+            // The debug panel's ViewModel works on Dispatchers.Main, which on desktop is provided
+            // by the Swing dispatcher module. Without it the panel crashes on first interaction.
+            implementation(stack.kotlinx.coroutines.swing)
+        }
     }
 
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
