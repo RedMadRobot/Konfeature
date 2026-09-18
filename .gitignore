@@ -27,3 +27,5 @@
 
 # Ignore local properties
 local.properties
+
+/.kotlin/**
