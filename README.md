@@ -59,10 +59,16 @@ Compose Multiplatform and DataStore publish artifacts for.
 | **tvOS / watchOS** | ✅ all targets | ❌ |
 | **Linux / Windows (native)** | ✅ `linuxX64`, `linuxArm64`, `mingwX64` | ❌ |
 | **Android Native** | ✅ arm32, arm64, x86, x64 | ❌ |
-| **Web** | ✅ `js`, `wasmJs`, `wasmWasi` | ❌ (DataStore has no `js` artifact) |
+| **Web** | ✅ `js`, `wasmJs`, `wasmWasi` | ⚠️ `wasmJs` only (Compose for web is Beta) |
 
 `konfeature-ui` omits `iosX64` and `macosX64` because Compose Multiplatform publishes its Apple
-artifacts for arm64 only.
+artifacts for arm64 only, and has no `js` target because DataStore publishes no `js` artifact.
+
+On `wasmJs` the panel itself is built on Compose Multiplatform for web, which is **Beta**. Its
+default store is not usable there: `KonfeatureDebugStore.create` is backed by a DataStore
+preferences *file*, and a browser has no file system. Implement `KonfeatureDebugStore`
+yourself on web — the interface exists exactly for this, and an in-memory implementation is enough
+to make the panel work (overrides just won't survive a page reload).
 
 ## Installation
 
@@ -410,8 +416,8 @@ inspect and override feature values at runtime.
 
 | Module | Artifact | Targets | Purpose |
 |--------|----------|---------|---------|
-| **konfeature-ui** | `com.redmadrobot.konfeature:konfeature-ui` | Android, JVM, iOS, macOS | Debug panel + persisted overrides |
-| **konfeature-ui-noop** | `com.redmadrobot.konfeature:konfeature-ui-noop` | Android, JVM, iOS, macOS | API-compatible no-op for release builds |
+| **konfeature-ui** | `com.redmadrobot.konfeature:konfeature-ui` | Android, JVM, iOS, macOS, wasmJs | Debug panel + persisted overrides |
+| **konfeature-ui-noop** | `com.redmadrobot.konfeature:konfeature-ui-noop` | Android, JVM, iOS, macOS, wasmJs | API-compatible no-op for release builds |
 
 ### What problem it solves
 
@@ -484,9 +490,9 @@ dependencies {
 Multiplatform builds on top of it on Android) to render it.
 
 > Unlike the core library, `konfeature-ui` is limited to the targets Compose Multiplatform and
-> DataStore publish — Android, JVM (Compose Desktop), `iosArm64`/`iosSimulatorArm64` and
-> `macosArm64`. There is no web or non-Apple native artifact of the debug panel; use
-> `konfeature` alone on those targets.
+> DataStore publish — Android, JVM (Compose Desktop), `iosArm64`/`iosSimulatorArm64`, `macosArm64`
+> and `wasmJs`. There is no `js` or non-Apple native artifact of the debug panel; use `konfeature`
+> alone on those targets.
 
 ### Usage
 

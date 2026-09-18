@@ -23,6 +23,14 @@ kotlin {
     // Desktop (JVM) target of Compose Multiplatform.
     jvm()
 
+    // Compose Multiplatform for web (Kotlin/Wasm) is in Beta.
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        // Compose UI tests on wasmJs need an executable bundle to load the Skiko runtime.
+        binaries.executable()
+    }
+
     // Compose Multiplatform 1.12 publishes Apple targets only for arm64:
     // there are no iosX64/macosX64 artifacts of compose-ui to depend on.
     iosArm64()
