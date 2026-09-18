@@ -59,16 +59,16 @@ Compose Multiplatform and DataStore publish artifacts for.
 | **tvOS / watchOS** | ✅ all targets | ❌ |
 | **Linux / Windows (native)** | ✅ `linuxX64`, `linuxArm64`, `mingwX64` | ❌ |
 | **Android Native** | ✅ arm32, arm64, x86, x64 | ❌ |
-| **Web** | ✅ `js`, `wasmJs`, `wasmWasi` | ⚠️ `wasmJs` only (Compose for web is Beta) |
+| **Web** | ✅ `js`, `wasmJs`, `wasmWasi` | ✅ `wasmJs` (Compose for web is Beta) |
 
 `konfeature-ui` omits `iosX64` and `macosX64` because Compose Multiplatform publishes its Apple
 artifacts for arm64 only, and has no `js` target because DataStore publishes no `js` artifact.
 
-On `wasmJs` the panel itself is built on Compose Multiplatform for web, which is **Beta**. Its
-default store is not usable there: `KonfeatureDebugStore.create` is backed by a DataStore
-preferences *file*, and a browser has no file system. Implement `KonfeatureDebugStore`
-yourself on web — the interface exists exactly for this, and an in-memory implementation is enough
-to make the panel work (overrides just won't survive a page reload).
+On `wasmJs` the panel is built on Compose Multiplatform for web, which is **Beta**. Overrides are
+persisted there too, but not through DataStore — its web factories are still
+`TODO("Not yet implemented")` in the DataStore version this library depends on. The web build
+stores the same blob in `localStorage` instead, so `KonfeatureDebugStore.create` works as it does
+everywhere else; the `path` argument is used as the `localStorage` key rather than a file path.
 
 ## Installation
 
@@ -502,7 +502,9 @@ Multiplatform builds on top of it on Android) to render it.
    startup. Hold a single instance (DI singleton or shared `object`) and reuse it for both the
    interceptor and the screen.
 
-   The `path` is platform-specific — on Android use `context.filesDir`, on iOS use `NSDocumentDirectory`.
+   The `path` is platform-specific — on Android use `context.filesDir`, on iOS use
+   `NSDocumentDirectory`, on desktop any writable location. On web it is not a path at all but the
+   `localStorage` key the overrides are stored under.
 
    ```kotlin
    // inside a coroutine / suspend context

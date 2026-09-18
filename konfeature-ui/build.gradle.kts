@@ -43,6 +43,18 @@ kotlin {
 
     macosArm64()
 
+    // Overrides are persisted through DataStore everywhere it has a real implementation; the web
+    // target uses localStorage instead, see DebugValuesStorage.
+    applyDefaultHierarchyTemplate {
+        common {
+            group("dataStore") {
+                withJvm()
+                withAndroidTarget()
+                withApple()
+            }
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
             api(projects.konfeature)
@@ -57,6 +69,11 @@ kotlin {
             implementation(stack.kotlinx.serialization.json)
             implementation(stack.compose.resources)
         }
+        wasmJsTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(stack.kotlinx.coroutines.test)
+        }
+
         jvmMain.dependencies {
             // The debug panel's ViewModel works on Dispatchers.Main, which on desktop is provided
             // by the Swing dispatcher module. Without it the panel crashes on first interaction.
