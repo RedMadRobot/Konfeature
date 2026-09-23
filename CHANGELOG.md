@@ -2,6 +2,12 @@
 
 ### Changes
 
+- *No changes*
+
+## [1.2.0] (2026-09-23)
+
+### Changes
+
 - **Breaking:** the theme API of `konfeature-ui` (`KonfeatureTheme`, `KonfeatureColors`, `lightKonfeatureColors`, `darkKonfeatureColors`) moved from `com.redmadrobot.konfeature.ui.presentation.theme` to `com.redmadrobot.konfeature.ui.theme`
 - **Breaking:** the generated Compose resources class `com.redmadrobot.konfeature.ui.resources.Res` of `konfeature-ui` is no longer public
 - **Breaking:** Android consumers of `konfeature-ui` / `konfeature-ui-noop` must compile against API 37 (`compileSdk = 37`), as required by Compose Multiplatform 1.12
@@ -38,6 +44,7 @@
 
 Initial public release
 
-[unreleased]: https://github.com/RedMadRobot/Konfeature/compare/v1.1.0...main
+[unreleased]: https://github.com/RedMadRobot/Konfeature/compare/v1.2.0...main
+[1.2.0]: https://github.com/RedMadRobot/Konfeature/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/RedMadRobot/Konfeature/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/RedMadRobot/Konfeature/compare/v0.1.0...v1.0.0
