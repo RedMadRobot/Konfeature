@@ -11,7 +11,7 @@
 [![macOS](https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white)](#)
 [![Web](https://img.shields.io/badge/Web-654FF0?style=flat-square&logo=webassembly&logoColor=white)](#)
 
-**Konfeature** is a powerful **Kotlin Multiplatform** library for managing remote configuration in your applications. It provides a clean, declarative API for working with feature flags and configuration elements across Android, JVM, Apple, native and web targets — see [Supported Platforms](#supported-platforms).
+**Konfeature** is a powerful **Kotlin Multiplatform** library for managing remote configuration in your applications. It provides a clean, declarative API for working with feature flags and configuration elements across Android, JVM, iOS, macOS and web targets — see [Supported Platforms](#supported-platforms).
 
 Working with remote configuration has become a standard part of the development process for almost any application. Depending on the complexity of the application, several requirements for such functionality may arise, including:
 - convenient syntax for declaring configuration elements
@@ -53,22 +53,21 @@ We have made every effort to meet all these requirements in the development of K
 
 ## Supported Platforms
 
-Konfeature is a **Kotlin Multiplatform** library. The core module has no third-party dependencies,
-so it is published for every target Kotlin supports; `konfeature-ui` is limited to the targets
-Compose Multiplatform and DataStore publish artifacts for.
+Konfeature is a **Kotlin Multiplatform** library. The core module has no third-party dependencies
+and is published for JVM, iOS, macOS and web; `konfeature-ui` is limited to the targets Compose
+Multiplatform and DataStore publish artifacts for.
+
+On Android, `konfeature` is consumed through its `jvm` artifact.
 
 | Platform | `konfeature` | `konfeature-ui` / `-ui-noop` |
 |----------|--------------|------------------------------|
 | **JVM** (server, desktop, Android) | ✅ `jvm` | ✅ `jvm` (Compose Desktop), `android` |
-| **iOS** | ✅ `iosArm64`, `iosX64`, `iosSimulatorArm64` | ✅ `iosArm64`, `iosSimulatorArm64` |
-| **macOS** | ✅ `macosArm64`, `macosX64` | ✅ `macosArm64` (Compose macOS is experimental) |
-| **tvOS / watchOS** | ✅ all targets | ❌ |
-| **Linux / Windows (native)** | ✅ `linuxX64`, `linuxArm64`, `mingwX64` | ❌ |
-| **Android Native** | ✅ arm32, arm64, x86, x64 | ❌ |
-| **Web** | ✅ `js`, `wasmJs`, `wasmWasi` | ✅ `wasmJs` (Compose for web is Beta) |
+| **iOS** | ✅ `iosArm64`, `iosSimulatorArm64` | ✅ `iosArm64`, `iosSimulatorArm64` |
+| **macOS** | ✅ `macosArm64` | ✅ `macosArm64` (Compose macOS is experimental) |
+| **Web** | ✅ `js`, `wasmJs` | ✅ `wasmJs` (Compose for web is Beta) |
 
-`konfeature-ui` omits `iosX64` and `macosX64` because Compose Multiplatform publishes its Apple
-artifacts for arm64 only, and has no `js` target because DataStore publishes no `js` artifact.
+Apple targets are arm64 only across all modules, matching what Compose Multiplatform publishes.
+`konfeature-ui` has no `js` target because DataStore publishes no `js` artifact.
 
 On `wasmJs` the panel is built on Compose Multiplatform for web, which is **Beta**. Overrides are
 persisted there too, but not through DataStore — its web factories are still

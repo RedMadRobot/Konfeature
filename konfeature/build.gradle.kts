@@ -11,7 +11,8 @@ kotlin {
     explicitApi()
     jvmToolchain(17)
 
-    // The core has no third-party dependencies, so it supports every target Kotlin does.
+    // A deliberate subset: the core has no third-party dependencies and could support every Kotlin
+    // target, but only the platforms Konfeature is actually used on are built and published.
     jvm()
 
     js {
@@ -25,37 +26,10 @@ kotlin {
         nodejs()
     }
 
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmWasi {
-        nodejs()
-    }
-
     iosArm64()
-    iosX64()
     iosSimulatorArm64()
 
     macosArm64()
-    macosX64()
-
-    tvosArm64()
-    tvosX64()
-    tvosSimulatorArm64()
-
-    watchosArm32()
-    watchosArm64()
-    watchosX64()
-    watchosSimulatorArm64()
-    watchosDeviceArm64()
-
-    linuxArm64()
-    linuxX64()
-
-    mingwX64()
-
-    androidNativeArm32()
-    androidNativeArm64()
-    androidNativeX86()
-    androidNativeX64()
 
     sourceSets {
         commonMain.dependencies {
