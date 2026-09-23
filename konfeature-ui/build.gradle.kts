@@ -10,6 +10,7 @@ plugins {
     alias(stack.plugins.composeMultiplatform)
     alias(stack.plugins.poko)
     convention.publishing
+    convention.abi.android
     convention.detekt
 }
 

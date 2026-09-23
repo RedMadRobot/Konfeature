@@ -9,6 +9,7 @@ plugins {
     alias(stack.plugins.kotlin.compose)
     alias(stack.plugins.poko)
     convention.publishing
+    convention.abi.android
     convention.detekt
 }
 
@@ -63,13 +64,14 @@ tasks.check.configure {
 }
 
 val verificationGroup = "verification"
+val uiProject = project(":konfeature-ui")
 
 val checkKlibApiMatchesUi = tasks.register<CheckNoopApiTask>("checkKlibApiMatchesUi") {
     group = verificationGroup
     description = "Verifies konfeature-ui-noop klib API stays in sync with konfeature-ui"
 
     noopDump.set(layout.projectDirectory.file("api/konfeature-ui-noop.klib.api"))
-    uiDump.set(project(":konfeature-ui").layout.projectDirectory.file("api/konfeature-ui.klib.api"))
+    uiDump.set(uiProject.layout.projectDirectory.file("api/konfeature-ui.klib.api"))
 }
 
 // The JVM (desktop) target is part of the swappable contract too, and it is dumped separately from
@@ -79,14 +81,23 @@ val checkJvmApiMatchesUi = tasks.register<CheckNoopApiTask>("checkJvmApiMatchesU
     description = "Verifies konfeature-ui-noop JVM API stays in sync with konfeature-ui"
 
     noopDump.set(layout.projectDirectory.file("api/jvm/konfeature-ui-noop.api"))
-    uiDump.set(project(":konfeature-ui").layout.projectDirectory.file("api/jvm/konfeature-ui.api"))
+    uiDump.set(uiProject.layout.projectDirectory.file("api/jvm/konfeature-ui.api"))
+}
+
+// Android is dumped by convention.abi.android, since KGP's abiValidation skips the AGP KMP target.
+val checkAndroidApiMatchesUi = tasks.register<CheckNoopApiTask>("checkAndroidApiMatchesUi") {
+    group = verificationGroup
+    description = "Verifies konfeature-ui-noop Android API stays in sync with konfeature-ui"
+
+    noopDump.set(layout.projectDirectory.file("api/android/konfeature-ui-noop.api"))
+    uiDump.set(uiProject.layout.projectDirectory.file("api/android/konfeature-ui.api"))
 }
 
 val checkApiMatchesUi = tasks.register("checkApiMatchesUi") {
     group = verificationGroup
     description = "Verifies konfeature-ui-noop public API stays in sync with konfeature-ui"
 
-    dependsOn(checkKlibApiMatchesUi, checkJvmApiMatchesUi)
+    dependsOn(checkKlibApiMatchesUi, checkJvmApiMatchesUi, checkAndroidApiMatchesUi)
 }
 
 tasks.check.configure {
