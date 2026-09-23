@@ -2,7 +2,9 @@
 
 ### Changes
 
-- *No changes*
+- **Breaking:** the theme API of `konfeature-ui` (`KonfeatureTheme`, `KonfeatureColors`, `lightKonfeatureColors`, `darkKonfeatureColors`) moved from `com.redmadrobot.konfeature.ui.presentation.theme` to `com.redmadrobot.konfeature.ui.theme`
+- **Breaking:** the generated Compose resources class `com.redmadrobot.konfeature.ui.resources.Res` of `konfeature-ui` is no longer public
+- `konfeature-ui-noop` now mirrors the whole public API of `konfeature-ui`, including a no-op `KonfeatureDebugPanel`, `KonfeatureValueInfo` / `KonfeatureValueType` and the theme, so the panel can be referenced from code shared with release builds. The module now depends on Compose
 
 ## [1.1.0] (2026-07-22)
 

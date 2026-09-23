@@ -1,8 +1,5 @@
-package com.redmadrobot.konfeature.ui.presentation.theme
+package com.redmadrobot.konfeature.ui.theme
 
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import dev.drewhamilton.poko.Poko
@@ -103,36 +100,3 @@ public fun darkKonfeatureColors(
     sourceRemote = sourceRemote,
     sourceDebug = sourceDebug,
 )
-
-/**
- * Maps the semantic palette onto a Material 3 [ColorScheme] so that Material components used inside the
- * panel (ripples, text selection, `IconButton`) follow the same light/dark appearance. Light vs. dark
- * is inferred from the luminance of [background].
- */
-internal fun KonfeatureColors.toMaterialColorScheme(isDarkTheme: Boolean): ColorScheme {
-    return if (isDarkTheme) {
-        darkColorScheme(
-            primary = accent,
-            onPrimary = onAccent,
-            background = background,
-            onBackground = contentPrimary,
-            surface = surface,
-            onSurface = contentPrimary,
-            surfaceVariant = surfaceHighlight,
-            onSurfaceVariant = contentSecondary,
-            outline = stroke,
-        )
-    } else {
-        lightColorScheme(
-            primary = accent,
-            onPrimary = onAccent,
-            background = background,
-            onBackground = contentPrimary,
-            surface = surface,
-            onSurface = contentPrimary,
-            surfaceVariant = surfaceHighlight,
-            onSurfaceVariant = contentSecondary,
-            outline = stroke,
-        )
-    }
-}

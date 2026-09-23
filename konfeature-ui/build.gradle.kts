@@ -95,7 +95,9 @@ tasks.check.configure {
 }
 
 compose.resources {
-    publicResClass = true
+    // Internal: the generated resource accessors are an implementation detail of the panel, and a
+    // public Res would have to be mirrored by konfeature-ui-noop to keep the modules swappable.
+    publicResClass = false
     packageOfResClass = "com.redmadrobot.konfeature.ui.resources"
     generateResClass = auto
 }

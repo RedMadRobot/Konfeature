@@ -64,7 +64,13 @@ public final class com/redmadrobot/konfeature/ui/KonfeatureValueType : java/lang
 	public static fun values ()[Lcom/redmadrobot/konfeature/ui/KonfeatureValueType;
 }
 
-public final class com/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColors {
+public final class com/redmadrobot/konfeature/ui/presentation/view/ComposableSingletons$KonfeatureSearchBarKt {
+	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/presentation/view/ComposableSingletons$KonfeatureSearchBarKt;
+	public fun <init> ()V
+	public final fun getLambda$-692297148$com_redmadrobot_konfeature_konfeature_ui ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/redmadrobot/konfeature/ui/theme/KonfeatureColors {
 	public static final field $stable I
 	public synthetic fun <init> (JJJJJJJJJJJLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -83,83 +89,20 @@ public final class com/redmadrobot/konfeature/ui/presentation/theme/KonfeatureCo
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColorsKt {
-	public static final fun darkKonfeatureColors-KpyCeHw (JJJJJJJJJJJ)Lcom/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColors;
-	public static synthetic fun darkKonfeatureColors-KpyCeHw$default (JJJJJJJJJJJILjava/lang/Object;)Lcom/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColors;
-	public static final fun lightKonfeatureColors-KpyCeHw (JJJJJJJJJJJ)Lcom/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColors;
-	public static synthetic fun lightKonfeatureColors-KpyCeHw$default (JJJJJJJJJJJILjava/lang/Object;)Lcom/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColors;
+public final class com/redmadrobot/konfeature/ui/theme/KonfeatureColorsKt {
+	public static final fun darkKonfeatureColors-KpyCeHw (JJJJJJJJJJJ)Lcom/redmadrobot/konfeature/ui/theme/KonfeatureColors;
+	public static synthetic fun darkKonfeatureColors-KpyCeHw$default (JJJJJJJJJJJILjava/lang/Object;)Lcom/redmadrobot/konfeature/ui/theme/KonfeatureColors;
+	public static final fun lightKonfeatureColors-KpyCeHw (JJJJJJJJJJJ)Lcom/redmadrobot/konfeature/ui/theme/KonfeatureColors;
+	public static synthetic fun lightKonfeatureColors-KpyCeHw$default (JJJJJJJJJJJILjava/lang/Object;)Lcom/redmadrobot/konfeature/ui/theme/KonfeatureColors;
 }
 
-public final class com/redmadrobot/konfeature/ui/presentation/theme/KonfeatureTheme {
+public final class com/redmadrobot/konfeature/ui/theme/KonfeatureTheme {
 	public static final field $stable I
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/presentation/theme/KonfeatureTheme;
-	public final fun getColors (Landroidx/compose/runtime/Composer;I)Lcom/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColors;
+	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/theme/KonfeatureTheme;
+	public final fun getColors (Landroidx/compose/runtime/Composer;I)Lcom/redmadrobot/konfeature/ui/theme/KonfeatureColors;
 }
 
-public final class com/redmadrobot/konfeature/ui/presentation/theme/KonfeatureThemeKt {
-	public static final fun KonfeatureTheme (ZLcom/redmadrobot/konfeature/ui/presentation/theme/KonfeatureColors;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
-}
-
-public final class com/redmadrobot/konfeature/ui/presentation/view/ComposableSingletons$KonfeatureSearchBarKt {
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/presentation/view/ComposableSingletons$KonfeatureSearchBarKt;
-	public fun <init> ()V
-	public final fun getLambda$-692297148$com_redmadrobot_konfeature_konfeature_ui ()Lkotlin/jvm/functions/Function2;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/ActualResourceCollectorsKt {
-	public static final fun getAllDrawableResources (Lcom/redmadrobot/konfeature/ui/resources/Res;)Ljava/util/Map;
-	public static final fun getAllFontResources (Lcom/redmadrobot/konfeature/ui/resources/Res;)Ljava/util/Map;
-	public static final fun getAllPluralStringResources (Lcom/redmadrobot/konfeature/ui/resources/Res;)Ljava/util/Map;
-	public static final fun getAllStringArrayResources (Lcom/redmadrobot/konfeature/ui/resources/Res;)Ljava/util/Map;
-	public static final fun getAllStringResources (Lcom/redmadrobot/konfeature/ui/resources/Res;)Ljava/util/Map;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/Drawable0_commonMainKt {
-	public static final fun getIcon_clear (Lcom/redmadrobot/konfeature/ui/resources/Res$drawable;)Lorg/jetbrains/compose/resources/DrawableResource;
-	public static final fun getIcon_keyboard_arrow_down (Lcom/redmadrobot/konfeature/ui/resources/Res$drawable;)Lorg/jetbrains/compose/resources/DrawableResource;
-	public static final fun getIcon_keyboard_arrow_up (Lcom/redmadrobot/konfeature/ui/resources/Res$drawable;)Lorg/jetbrains/compose/resources/DrawableResource;
-	public static final fun getIcon_reset (Lcom/redmadrobot/konfeature/ui/resources/Res$drawable;)Lorg/jetbrains/compose/resources/DrawableResource;
-	public static final fun getIcon_search (Lcom/redmadrobot/konfeature/ui/resources/Res$drawable;)Lorg/jetbrains/compose/resources/DrawableResource;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/Res {
-	public static final field $stable I
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/resources/Res;
-	public final fun getUri (Ljava/lang/String;)Ljava/lang/String;
-	public final fun readBytes (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/Res$array {
-	public static final field $stable I
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/resources/Res$array;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/Res$drawable {
-	public static final field $stable I
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/resources/Res$drawable;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/Res$font {
-	public static final field $stable I
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/resources/Res$font;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/Res$plurals {
-	public static final field $stable I
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/resources/Res$plurals;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/Res$string {
-	public static final field $stable I
-	public static final field INSTANCE Lcom/redmadrobot/konfeature/ui/resources/Res$string;
-}
-
-public final class com/redmadrobot/konfeature/ui/resources/String0_commonMainKt {
-	public static final fun getKonfeature_plugin_collapse_all (Lcom/redmadrobot/konfeature/ui/resources/Res$string;)Lorg/jetbrains/compose/resources/StringResource;
-	public static final fun getKonfeature_plugin_refresh (Lcom/redmadrobot/konfeature/ui/resources/Res$string;)Lorg/jetbrains/compose/resources/StringResource;
-	public static final fun getKonfeature_plugin_reset (Lcom/redmadrobot/konfeature/ui/resources/Res$string;)Lorg/jetbrains/compose/resources/StringResource;
-	public static final fun getKonfeature_plugin_reset_all (Lcom/redmadrobot/konfeature/ui/resources/Res$string;)Lorg/jetbrains/compose/resources/StringResource;
-	public static final fun getKonfeature_plugin_search_empty (Lcom/redmadrobot/konfeature/ui/resources/Res$string;)Lorg/jetbrains/compose/resources/StringResource;
-	public static final fun getKonfeature_plugin_search_hint (Lcom/redmadrobot/konfeature/ui/resources/Res$string;)Lorg/jetbrains/compose/resources/StringResource;
+public final class com/redmadrobot/konfeature/ui/theme/KonfeatureThemeKt {
+	public static final fun KonfeatureTheme (ZLcom/redmadrobot/konfeature/ui/theme/KonfeatureColors;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 

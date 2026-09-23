@@ -22,9 +22,6 @@ import com.redmadrobot.konfeature.ui.presentation.KonfeatureDebugViewModel
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
 import com.redmadrobot.konfeature.ui.presentation.state.KonfeatureDebugViewState
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
-import com.redmadrobot.konfeature.ui.presentation.theme.LocalKonfeatureColors
 import com.redmadrobot.konfeature.ui.presentation.view.ConfigGroupHeader
 import com.redmadrobot.konfeature.ui.presentation.view.ConfigValueItem
 import com.redmadrobot.konfeature.ui.presentation.view.KonfeatureSearchBar
@@ -32,6 +29,9 @@ import com.redmadrobot.konfeature.ui.presentation.view.ToolbarChips
 import com.redmadrobot.konfeature.ui.resources.Res
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_search_empty
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_search_hint
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTheme
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTypography
+import com.redmadrobot.konfeature.ui.theme.LocalKonfeatureColors
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
 

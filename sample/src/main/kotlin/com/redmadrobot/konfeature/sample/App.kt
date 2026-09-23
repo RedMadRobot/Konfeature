@@ -28,7 +28,7 @@ import com.redmadrobot.konfeature.ui.KonfeatureDebugInterceptor
 import com.redmadrobot.konfeature.ui.KonfeatureDebugPanel
 import com.redmadrobot.konfeature.ui.KonfeatureDebugStore
 import com.redmadrobot.konfeature.ui.KonfeatureValueInfo
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTheme
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File

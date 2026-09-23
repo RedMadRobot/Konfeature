@@ -18,12 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureItem
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
 import com.redmadrobot.konfeature.ui.resources.Res
 import com.redmadrobot.konfeature.ui.resources.icon_reset
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_reset
+import com.redmadrobot.konfeature.ui.theme.KonfeatureShapes
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTheme
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

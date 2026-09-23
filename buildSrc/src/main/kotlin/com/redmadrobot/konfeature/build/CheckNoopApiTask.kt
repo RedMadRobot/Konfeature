@@ -2,8 +2,6 @@ package com.redmadrobot.konfeature.build
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
@@ -11,26 +9,15 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 /**
- * Verifies konfeature-ui-noop stays a faithful drop-in replacement for konfeature-ui: every
- * public declaration of konfeature-ui must be mirrored member-for-member in konfeature-ui-noop,
- * except the UI-only surface (Compose panel, theme, resources, and `$stableprop` synthetics),
- * which the no-op module intentionally omits.
+ * Verifies konfeature-ui-noop is a faithful drop-in replacement for konfeature-ui: both ABI dumps
+ * must declare exactly the same targets, declarations and members. Anything an app can reference
+ * against konfeature-ui must also compile against konfeature-ui-noop, so there is no list of
+ * exempted declarations — only compiler-generated synthetics are ignored (see [parseDump]).
  *
- * ABI dumps are compared as sets of top-level declaration blocks, so new public API in
- * konfeature-ui fails the build by default until it is either mirrored in konfeature-ui-noop or
- * added to the UI-only lists below.
- *
- * Both dump flavours are supported through [format], because the two modules publish for JVM
- * targets as well as for klib ones and a swap has to hold on every target: `.klib.api` dumps name
- * declarations as `some.package/Name`, `.api` (JVM) dumps as `some/package/Name`.
+ * Works on both dump flavours — `.klib.api` and JVM `.api` — as they share the layout this relies on:
+ * a declaration starts at column 0 and its members are indented under it.
  */
 abstract class CheckNoopApiTask : DefaultTask() {
-
-    /** Flavour of the two dumps being compared. Both must be of the same flavour. */
-    enum class DumpFormat { KLIB, JVM }
-
-    @get:Input
-    abstract val format: Property<DumpFormat>
 
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NONE)
@@ -42,117 +29,111 @@ abstract class CheckNoopApiTask : DefaultTask() {
 
     @TaskAction
     fun check() {
-        val dumpFormat = format.get()
-        val noopBlocks = blocks(noopDump.get().asFile)
-        val uiBlocks = blocks(uiDump.get().asFile)
+        val noop = parseDump(noopDump.get().asFile)
+        val ui = parseDump(uiDump.get().asFile)
 
-        val missingInNoop = uiBlocks.filterNot { isUiOnly(it, dumpFormat) } - noopBlocks
-        val extraInNoop = noopBlocks - uiBlocks
+        val problems = buildList {
+            if (noop.targets != ui.targets) {
+                add("Targets differ:\n  konfeature-ui:      ${ui.targets}\n  konfeature-ui-noop: ${noop.targets}")
+            }
+            (ui.declarations.keys + noop.declarations.keys).sorted().forEach { header ->
+                val uiMembers = ui.declarations[header]
+                val noopMembers = noop.declarations[header]
+                when {
+                    noopMembers == null -> add("Missing in konfeature-ui-noop:\n  $header")
+                    uiMembers == null -> add("Not in konfeature-ui, but declared in konfeature-ui-noop:\n  $header")
+                    uiMembers != noopMembers -> add(
+                        buildString {
+                            append("Members differ in:\n  ").append(header)
+                            (uiMembers - noopMembers).forEach { append("\n    - missing in noop: ").append(it) }
+                            (noopMembers - uiMembers).forEach { append("\n    + extra in noop:   ").append(it) }
+                        },
+                    )
+                }
+            }
+        }
 
-        if (missingInNoop.isEmpty() && extraInNoop.isEmpty()) return
+        if (problems.isEmpty()) return
 
         error(
-            buildString {
-                appendLine("konfeature-ui-noop public API is out of sync with konfeature-ui ($dumpFormat dumps).")
-                if (missingInNoop.isNotEmpty()) {
-                    appendLine()
-                    appendLine("Present in konfeature-ui but missing/different in konfeature-ui-noop")
-                    appendLine("(implement it in konfeature-ui-noop, or add it to the UI-only lists if it is not part of the contract):")
-                    appendLine()
-                    append(missingInNoop.joinToString("\n\n"))
-                    appendLine()
-                }
-                if (extraInNoop.isNotEmpty()) {
-                    appendLine()
-                    appendLine("Present in konfeature-ui-noop but missing/different in konfeature-ui")
-                    appendLine("(a member was added/changed/removed on the konfeature-ui-noop side):")
-                    appendLine()
-                    append(extraInNoop.joinToString("\n\n"))
-                }
-            },
+            "konfeature-ui-noop public API is out of sync with konfeature-ui " +
+                "(${uiDump.get().asFile.name} vs ${noopDump.get().asFile.name}).\n" +
+                "A declaration whose signature changed shows up as both missing and extra.\n\n" +
+                problems.joinToString("\n\n"),
         )
     }
 
-    private fun isUiOnly(block: String, format: DumpFormat): Boolean {
-        val header = block.lineSequence().first()
-        if (header.contains("\$stableprop")) return true
-        val (packageName, simpleNames) = when (format) {
-            DumpFormat.KLIB -> parseKlibName(header) ?: return false
-            DumpFormat.JVM -> parseJvmName(header) ?: return false
-        }
-        if (UI_ONLY_PACKAGES.any { packageName == it || packageName.startsWith("$it.") }) return true
-        return simpleNames.any { "$packageName/$it" in UI_ONLY_DECLARATIONS }
-    }
+    /**
+     * @property targets the dump-level `// Targets: [...]` line of a klib dump, `null` for JVM dumps.
+     * @property declarations top-level declaration header -> its member lines, trimmed. Nesting is not
+     *   lost by flattening: klib member lines carry their fully qualified signature, and JVM dumps list
+     *   nested classes as separate `Outer$Inner` declarations.
+     */
+    private class Dump(val targets: String?, val declarations: Map<String, Set<String>>)
 
     private companion object {
 
-        val KLIB_NAME_REGEX = Regex("""[\w.]+/\w+""")
-        val JVM_NAME_REGEX = Regex("""[\w/$]+/[\w$]+""")
-
-        // Declarations in konfeature-ui that are intentionally UI-only and NOT part of the
-        // no-op contract. Everything else in konfeature-ui must be mirrored in konfeature-ui-noop.
-        val UI_ONLY_PACKAGES = listOf(
-            "com.redmadrobot.konfeature.ui.presentation",
-            "com.redmadrobot.konfeature.ui.resources",
-        )
-        val UI_ONLY_DECLARATIONS = setOf(
-            "com.redmadrobot.konfeature.ui/KonfeatureValueType",
-            "com.redmadrobot.konfeature.ui/KonfeatureValueInfo",
-            "com.redmadrobot.konfeature.ui/KonfeatureDebugPanel",
-        )
-
-        /** `final class com.redmadrobot.konfeature.ui/KonfeatureDebugPanel` -> package + name. */
-        fun parseKlibName(header: String): Pair<String, List<String>>? {
-            val name = KLIB_NAME_REGEX.find(header)?.value ?: return null
-            return name.substringBefore('/') to listOf(name.substringAfter('/'))
-        }
+        const val TARGETS_PREFIX = "// Targets:"
 
         /**
-         * `public final class com/redmadrobot/konfeature/ui/KonfeatureDebugPanelKt {` -> package
-         * plus every simple name the declaration could have been generated from.
+         * Parses an ABI dump, dropping what necessarily differs between the two modules and carries no
+         * API a caller could use:
+         * - the comment header, including the "Library unique name" line (targets are kept);
+         * - Compose compiler synthetics: `$stable` fields, top-level `$stableprop` properties and their
+         *   getters, and `ComposableSingletons$…Kt` lambda holders. They depend on implementation
+         *   details (class stability, lambdas inside a function body), not on the declared API.
          *
-         * The JVM backend derives extra top-level classes from a single source declaration: the
-         * `FooKt` file facade of `Foo.kt` and the `ComposableSingletons$FooKt` lambda holder. They
-         * carry no API of their own, so they are UI-only exactly when `Foo` is.
+         * Target restrictions of a single declaration or member (a `// Targets: [...]` line right above
+         * it) are kept attached to it, so a declaration available on fewer targets on one side is
+         * reported as a difference.
          */
-        fun parseJvmName(header: String): Pair<String, List<String>>? {
-            val name = JVM_NAME_REGEX.find(header)?.value ?: return null
-            val packageName = name.substringBeforeLast('/').replace('/', '.')
-            val simpleName = name.substringAfterLast('/')
-            val candidates = linkedSetOf(simpleName)
-            candidates += simpleName.substringAfterLast('$')
-            candidates.toList().forEach { candidate ->
-                if (candidate.endsWith("Kt")) candidates += candidate.removeSuffix("Kt")
-            }
-            return packageName to candidates.toList()
-        }
+        fun parseDump(file: File): Dump {
+            var targets: String? = null
+            val declarations = mutableMapOf<String, MutableSet<String>>()
+            var members: MutableSet<String>? = null
+            var pendingTargets: String? = null
+            var seenDeclaration = false
 
-        /**
-         * Split an ABI dump into top-level declaration blocks (a declaration plus its
-         * indented members), dropping the comment header — including the "Library unique name"
-         * line, which necessarily differs between the two modules.
-         *
-         * Member lines holding a Compose stability synthetic (`$stable`) are dropped as well: the
-         * Compose compiler plugin runs only over konfeature-ui, so those fields appear on one side
-         * only while carrying no API a caller could use. Top-level `$stableprop` declarations are
-         * left alone here and excluded by [isUiOnly], so their own members stay attached to them.
-         */
-        fun blocks(file: File): Set<String> =
-            file.readLines()
-                .filterNot { line ->
-                    line.startsWith("//") ||
-                        line.isBlank() ||
-                        (line.first().isWhitespace() && line.contains("\$stable"))
-                }
-                .fold(mutableListOf<StringBuilder>()) { acc, line ->
-                    if (!line.first().isWhitespace()) {
-                        acc.add(StringBuilder(line))
-                    } else {
-                        acc.last().append('\n').append(line)
+            for (line in file.readLines()) {
+                val trimmed = line.trim()
+                val isMember = line.firstOrNull()?.isWhitespace() == true
+                when {
+                    trimmed.isEmpty() || trimmed == "}" -> Unit
+
+                    // Anything before the first declaration is the dump's comment header.
+                    !seenDeclaration && trimmed.startsWith("//") -> {
+                        if (targets == null && trimmed.startsWith(TARGETS_PREFIX)) targets = trimmed
                     }
-                    acc
+
+                    trimmed.startsWith(TARGETS_PREFIX) -> pendingTargets = trimmed
+
+                    isMember -> {
+                        val member = withTargets(pendingTargets, trimmed)
+                        pendingTargets = null
+                        if (!trimmed.contains("\$stable")) {
+                            checkNotNull(members) { "${file.name}: member outside of a declaration: $line" }
+                                .add(member)
+                        }
+                    }
+
+                    else -> {
+                        seenDeclaration = true
+                        val header = withTargets(pendingTargets, trimmed)
+                        pendingTargets = null
+                        members = if (isSynthetic(trimmed)) {
+                            mutableSetOf()
+                        } else {
+                            declarations.getOrPut(header) { mutableSetOf() }
+                        }
+                    }
                 }
-                .map(StringBuilder::toString)
-                .toSet()
+            }
+            return Dump(targets, declarations)
+        }
+
+        fun isSynthetic(header: String): Boolean =
+            header.contains("\$stableprop") || header.contains("ComposableSingletons\$")
+
+        fun withTargets(targets: String?, line: String): String = if (targets == null) line else "$targets $line"
     }
 }

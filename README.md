@@ -574,12 +574,12 @@ follow the same light/dark appearance.
 
 ### No-op implementation (konfeature-ui-noop)
 
-`konfeature-ui-noop` exposes the **same `KonfeatureDebugStore` and `KonfeatureDebugInterceptor` API**
-(same package, same class names and signatures) but does nothing: the store holds no overrides and
-performs no I/O, and the interceptor always returns `null`. It has no Compose dependency and does not
-contain `KonfeatureDebugPanel`.
+`konfeature-ui-noop` exposes **the same public API as `konfeature-ui`** (same package, same
+declarations and signatures) but does nothing: the store holds no overrides and performs no I/O, the
+interceptor always returns `null`, and `KonfeatureDebugPanel` renders nothing. `KonfeatureTheme` only
+provides the palette to its content, so `KonfeatureTheme.colors` keeps working.
 
-This lets you keep the store/interceptor wiring in your shared production code and swap the
+This lets you keep all the wiring, the panel included, in your shared production code and swap the
 implementation per build type, so the debug tooling and its DataStore/persistence cost are stripped
 from release builds:
 
@@ -590,12 +590,10 @@ dependencies {
 }
 ```
 
-> [!IMPORTANT]
-> `KonfeatureDebugPanel` exists **only** in `konfeature-ui` — there is no no-op counterpart for it.
-> Only `KonfeatureDebugStore` and `KonfeatureDebugInterceptor` are swappable between the two modules.
-> Keep any reference to `KonfeatureDebugPanel` in a debug-only source set / module: the store and
-> interceptor compile against both modules, but the screen compiles against `konfeature-ui` only, so a
-> release build wired to `konfeature-ui-noop` will not see it.
+> [!NOTE]
+> Like `konfeature-ui`, the no-op module depends on Compose (`compose-runtime`, `compose-ui`,
+> `compose-foundation`), since `KonfeatureDebugPanel` and the theme are part of its API. Hiding the
+> entry point to the panel in release builds is still up to the app.
 
 ## Contributing
 

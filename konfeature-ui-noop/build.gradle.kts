@@ -4,6 +4,10 @@ import com.redmadrobot.konfeature.build.CheckNoopApiTask
 plugins {
     kotlin("multiplatform")
     id("com.android.kotlin.multiplatform.library")
+    // The no-op panel and theme are @Composable: without the Compose compiler their ABI would not
+    // match konfeature-ui's (no Composer parameters), and the modules would not be swappable.
+    alias(stack.plugins.kotlin.compose)
+    alias(stack.plugins.poko)
     convention.publishing
     convention.detekt
 }
@@ -23,8 +27,8 @@ kotlin {
     // Desktop (JVM) target of Compose Multiplatform.
     jvm()
 
-    // This module has no Compose dependency, so a klib is all that is needed here — unlike
-    // konfeature-ui, it needs no executable bundle to load a Skiko runtime.
+    // Unlike konfeature-ui, this module has no Compose UI tests, so it needs no executable bundle
+    // to load a Skiko runtime.
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         browser()
@@ -41,6 +45,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.konfeature)
+            // Same api surface as konfeature-ui: Modifier, Color and Composable leak into signatures.
+            api(stack.compose.runtime)
+            api(stack.compose.ui)
+            // isSystemInDarkTheme(), the KonfeatureTheme default, as in konfeature-ui.
+            implementation(stack.compose.foundation)
             implementation(stack.kotlinx.coroutines.core)
         }
     }
@@ -59,7 +68,6 @@ val checkKlibApiMatchesUi = tasks.register<CheckNoopApiTask>("checkKlibApiMatche
     group = verificationGroup
     description = "Verifies konfeature-ui-noop klib API stays in sync with konfeature-ui"
 
-    format.set(CheckNoopApiTask.DumpFormat.KLIB)
     noopDump.set(layout.projectDirectory.file("api/konfeature-ui-noop.klib.api"))
     uiDump.set(project(":konfeature-ui").layout.projectDirectory.file("api/konfeature-ui.klib.api"))
 }
@@ -70,7 +78,6 @@ val checkJvmApiMatchesUi = tasks.register<CheckNoopApiTask>("checkJvmApiMatchesU
     group = verificationGroup
     description = "Verifies konfeature-ui-noop JVM API stays in sync with konfeature-ui"
 
-    format.set(CheckNoopApiTask.DumpFormat.JVM)
     noopDump.set(layout.projectDirectory.file("api/jvm/konfeature-ui-noop.api"))
     uiDump.set(project(":konfeature-ui").layout.projectDirectory.file("api/jvm/konfeature-ui.api"))
 }

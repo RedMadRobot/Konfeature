@@ -13,12 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
 import com.redmadrobot.konfeature.ui.resources.Res
 import com.redmadrobot.konfeature.ui.resources.icon_keyboard_arrow_down
 import com.redmadrobot.konfeature.ui.resources.icon_keyboard_arrow_up
+import com.redmadrobot.konfeature.ui.theme.KonfeatureShapes
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTheme
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTypography
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

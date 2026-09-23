@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.redmadrobot.konfeature.ui.presentation.model.KonfeatureAction
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureShapes
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTypography
 import com.redmadrobot.konfeature.ui.resources.Res
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_collapse_all
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_refresh
 import com.redmadrobot.konfeature.ui.resources.konfeature_plugin_reset_all
+import com.redmadrobot.konfeature.ui.theme.KonfeatureShapes
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTheme
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTypography
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
