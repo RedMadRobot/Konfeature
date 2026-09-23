@@ -8,8 +8,10 @@
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)](#)
 [![iOS](https://img.shields.io/badge/iOS-000000?style=flat-square&logo=apple&logoColor=white)](#)
 [![JVM](https://img.shields.io/badge/JVM-007396?style=flat-square&logo=java&logoColor=white)](#)
+[![macOS](https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white)](#)
+[![Web](https://img.shields.io/badge/Web-654FF0?style=flat-square&logo=webassembly&logoColor=white)](#)
 
-**Konfeature** is a powerful **Kotlin Multiplatform** library for managing remote configuration in your applications. It provides a clean, declarative API for working with feature flags and configuration elements across Android, iOS, and JVM platforms.
+**Konfeature** is a powerful **Kotlin Multiplatform** library for managing remote configuration in your applications. It provides a clean, declarative API for working with feature flags and configuration elements across Android, JVM, Apple, native and web targets — see [Supported Platforms](#supported-platforms).
 
 Working with remote configuration has become a standard part of the development process for almost any application. Depending on the complexity of the application, several requirements for such functionality may arise, including:
 - convenient syntax for declaring configuration elements
@@ -27,6 +29,8 @@ We have made every effort to meet all these requirements in the development of K
 
 - [Supported Platforms](#supported-platforms)
 - [Installation](#installation)
+  - [Add Maven Central Repository](#add-maven-central-repository)
+  - [Add Dependency](#add-dependency)
 - [Usage](#usage)
   - [FeatureConfig](#featureconfig)
   - [FeatureSource](#featuresource)
@@ -35,6 +39,7 @@ We have made every effort to meet all these requirements in the development of K
   - [Logger](#logger)
   - [Spec](#spec)
   - [Ordering](#ordering)
+  - [Validation](#validation)
 - [Debug UI (konfeature-ui)](#debug-ui-konfeature-ui)
   - [What problem it solves](#what-problem-it-solves)
   - [Installation](#installation-1)
@@ -44,6 +49,7 @@ We have made every effort to meet all these requirements in the development of K
 - [Contributing](#contributing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Supported Platforms
 
@@ -187,7 +193,7 @@ class FirebaseFeatureSource(
     override fun get(key: String): Any? {
         return remoteConfig
             .getValue(key)
-            .takeIf { source == FirebaseRemoteConfig.VALUE_SOURCE_REMOTE }
+            .takeIf { it.source == FirebaseRemoteConfig.VALUE_SOURCE_REMOTE }
             ?.let { value: FirebaseRemoteConfigValue ->
                 value.getOrNull { asBoolean() }
                     ?: value.getOrNull { asString() }
@@ -315,6 +321,9 @@ val konfeatureInstance = konfeature {
 
 >Similarly, you can add multiple interceptors.
 
+>For a ready-made interceptor whose overrides persist across restarts and can be edited in a debug
+>screen, see [`KonfeatureDebugInterceptor`](#debug-ui-konfeature-ui) in `konfeature-ui`.
+
 ### Logger
 
 ```kotlin
@@ -334,6 +343,9 @@ The following events are logged:
 >Get value 'true' by key 'profile_feature' from 'Source(name=FirebaseRemoteConfig)'
 - `Source` or `Interceptor` returns an unexpected type for `key`
 >Unexpected value type for 'profile_button_appear_duration': expected type is 'kotlin.Long', but value from 'Source(name=FirebaseRemoteConfig)' is 'true' with type 'kotlin.Boolean'
+
+On the Kotlin/JS (`js`) target type names are logged without the package (`'Long'`, `'Boolean'`), since
+Kotlin/JS has no `KClass.qualifiedName`.
 
 Example of implementation based on `Timber`:
 
@@ -394,7 +406,7 @@ val featureValue = konfeatureInstance.getValue(featureSpec)
 ```
 >  This can be useful for use in the DebugPanel
 
-## Ordering
+### Ordering
 The value of the configuration element is determined in the following order:
 
 - `defaultValue` and `Default` source are assigned.
@@ -403,6 +415,18 @@ The value of the configuration element is determined in the following order:
   Upon successful search, the value from `Source` is assigned with `Source(name=SourceName)` source.
 - Search the list of `Interceptors` in the order they were added to `Konfeature`.
   If `Interceptor` returns a value other than `null`, this value is assigned with `Interceptor(name=InterceptorName)` source.
+
+### Validation
+
+Misconfiguration fails fast with a `KonfeatureException` subclass, thrown while building the
+`Konfeature` instance (inside `konfeature { ... }`):
+
+| Exception | Thrown by | When |
+|-----------|-----------|------|
+| `SourceNameAlreadyExistException` | `addSource` | a source with the same `name` is already added |
+| `ConfigNameAlreadyExistException` | `register` | a config with the same `name` is already registered |
+| `NoFeatureConfigException` | `build` | no config is registered |
+| `KeyDuplicationException` | `build` | a config declares several elements with the same `key` |
 
 ## Debug UI (konfeature-ui)
 
@@ -436,8 +460,8 @@ boilerplate that every project ends up re-implementing.
   actions let you refresh, collapse all groups, or reset all overrides at once.
 - **`KonfeatureDebugInterceptor`** — an `Interceptor` that applies the overrides made in the screen,
   so a value changed in the panel is reflected everywhere the config is read.
-- **`KonfeatureDebugStore`** — persists overrides to disk (via DataStore) so they survive app
-  restarts, and exposes them as a `StateFlow` for the screen and a synchronous `currentValue(key)`
+- **`KonfeatureDebugStore`** — persists overrides (to disk via DataStore, to `localStorage` on web) so
+  they survive app restarts, and exposes them as a `StateFlow` for the screen and a synchronous `currentValue(key)`
   read for the interceptor. Overrides can be removed one at a time (`resetValue(key)`) or all at once
   (`resetAll()`).
 
@@ -487,7 +511,9 @@ dependencies {
 ```
 
 `KonfeatureDebugPanel` is a `@Composable`, so the app must have Jetpack Compose set up (Compose
-Multiplatform builds on top of it on Android) to render it.
+Multiplatform builds on top of it on Android) to render it. The app must also compile against Android
+API 37 (`compileSdk = 37`), which Compose Multiplatform 1.12 requires; the same applies to
+`konfeature-ui-noop`.
 
 > Unlike the core library, `konfeature-ui` is limited to the targets Compose Multiplatform and
 > DataStore publish — Android, JVM (Compose Desktop), `iosArm64`/`iosSimulatorArm64`, `macosArm64`
