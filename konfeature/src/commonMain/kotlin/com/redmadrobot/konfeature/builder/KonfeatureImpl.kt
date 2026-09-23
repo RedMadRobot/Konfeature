@@ -37,8 +37,8 @@ internal class KonfeatureImpl(
                     key = spec.key,
                     source = FeatureValueSource.Source(source.name),
                     value = actualSourceValue,
-                    actualClass = actualSourceValue::class.qualifiedName,
-                    expectedClass = expectedClass.qualifiedName,
+                    actualClass = actualSourceValue::class.loggableName,
+                    expectedClass = expectedClass.loggableName,
                 )
             }
 
@@ -58,8 +58,8 @@ internal class KonfeatureImpl(
                     key = spec.key,
                     source = FeatureValueSource.Interceptor(interceptor.name),
                     value = actualInterceptorValue,
-                    actualClass = actualInterceptorValue::class.qualifiedName,
-                    expectedClass = expectedClass.qualifiedName,
+                    actualClass = actualInterceptorValue::class.loggableName,
+                    expectedClass = expectedClass.loggableName,
                 )
             }
 
@@ -90,6 +90,15 @@ internal class KonfeatureImpl(
         )
     }
 
+    /**
+     * The type guard behind the "unexpected value type" warning.
+     *
+     * **Kotlin/JS caveat.** The legacy `js` target represents `Byte`, `Short`, `Int`, `Float` and
+     * `Double` as one JS `number`, so neither [KClass.isInstance] nor a Kotlin `is` check can tell
+     * them apart: `Int::class.isInstance(1.5)` is `true` there. On that target a source may
+     * therefore supply a `Double` for an `Int`-typed value without the mismatch being rejected or
+     * logged. Every other target — JVM, Native and `wasmJs` — distinguishes them correctly.
+     */
     @Suppress("UNCHECKED_CAST")
     private fun <T : Any> KClass<T>.tryCastOrNull(value: Any?): T? {
         return if (isInstance(value)) value as T else null

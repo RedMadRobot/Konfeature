@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import com.redmadrobot.konfeature.Versions
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -7,6 +10,7 @@ plugins {
     alias(stack.plugins.composeMultiplatform)
     alias(stack.plugins.poko)
     convention.publishing
+    convention.abi.android
     convention.detekt
 }
 
@@ -25,8 +29,37 @@ kotlin {
         }
     }
 
+    // Desktop (JVM) target of Compose Multiplatform.
+    jvm()
+
+    // Compose Multiplatform for web (Kotlin/Wasm) is in Beta.
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        // Compose UI tests on wasmJs need an executable bundle to load the Skiko runtime.
+        binaries.executable()
+    }
+
+    // Compose Multiplatform 1.12 publishes Apple targets only for arm64:
+    // there are no iosX64/macosX64 artifacts of compose-ui to depend on.
     iosArm64()
     iosSimulatorArm64()
+
+    macosArm64()
+
+    // Overrides are persisted through DataStore everywhere it has a real implementation; the web
+    // target uses localStorage instead, see DebugValuesStorage.
+    applyDefaultHierarchyTemplate {
+        common {
+            group("dataStore") {
+                withJvm()
+                // The AGP KMP plugin's target is not a KotlinAndroidTarget, so withAndroidTarget()
+                // alone does not match it and androidMain would miss the actual declarations.
+                withCompilations { it.target.name == "android" }
+                withApple()
+            }
+        }
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -42,6 +75,16 @@ kotlin {
             implementation(stack.kotlinx.serialization.json)
             implementation(stack.compose.resources)
         }
+        wasmJsTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(stack.kotlinx.coroutines.test)
+        }
+
+        jvmMain.dependencies {
+            // The debug panel's ViewModel works on Dispatchers.Main, which on desktop is provided
+            // by the Swing dispatcher module. Without it the panel crashes on first interaction.
+            implementation(stack.kotlinx.coroutines.swing)
+        }
     }
 
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
@@ -53,7 +96,9 @@ tasks.check.configure {
 }
 
 compose.resources {
-    publicResClass = true
+    // Internal: the generated resource accessors are an implementation detail of the panel, and a
+    // public Res would have to be mirrored by konfeature-ui-noop to keep the modules swappable.
+    publicResClass = false
     packageOfResClass = "com.redmadrobot.konfeature.ui.resources"
     generateResClass = auto
 }

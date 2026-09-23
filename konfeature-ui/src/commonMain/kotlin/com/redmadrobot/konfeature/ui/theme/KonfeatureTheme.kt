@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation.theme
+package com.redmadrobot.konfeature.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

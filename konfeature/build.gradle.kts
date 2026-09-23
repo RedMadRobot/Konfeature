@@ -9,10 +9,27 @@ description = "Kotlin library for working with feature remote configuration"
 
 kotlin {
     explicitApi()
+    jvmToolchain(17)
+
+    // A deliberate subset: the core has no third-party dependencies and could support every Kotlin
+    // target, but only the platforms Konfeature is actually used on are built and published.
     jvm()
+
+    js {
+        browser()
+        nodejs()
+    }
+
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        nodejs()
+    }
 
     iosArm64()
     iosSimulatorArm64()
+
+    macosArm64()
 
     sourceSets {
         commonMain.dependencies {

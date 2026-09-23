@@ -4,7 +4,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.redmadrobot.konfeature.ui.presentation.theme.KonfeatureTheme
+import com.redmadrobot.konfeature.ui.theme.KonfeatureTheme
 
 @Composable
 internal fun KonfeatureToggle(

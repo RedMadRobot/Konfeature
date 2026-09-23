@@ -1,4 +1,5 @@
 .DS_Store
+CLAUDE.md
 
 ## JetBrains IDEs
 /.idea/**
@@ -27,3 +28,5 @@
 
 # Ignore local properties
 local.properties
+
+/.kotlin/**

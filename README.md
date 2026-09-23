@@ -8,8 +8,10 @@
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)](#)
 [![iOS](https://img.shields.io/badge/iOS-000000?style=flat-square&logo=apple&logoColor=white)](#)
 [![JVM](https://img.shields.io/badge/JVM-007396?style=flat-square&logo=java&logoColor=white)](#)
+[![macOS](https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white)](#)
+[![Web](https://img.shields.io/badge/Web-654FF0?style=flat-square&logo=webassembly&logoColor=white)](#)
 
-**Konfeature** is a powerful **Kotlin Multiplatform** library for managing remote configuration in your applications. It provides a clean, declarative API for working with feature flags and configuration elements across Android, iOS, and JVM platforms.
+**Konfeature** is a powerful **Kotlin Multiplatform** library for managing remote configuration in your applications. It provides a clean, declarative API for working with feature flags and configuration elements across Android, JVM, iOS, macOS and web targets — see [Supported Platforms](#supported-platforms).
 
 Working with remote configuration has become a standard part of the development process for almost any application. Depending on the complexity of the application, several requirements for such functionality may arise, including:
 - convenient syntax for declaring configuration elements
@@ -27,6 +29,8 @@ We have made every effort to meet all these requirements in the development of K
 
 - [Supported Platforms](#supported-platforms)
 - [Installation](#installation)
+  - [Add Maven Central Repository](#add-maven-central-repository)
+  - [Add Dependency](#add-dependency)
 - [Usage](#usage)
   - [FeatureConfig](#featureconfig)
   - [FeatureSource](#featuresource)
@@ -35,6 +39,7 @@ We have made every effort to meet all these requirements in the development of K
   - [Logger](#logger)
   - [Spec](#spec)
   - [Ordering](#ordering)
+  - [Validation](#validation)
 - [Debug UI (konfeature-ui)](#debug-ui-konfeature-ui)
   - [What problem it solves](#what-problem-it-solves)
   - [Installation](#installation-1)
@@ -45,15 +50,30 @@ We have made every effort to meet all these requirements in the development of K
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+
 ## Supported Platforms
 
-Konfeature is a **Kotlin Multiplatform** library with support for:
+Konfeature is a **Kotlin Multiplatform** library. The core module has no third-party dependencies
+and is published for JVM, iOS, macOS and web; `konfeature-ui` is limited to the targets Compose
+Multiplatform and DataStore publish artifacts for.
 
-| Platform | Status | Targets |
-|----------|--------|---------|
-| **Android** | ✅ Fully Supported | JVM (via Kotlin/JVM) |
-| **iOS** | ✅ Fully Supported | arm64, simulator arm64 |
-| **JVM** | ✅ Fully Supported | Java/Kotlin applications |
+On Android, `konfeature` is consumed through its `jvm` artifact.
+
+| Platform | `konfeature` | `konfeature-ui` / `-ui-noop` |
+|----------|--------------|------------------------------|
+| **JVM** (server, desktop, Android) | ✅ `jvm` | ✅ `jvm` (Compose Desktop), `android` |
+| **iOS** | ✅ `iosArm64`, `iosSimulatorArm64` | ✅ `iosArm64`, `iosSimulatorArm64` |
+| **macOS** | ✅ `macosArm64` | ✅ `macosArm64` (Compose macOS is experimental) |
+| **Web** | ✅ `js`, `wasmJs` | ✅ `wasmJs` (Compose for web is Beta) |
+
+Apple targets are arm64 only across all modules, matching what Compose Multiplatform publishes.
+`konfeature-ui` has no `js` target because DataStore publishes no `js` artifact.
+
+On `wasmJs` the panel is built on Compose Multiplatform for web, which is **Beta**. Overrides are
+persisted there too, but not through DataStore — its web factories are still
+`TODO("Not yet implemented")` in the DataStore version this library depends on. The web build
+stores the same blob in `localStorage` instead, so `KonfeatureDebugStore.create` works as it does
+everywhere else; the `path` argument is used as the `localStorage` key rather than a file path.
 
 ## Installation
 
@@ -172,7 +192,7 @@ class FirebaseFeatureSource(
     override fun get(key: String): Any? {
         return remoteConfig
             .getValue(key)
-            .takeIf { source == FirebaseRemoteConfig.VALUE_SOURCE_REMOTE }
+            .takeIf { it.source == FirebaseRemoteConfig.VALUE_SOURCE_REMOTE }
             ?.let { value: FirebaseRemoteConfigValue ->
                 value.getOrNull { asBoolean() }
                     ?: value.getOrNull { asString() }
@@ -300,6 +320,9 @@ val konfeatureInstance = konfeature {
 
 >Similarly, you can add multiple interceptors.
 
+>For a ready-made interceptor whose overrides persist across restarts and can be edited in a debug
+>screen, see [`KonfeatureDebugInterceptor`](#debug-ui-konfeature-ui) in `konfeature-ui`.
+
 ### Logger
 
 ```kotlin
@@ -319,6 +342,9 @@ The following events are logged:
 >Get value 'true' by key 'profile_feature' from 'Source(name=FirebaseRemoteConfig)'
 - `Source` or `Interceptor` returns an unexpected type for `key`
 >Unexpected value type for 'profile_button_appear_duration': expected type is 'kotlin.Long', but value from 'Source(name=FirebaseRemoteConfig)' is 'true' with type 'kotlin.Boolean'
+
+On the Kotlin/JS (`js`) target type names are logged without the package (`'Long'`, `'Boolean'`), since
+Kotlin/JS has no `KClass.qualifiedName`.
 
 Example of implementation based on `Timber`:
 
@@ -379,7 +405,7 @@ val featureValue = konfeatureInstance.getValue(featureSpec)
 ```
 >  This can be useful for use in the DebugPanel
 
-## Ordering
+### Ordering
 The value of the configuration element is determined in the following order:
 
 - `defaultValue` and `Default` source are assigned.
@@ -388,6 +414,18 @@ The value of the configuration element is determined in the following order:
   Upon successful search, the value from `Source` is assigned with `Source(name=SourceName)` source.
 - Search the list of `Interceptors` in the order they were added to `Konfeature`.
   If `Interceptor` returns a value other than `null`, this value is assigned with `Interceptor(name=InterceptorName)` source.
+
+### Validation
+
+Misconfiguration fails fast with a `KonfeatureException` subclass, thrown while building the
+`Konfeature` instance (inside `konfeature { ... }`):
+
+| Exception | Thrown by | When |
+|-----------|-----------|------|
+| `SourceNameAlreadyExistException` | `addSource` | a source with the same `name` is already added |
+| `ConfigNameAlreadyExistException` | `register` | a config with the same `name` is already registered |
+| `NoFeatureConfigException` | `build` | no config is registered |
+| `KeyDuplicationException` | `build` | a config declares several elements with the same `key` |
 
 ## Debug UI (konfeature-ui)
 
@@ -401,8 +439,8 @@ inspect and override feature values at runtime.
 
 | Module | Artifact | Targets | Purpose |
 |--------|----------|---------|---------|
-| **konfeature-ui** | `com.redmadrobot.konfeature:konfeature-ui` | Android, iOS | Debug panel + persisted overrides |
-| **konfeature-ui-noop** | `com.redmadrobot.konfeature:konfeature-ui-noop` | Android, iOS | API-compatible no-op for release builds |
+| **konfeature-ui** | `com.redmadrobot.konfeature:konfeature-ui` | Android, JVM, iOS, macOS, wasmJs | Debug panel + persisted overrides |
+| **konfeature-ui-noop** | `com.redmadrobot.konfeature:konfeature-ui-noop` | Android, JVM, iOS, macOS, wasmJs | API-compatible no-op for release builds |
 
 ### What problem it solves
 
@@ -421,8 +459,8 @@ boilerplate that every project ends up re-implementing.
   actions let you refresh, collapse all groups, or reset all overrides at once.
 - **`KonfeatureDebugInterceptor`** — an `Interceptor` that applies the overrides made in the screen,
   so a value changed in the panel is reflected everywhere the config is read.
-- **`KonfeatureDebugStore`** — persists overrides to disk (via DataStore) so they survive app
-  restarts, and exposes them as a `StateFlow` for the screen and a synchronous `currentValue(key)`
+- **`KonfeatureDebugStore`** — persists overrides (to disk via DataStore, to `localStorage` on web) so
+  they survive app restarts, and exposes them as a `StateFlow` for the screen and a synchronous `currentValue(key)`
   read for the interceptor. Overrides can be removed one at a time (`resetValue(key)`) or all at once
   (`resetAll()`).
 
@@ -472,10 +510,14 @@ dependencies {
 ```
 
 `KonfeatureDebugPanel` is a `@Composable`, so the app must have Jetpack Compose set up (Compose
-Multiplatform builds on top of it on Android) to render it.
+Multiplatform builds on top of it on Android) to render it. The app must also compile against Android
+API 37 (`compileSdk = 37`), which Compose Multiplatform 1.12 requires; the same applies to
+`konfeature-ui-noop`.
 
-> Unlike the core library, `konfeature-ui` targets **Android and iOS** only (it builds on Compose
-> Multiplatform), so there is no plain-JVM (desktop/server) artifact — but Android is fully supported.
+> Unlike the core library, `konfeature-ui` is limited to the targets Compose Multiplatform and
+> DataStore publish — Android, JVM (Compose Desktop), `iosArm64`/`iosSimulatorArm64`, `macosArm64`
+> and `wasmJs`. There is no `js` or non-Apple native artifact of the debug panel; use `konfeature`
+> alone on those targets.
 
 ### Usage
 
@@ -485,7 +527,9 @@ Multiplatform builds on top of it on Android) to render it.
    startup. Hold a single instance (DI singleton or shared `object`) and reuse it for both the
    interceptor and the screen.
 
-   The `path` is platform-specific — on Android use `context.filesDir`, on iOS use `NSDocumentDirectory`.
+   The `path` is platform-specific — on Android use `context.filesDir`, on iOS use
+   `NSDocumentDirectory`, on desktop any writable location. On web it is not a path at all but the
+   `localStorage` key the overrides are stored under.
 
    ```kotlin
    // inside a coroutine / suspend context
@@ -555,12 +599,12 @@ follow the same light/dark appearance.
 
 ### No-op implementation (konfeature-ui-noop)
 
-`konfeature-ui-noop` exposes the **same `KonfeatureDebugStore` and `KonfeatureDebugInterceptor` API**
-(same package, same class names and signatures) but does nothing: the store holds no overrides and
-performs no I/O, and the interceptor always returns `null`. It has no Compose dependency and does not
-contain `KonfeatureDebugPanel`.
+`konfeature-ui-noop` exposes **the same public API as `konfeature-ui`** (same package, same
+declarations and signatures) but does nothing: the store holds no overrides and performs no I/O, the
+interceptor always returns `null`, and `KonfeatureDebugPanel` renders nothing. `KonfeatureTheme` only
+provides the palette to its content, so `KonfeatureTheme.colors` keeps working.
 
-This lets you keep the store/interceptor wiring in your shared production code and swap the
+This lets you keep all the wiring, the panel included, in your shared production code and swap the
 implementation per build type, so the debug tooling and its DataStore/persistence cost are stripped
 from release builds:
 
@@ -571,12 +615,10 @@ dependencies {
 }
 ```
 
-> [!IMPORTANT]
-> `KonfeatureDebugPanel` exists **only** in `konfeature-ui` — there is no no-op counterpart for it.
-> Only `KonfeatureDebugStore` and `KonfeatureDebugInterceptor` are swappable between the two modules.
-> Keep any reference to `KonfeatureDebugPanel` in a debug-only source set / module: the store and
-> interceptor compile against both modules, but the screen compiles against `konfeature-ui` only, so a
-> release build wired to `konfeature-ui-noop` will not see it.
+> [!NOTE]
+> Like `konfeature-ui`, the no-op module depends on Compose (`compose-runtime`, `compose-ui`,
+> `compose-foundation`), since `KonfeatureDebugPanel` and the theme are part of its API. Hiding the
+> entry point to the panel in release builds is still up to the app.
 
 ## Contributing
 

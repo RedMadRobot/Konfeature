@@ -2,7 +2,14 @@
 
 ### Changes
 
-- *No changes*
+- **Breaking:** the theme API of `konfeature-ui` (`KonfeatureTheme`, `KonfeatureColors`, `lightKonfeatureColors`, `darkKonfeatureColors`) moved from `com.redmadrobot.konfeature.ui.presentation.theme` to `com.redmadrobot.konfeature.ui.theme`
+- **Breaking:** the generated Compose resources class `com.redmadrobot.konfeature.ui.resources.Res` of `konfeature-ui` is no longer public
+- **Breaking:** Android consumers of `konfeature-ui` / `konfeature-ui-noop` must compile against API 37 (`compileSdk = 37`), as required by Compose Multiplatform 1.12
+- `konfeature-ui-noop` now mirrors the whole public API of `konfeature-ui`, including a no-op `KonfeatureDebugPanel`, `KonfeatureValueInfo` / `KonfeatureValueType` and the theme, so the panel can be referenced from code shared with release builds. The module now depends on Compose
+- `konfeature` gains the `js`, `wasmJs` and `macosArm64` targets, in addition to `jvm`, `iosArm64` and `iosSimulatorArm64`
+- `konfeature-ui` and `konfeature-ui-noop` gain the JVM (Compose Desktop), `macosArm64` and `wasmJs` targets. On `wasmJs`, `KonfeatureDebugStore.create` persists overrides to `localStorage` and treats `path` as the storage key; if the browser refuses storage, the store starts empty instead of crashing
+- Updated Kotlin to 2.4.10, Compose Multiplatform to 1.12.0, AndroidX Lifecycle to 2.11.0 and kotlinx-collections-immutable to 0.5.2
+- Build tooling: updated Gradle to 9.7.1 and AGP to 9.4.0
 
 ## [1.1.0] (2026-07-22)
 

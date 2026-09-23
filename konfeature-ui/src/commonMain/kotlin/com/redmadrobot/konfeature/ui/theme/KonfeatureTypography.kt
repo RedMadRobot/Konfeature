@@ -1,4 +1,4 @@
-package com.redmadrobot.konfeature.ui.presentation.theme
+package com.redmadrobot.konfeature.ui.theme
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.TextStyle
