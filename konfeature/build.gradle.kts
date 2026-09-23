@@ -9,6 +9,7 @@ description = "Kotlin library for working with feature remote configuration"
 
 kotlin {
     explicitApi()
+    jvmToolchain(17)
 
     // The core has no third-party dependencies, so it supports every target Kotlin does.
     jvm()
